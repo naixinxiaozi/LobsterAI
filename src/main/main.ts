@@ -3981,6 +3981,7 @@ const getCoworkEngineRouter = () => {
       const codexManager = getCodexAppServerManager();
       codexRuntimeAdapter = new CodexRuntimeAdapter({
         client: codexManager.startSync(),
+        store: getCoworkStore(),
         getSkillInstructions: () => getSkillManager().buildAutoRoutingPrompt(),
         getPersistedThreadId: sessionId =>
           getCoworkStore().getSession(sessionId, 0)?.claudeSessionId ?? null,
