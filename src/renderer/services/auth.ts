@@ -38,10 +38,8 @@ import {
 } from '../store/slices/authSlice';
 import { clearMediaAccountState } from '../store/slices/coworkSlice';
 import type { Model } from '../store/slices/modelSlice';
-import {
-  clearServerModels,
-  setServerModels,
-} from '../store/slices/modelSlice';
+import { clearServerModels, setServerModels } from '../store/slices/modelSlice';
+import { getPortalLoginUrl } from './endpoints';
 import { i18nService } from './i18n';
 import { LogReporterAction, reportYdAnalyzer } from './logReporter';
 import {
@@ -121,15 +119,10 @@ export interface AvailableServerModelEntry {
   restrictionHint?: string;
 }
 
-const readString = (value: unknown): string => (
-  typeof value === 'string' ? value.trim() : ''
-);
+const readString = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
 
-const readPositiveNumber = (value: unknown): number | undefined => (
-  typeof value === 'number' && Number.isFinite(value) && value > 0
-    ? value
-    : undefined
-);
+const readPositiveNumber = (value: unknown): number | undefined =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : undefined;
 
 type AuthRendererLogLevel = 'debug' | 'info' | 'warn';
 
@@ -142,20 +135,18 @@ export interface AuthAccountRequestSnapshot {
 export const isAuthAccountRequestCurrent = (
   expected: AuthAccountRequestSnapshot,
   current: AuthAccountRequestSnapshot,
-): boolean => (
-  current.isLoggedIn === expected.isLoggedIn
-  && current.ownerAccountKey === expected.ownerAccountKey
-  && current.accountGeneration === expected.accountGeneration
-);
+): boolean =>
+  current.isLoggedIn === expected.isLoggedIn &&
+  current.ownerAccountKey === expected.ownerAccountKey &&
+  current.accountGeneration === expected.accountGeneration;
 
 const writeAuthRendererLog = (
   level: AuthRendererLogLevel,
   message: string,
   error?: unknown,
 ): void => {
-  const errorMessage = error === undefined
-    ? ''
-    : `: ${error instanceof Error ? error.message : String(error)}`;
+  const errorMessage =
+    error === undefined ? '' : `: ${error instanceof Error ? error.message : String(error)}`;
   const resolvedMessage = `${message}${errorMessage}`.replace(/\s+/g, ' ').trim().slice(0, 500);
   if (level === 'warn') {
     if (error === undefined) {
@@ -198,48 +189,42 @@ export function mapPricingCatalogTextModelsToServerModels(
     if (!modelId) return [];
 
     const modelName = readString(model.modelName) || modelId;
-    const provider = readString(model.providerLabel)
-      || readString(model.provider)
-      || 'LobsterAI';
+    const provider = readString(model.providerLabel) || readString(model.provider) || 'LobsterAI';
     const contextWindow = readPositiveNumber(model.contextWindow);
     const costMultiplier = readPositiveNumber(model.costMultiplier);
-    const thinkingConfig = model.supportsThinking === true
-      ? parseModelThinkingConfig(model.thinkingConfig)
-      : undefined;
+    const thinkingConfig =
+      model.supportsThinking === true ? parseModelThinkingConfig(model.thinkingConfig) : undefined;
 
-    return [{
-      id: modelId,
-      name: modelName,
-      provider,
-      providerKey: ProviderName.LobsteraiServer,
-      isServerModel: true,
-      supportsImage: model.supportsImage === true,
-      supportsThinking: model.supportsThinking === true,
-      thinkingConfig,
-      description: readString(model.description) || undefined,
-      costMultiplier,
-      contextWindow,
-      moreModel: model.moreModel === true,
-      accessible: false,
-    }];
+    return [
+      {
+        id: modelId,
+        name: modelName,
+        provider,
+        providerKey: ProviderName.LobsteraiServer,
+        isServerModel: true,
+        supportsImage: model.supportsImage === true,
+        supportsThinking: model.supportsThinking === true,
+        thinkingConfig,
+        description: readString(model.description) || undefined,
+        costMultiplier,
+        contextWindow,
+        moreModel: model.moreModel === true,
+        accessible: false,
+      },
+    ];
   });
 }
 
-export function mapPricingCatalogToPublicServerModels(
-  catalog: PricingCatalogResponse,
-): Model[] {
+export function mapPricingCatalogToPublicServerModels(catalog: PricingCatalogResponse): Model[] {
   return mapPricingCatalogTextModelsToServerModels(
     Array.isArray(catalog.textModels) ? catalog.textModels : [],
   );
 }
 
-export function mapAvailableServerModelsToModels(
-  models: AvailableServerModelEntry[],
-): Model[] {
+export function mapAvailableServerModelsToModels(models: AvailableServerModelEntry[]): Model[] {
   return models.map(model => {
-    const thinkingConfig = model.supportsThinking === true
-      ? parseModelThinkingConfig(model.thinkingConfig)
-      : undefined;
+    const thinkingConfig =
+      model.supportsThinking === true ? parseModelThinkingConfig(model.thinkingConfig) : undefined;
     const requestCapabilities = parseLobsterAIRequestCapabilities(model.requestCapabilities);
     return {
       id: model.modelId,
@@ -280,7 +265,7 @@ const ServerModelLoadOutcome = {
   Retryable: 'retryable',
   Abandoned: 'abandoned',
 } as const;
-type ServerModelLoadOutcome = typeof ServerModelLoadOutcome[keyof typeof ServerModelLoadOutcome];
+type ServerModelLoadOutcome = (typeof ServerModelLoadOutcome)[keyof typeof ServerModelLoadOutcome];
 
 class AuthService {
   private unsubCallback: (() => void) | null = null;
@@ -308,25 +293,23 @@ class AuthService {
     quota: UserQuota | null | undefined,
     enterpriseContext: EnterpriseAccountContext | null | undefined,
   ): void {
-    const isEnterpriseAccount = (
-      user.accountMode === EnterpriseAccountMode.Enterprise
-      || quota?.accountMode === EnterpriseAccountMode.Enterprise
-      || quota?.subscriptionStatus === AuthSubscriptionStatus.Enterprise
-    );
-    const hasMismatchedEnterpriseId = (
-      enterpriseContext !== null
-      && enterpriseContext !== undefined
-      && typeof quota?.enterpriseId === 'number'
-      && quota.enterpriseId !== enterpriseContext.enterpriseId
-    );
+    const isEnterpriseAccount =
+      user.accountMode === EnterpriseAccountMode.Enterprise ||
+      quota?.accountMode === EnterpriseAccountMode.Enterprise ||
+      quota?.subscriptionStatus === AuthSubscriptionStatus.Enterprise;
+    const hasMismatchedEnterpriseId =
+      enterpriseContext !== null &&
+      enterpriseContext !== undefined &&
+      typeof quota?.enterpriseId === 'number' &&
+      quota.enterpriseId !== enterpriseContext.enterpriseId;
     const ownerAccountKey = createAccountOwnerKey({
       user,
       enterpriseId: enterpriseContext?.enterpriseId,
     });
     if (
-      !ownerAccountKey
-      || (isEnterpriseAccount && !enterpriseContext)
-      || hasMismatchedEnterpriseId
+      !ownerAccountKey ||
+      (isEnterpriseAccount && !enterpriseContext) ||
+      hasMismatchedEnterpriseId
     ) {
       this.clearAuthenticatedAccountState();
       throw new Error('Authenticated account context is missing or inconsistent');
@@ -338,18 +321,19 @@ class AuthService {
       // while setServerModels replaces the list atomically on success.
       store.dispatch(clearServerModels());
     }
-    store.dispatch(setLoggedIn({
-      user,
-      quota: quota ?? null,
-      ownerAccountKey,
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota: quota ?? null,
+        ownerAccountKey,
+      }),
+    );
     const publishingRecoveryAuthSnapshot = {
       ownerAccountKey,
-      accountMode: quota?.accountMode
-        ?? user.accountMode
-        ?? (isEnterpriseAccount
-          ? EnterpriseAccountMode.Enterprise
-          : EnterpriseAccountMode.Personal),
+      accountMode:
+        quota?.accountMode ??
+        user.accountMode ??
+        (isEnterpriseAccount ? EnterpriseAccountMode.Enterprise : EnterpriseAccountMode.Personal),
       subscriptionStatus: quota?.subscriptionStatus,
     };
     void reportPendingPublishingSubscriptionObserved(publishingRecoveryAuthSnapshot);
@@ -392,13 +376,15 @@ class AuthService {
       void this.handleSessionChanged(event);
     });
     this.unsubLifecycleEvent = window.electron.auth.onLifecycleEvent(reportAuthLifecycleEvent);
-    this.unsubEnterpriseContextInvalidated = window.electron.enterpriseAccount.onContextInvalidated(() => {
-      this.clearAuthenticatedAccountState();
-      writeAuthRendererLog(
-        'warn',
-        'Enterprise account context was invalidated by the server; account-scoped media state was cleared',
-      );
-    });
+    this.unsubEnterpriseContextInvalidated = window.electron.enterpriseAccount.onContextInvalidated(
+      () => {
+        this.clearAuthenticatedAccountState();
+        writeAuthRendererLog(
+          'warn',
+          'Enterprise account context was invalidated by the server; account-scoped media state was cleared',
+        );
+      },
+    );
 
     try {
       const pendingCode = await window.electron.auth.getPendingCallback();
@@ -426,22 +412,21 @@ class AuthService {
     });
 
     // Refresh quota and models when Electron window gains focus — user may have purchased on portal
-    this.unsubWindowState = window.electron.window.onStateChanged((state) => {
+    this.unsubWindowState = window.electron.window.onStateChanged(state => {
       if (state.isFocused && store.getState().auth.isLoggedIn) {
         const now = Date.now();
-        const forcePublishingRecoveryRefresh =
-          consumePublishingSubscriptionRecoveryFocusRefresh(
-            store.getState().auth.ownerAccountKey,
-          );
+        const forcePublishingRecoveryRefresh = consumePublishingSubscriptionRecoveryFocusRefresh(
+          store.getState().auth.ownerAccountKey,
+        );
         const enterpriseContext = store.getState().enterpriseAccount.context;
         const periodEnd = enterpriseContext?.memberQuota.periodEndExclusive
           ? Date.parse(enterpriseContext.memberQuota.periodEndExclusive)
           : Number.NaN;
         const quotaBoundaryReached = Number.isFinite(periodEnd) && now >= periodEnd;
         if (
-          forcePublishingRecoveryRefresh
-          || quotaBoundaryReached
-          || now - this.lastRefreshTime > 30_000
+          forcePublishingRecoveryRefresh ||
+          quotaBoundaryReached ||
+          now - this.lastRefreshTime > 30_000
         ) {
           this.lastRefreshTime = now;
           void this.checkQuota();
@@ -458,46 +443,24 @@ class AuthService {
     writeAuthRendererLog('info', `login attempt ${attemptId} started`);
 
     try {
-      const loginUrl = await this.fetchLoginUrl();
-      const result = await window.electron.auth.login(loginUrl);
+      const result = await window.electron.auth.login(getPortalLoginUrl());
       if (result.success) {
         writeAuthRendererLog('info', `login attempt ${attemptId} handed off to the system browser`);
       } else {
-        writeAuthRendererLog('warn', `login attempt ${attemptId} could not open the system browser`);
+        writeAuthRendererLog(
+          'warn',
+          `login attempt ${attemptId} could not open the system browser`,
+        );
       }
       return result;
     } catch (error) {
-      writeAuthRendererLog('warn', `login attempt ${attemptId} failed before browser handoff`, error);
+      writeAuthRendererLog(
+        'warn',
+        `login attempt ${attemptId} failed before browser handoff`,
+        error,
+      );
       throw error;
     }
-  }
-
-  /**
-   * Fetch login URL from overmind, fallback to Portal login page.
-   */
-  private async fetchLoginUrl(): Promise<string> {
-    const { getLoginOvermindUrl } = await import('./endpoints');
-    const url = getLoginOvermindUrl();
-    try {
-      const response = await window.electron.api.fetch({
-        url,
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-      if (response.ok && typeof response.data === 'object' && response.data !== null) {
-        const value = (response.data as any)?.data?.value;
-        if (typeof value === 'string' && value.trim()) {
-          writeAuthRendererLog('debug', 'resolved login URL from overmind');
-          return value.trim();
-        }
-      }
-    } catch (e) {
-      writeAuthRendererLog('warn', 'failed to resolve login URL from overmind', e);
-    }
-    // Fallback: use Portal login page directly
-    const { getPortalLoginUrl } = await import('./endpoints');
-    writeAuthRendererLog('info', 'using fallback portal login URL');
-    return getPortalLoginUrl();
   }
 
   /**
@@ -511,11 +474,7 @@ class AuthService {
         writeAuthRendererLog('info', 'login callback exchange succeeded');
         store.dispatch(invalidateAuthAccountContext());
         store.dispatch(clearMediaAccountState());
-        this.applyAuthenticatedState(
-          result.user,
-          result.quota,
-          result.enterpriseContext,
-        );
+        this.applyAuthenticatedState(result.user, result.quota, result.enterpriseContext);
         await this.loadServerModels();
         void this.fetchProfileSummary();
         this.refreshQuota();
@@ -554,13 +513,13 @@ class AuthService {
         };
       }
       if (result.success && result.user) {
-        const enterpriseContext = result.enterpriseContext === undefined
-          ? await refreshEnterpriseAccountContext({
-            shouldApply: () => (
-              isAuthAccountRequestCurrent(authStateAtStart, store.getState().auth)
-            ),
-          })
-          : result.enterpriseContext;
+        const enterpriseContext =
+          result.enterpriseContext === undefined
+            ? await refreshEnterpriseAccountContext({
+                shouldApply: () =>
+                  isAuthAccountRequestCurrent(authStateAtStart, store.getState().auth),
+              })
+            : result.enterpriseContext;
         if (!isAuthAccountRequestCurrent(authStateAtStart, store.getState().auth)) {
           writeAuthRendererLog(
             'debug',
@@ -591,11 +550,11 @@ class AuthService {
         };
       }
 
-      const status = result.status ?? (
-        result.hasCredentials
+      const status =
+        result.status ??
+        (result.hasCredentials
           ? AuthSessionStatus.TemporarilyUnavailable
-          : AuthSessionStatus.Unauthenticated
-      );
+          : AuthSessionStatus.Unauthenticated);
       if (options.reportLifecycle) {
         reportAuthLifecycleEvent({
           eventType: AuthLifecycleEventType.Restore,
@@ -604,19 +563,23 @@ class AuthService {
       }
 
       if (status === AuthSessionStatus.TemporarilyUnavailable) {
-        store.dispatch(setAuthTemporarilyUnavailable({
-          hasCredentials: result.hasCredentials === true,
-          cachedUser: result.cachedUser ?? null,
-        }));
+        store.dispatch(
+          setAuthTemporarilyUnavailable({
+            hasCredentials: result.hasCredentials === true,
+            cachedUser: result.cachedUser ?? null,
+          }),
+        );
       } else if (status === AuthSessionStatus.Expired) {
         await this.applyLoggedOutState(true);
       } else if (options.clearOnFailure) {
         await this.applyLoggedOutState(false);
       }
     } catch {
-      store.dispatch(setAuthTemporarilyUnavailable({
-        hasCredentials: store.getState().auth.isLoggedIn,
-      }));
+      store.dispatch(
+        setAuthTemporarilyUnavailable({
+          hasCredentials: store.getState().auth.isLoggedIn,
+        }),
+      );
       if (options.reportLifecycle) {
         reportAuthLifecycleEvent({
           eventType: AuthLifecycleEventType.Restore,
@@ -649,9 +612,9 @@ class AuthService {
   async refreshQuota(): Promise<boolean> {
     const authStateAtStart = store.getState().auth;
     if (
-      !authStateAtStart.isLoggedIn
-      || !authStateAtStart.user
-      || !authStateAtStart.ownerAccountKey
+      !authStateAtStart.isLoggedIn ||
+      !authStateAtStart.user ||
+      !authStateAtStart.ownerAccountKey
     ) {
       return false;
     }
@@ -659,9 +622,9 @@ class AuthService {
       const result = await window.electron.auth.getQuota();
       const currentAuthState = store.getState().auth;
       if (
-        !currentAuthState.isLoggedIn
-        || currentAuthState.ownerAccountKey !== authStateAtStart.ownerAccountKey
-        || currentAuthState.accountGeneration !== authStateAtStart.accountGeneration
+        !currentAuthState.isLoggedIn ||
+        currentAuthState.ownerAccountKey !== authStateAtStart.ownerAccountKey ||
+        currentAuthState.accountGeneration !== authStateAtStart.accountGeneration
       ) {
         writeAuthRendererLog('debug', 'discarded stale quota response after auth state changed');
         return false;
@@ -671,9 +634,10 @@ class AuthService {
           store.dispatch(updateQuota(result.quota));
           const publishingRecoveryAuthSnapshot = {
             ownerAccountKey: currentAuthState.ownerAccountKey,
-            accountMode: result.quota.accountMode
-              ?? currentAuthState.user?.accountMode
-              ?? EnterpriseAccountMode.Personal,
+            accountMode:
+              result.quota.accountMode ??
+              currentAuthState.user?.accountMode ??
+              EnterpriseAccountMode.Personal,
             subscriptionStatus: result.quota.subscriptionStatus,
           };
           void reportPendingPublishingSubscriptionObserved(publishingRecoveryAuthSnapshot);
@@ -695,11 +659,8 @@ class AuthService {
   async checkQuota(): Promise<AuthQuotaCheckResult> {
     const requestSnapshot = store.getState().auth;
     if (
-      this.pendingQuotaCheck
-      && isAuthAccountRequestCurrent(
-        this.pendingQuotaCheck.requestSnapshot,
-        requestSnapshot,
-      )
+      this.pendingQuotaCheck &&
+      isAuthAccountRequestCurrent(this.pendingQuotaCheck.requestSnapshot, requestSnapshot)
     ) {
       writeAuthRendererLog('debug', 'joining the in-flight quota check');
       return this.pendingQuotaCheck.promise;
@@ -723,10 +684,7 @@ class AuthService {
     try {
       // The model list and the quota come from independent endpoints, so a
       // failing quota refresh must not block a plan model recovery.
-      const [refreshed] = await Promise.all([
-        this.refreshQuota(),
-        this.loadServerModels(),
-      ]);
+      const [refreshed] = await Promise.all([this.refreshQuota(), this.loadServerModels()]);
       if (!refreshed) {
         writeAuthRendererLog('warn', 'quota check could not refresh quota state');
         return {
@@ -743,10 +701,8 @@ class AuthService {
         };
       }
       const enterpriseContext = store.getState().enterpriseAccount.context;
-      const enterpriseQuotaAvailable = (
-        !enterpriseContext
-        || enterpriseContext.quotaStatus.available !== false
-      );
+      const enterpriseQuotaAvailable =
+        !enterpriseContext || enterpriseContext.quotaStatus.available !== false;
       writeAuthRendererLog(
         'debug',
         `quota check completed (enterprise quota available: ${enterpriseQuotaAvailable})`,
@@ -773,20 +729,20 @@ class AuthService {
       return;
     }
     const authStateAtStart = store.getState().auth;
-    if (
-      !authStateAtStart.isLoggedIn
-      || !authStateAtStart.ownerAccountKey
-    ) {
+    if (!authStateAtStart.isLoggedIn || !authStateAtStart.ownerAccountKey) {
       return;
     }
     try {
       const result = await window.electron.auth.getProfileSummary();
       const currentAuthState = store.getState().auth;
       if (
-        !isAuthAccountRequestCurrent(authStateAtStart, currentAuthState)
-        || store.getState().enterpriseAccount.context
+        !isAuthAccountRequestCurrent(authStateAtStart, currentAuthState) ||
+        store.getState().enterpriseAccount.context
       ) {
-        writeAuthRendererLog('debug', 'discarded stale profile summary response after auth state changed');
+        writeAuthRendererLog(
+          'debug',
+          'discarded stale profile summary response after auth state changed',
+        );
         return;
       }
       if (result.success && result.data) {
@@ -840,12 +796,15 @@ class AuthService {
     if (event.status !== AuthSessionStatus.Expired) return;
     writeAuthRendererLog('warn', `login session expired (${event.reason})`);
     const cleanup = this.applyLoggedOutState(true);
-    const toastKey = event.reason === AuthSessionChangeReason.EnterpriseMembershipRevoked
-      ? 'coworkErrorEnterpriseMembershipRevoked'
-      : 'coworkErrorLobsterAILoginExpired';
-    window.dispatchEvent(new CustomEvent('app:showToast', {
-      detail: i18nService.t(toastKey),
-    }));
+    const toastKey =
+      event.reason === AuthSessionChangeReason.EnterpriseMembershipRevoked
+        ? 'coworkErrorEnterpriseMembershipRevoked'
+        : 'coworkErrorLobsterAILoginExpired';
+    window.dispatchEvent(
+      new CustomEvent('app:showToast', {
+        detail: i18nService.t(toastKey),
+      }),
+    );
     await cleanup;
   }
 
@@ -856,15 +815,13 @@ class AuthService {
       accountMode: null,
       subscriptionStatus: null,
     });
-    const targetStatus = expired
-      ? AuthSessionStatus.Expired
-      : AuthSessionStatus.Unauthenticated;
+    const targetStatus = expired ? AuthSessionStatus.Expired : AuthSessionStatus.Unauthenticated;
     const current = store.getState().auth;
     if (
-      !current.isLoggedIn
-      && !current.isLoading
-      && current.sessionStatus === targetStatus
-      && !store.getState().enterpriseAccount.context
+      !current.isLoggedIn &&
+      !current.isLoading &&
+      current.sessionStatus === targetStatus &&
+      !store.getState().enterpriseAccount.context
     ) {
       return;
     }
@@ -901,8 +858,10 @@ class AuthService {
       this.enterpriseQuotaBoundaryTimer = null;
       const currentAuth = store.getState().auth;
       const currentContext = store.getState().enterpriseAccount.context;
-      if (currentAuth.ownerAccountKey !== ownerAccountKey
-        || currentContext?.enterpriseId !== context.enterpriseId) {
+      if (
+        currentAuth.ownerAccountKey !== ownerAccountKey ||
+        currentContext?.enterpriseId !== context.enterpriseId
+      ) {
         return;
       }
       if (this.lastTriggeredEnterpriseQuotaBoundary === boundaryKey) return;
@@ -946,18 +905,12 @@ class AuthService {
    */
   private loadServerModels(): Promise<boolean> {
     const requestSnapshot = store.getState().auth;
-    if (
-      !requestSnapshot.isLoggedIn
-      || !requestSnapshot.ownerAccountKey
-    ) {
+    if (!requestSnapshot.isLoggedIn || !requestSnapshot.ownerAccountKey) {
       return Promise.resolve(false);
     }
     if (
-      this.pendingServerModelLoad
-      && isAuthAccountRequestCurrent(
-        this.pendingServerModelLoad.requestSnapshot,
-        requestSnapshot,
-      )
+      this.pendingServerModelLoad &&
+      isAuthAccountRequestCurrent(this.pendingServerModelLoad.requestSnapshot, requestSnapshot)
     ) {
       writeAuthRendererLog('debug', 'joining the in-flight server model load');
       return this.pendingServerModelLoad.promise;
@@ -969,7 +922,7 @@ class AuthService {
     });
     this.pendingServerModelLoad = { requestSnapshot, promise: firstAttempt };
     void this.runServerModelLoad(requestSnapshot, settleFirstAttempt)
-      .catch((error) => {
+      .catch(error => {
         writeAuthRendererLog('warn', 'server model load chain failed unexpectedly', error);
         settleFirstAttempt(false);
       })
@@ -1000,9 +953,14 @@ class AuthService {
         'debug',
         `retrying the server model load in ${delayMs}ms (attempt ${attempt + 1}/${totalAttempts})`,
       );
-      await new Promise<void>(resolve => { setTimeout(resolve, delayMs); });
+      await new Promise<void>(resolve => {
+        setTimeout(resolve, delayMs);
+      });
       if (this.serverModelLoadSequence !== loadSequence) {
-        writeAuthRendererLog('debug', 'abandoned the server model retry after the service restarted');
+        writeAuthRendererLog(
+          'debug',
+          'abandoned the server model retry after the service restarted',
+        );
         return;
       }
       if (!isAuthAccountRequestCurrent(requestSnapshot, store.getState().auth)) {
@@ -1012,8 +970,8 @@ class AuthService {
     }
     writeAuthRendererLog(
       'warn',
-      `server model load failed after ${totalAttempts} attempts; `
-      + 'plan models stay unavailable until the next refresh',
+      `server model load failed after ${totalAttempts} attempts; ` +
+        'plan models stay unavailable until the next refresh',
     );
   }
 
@@ -1023,7 +981,10 @@ class AuthService {
     try {
       const modelsResult = await window.electron.auth.getModels();
       if (!isAuthAccountRequestCurrent(requestSnapshot, store.getState().auth)) {
-        writeAuthRendererLog('debug', 'discarded stale server model response after auth state changed');
+        writeAuthRendererLog(
+          'debug',
+          'discarded stale server model response after auth state changed',
+        );
         return ServerModelLoadOutcome.Abandoned;
       }
       if (modelsResult.success && Array.isArray(modelsResult.models)) {
@@ -1054,7 +1015,10 @@ class AuthService {
     try {
       const catalogResult = await window.electron.auth.getPricingCatalog();
       if (!isAuthAccountRequestCurrent(authStateAtStart, store.getState().auth)) {
-        writeAuthRendererLog('debug', 'discarded stale public pricing catalog after auth state changed');
+        writeAuthRendererLog(
+          'debug',
+          'discarded stale public pricing catalog after auth state changed',
+        );
         return;
       }
       if (!catalogResult.success || !catalogResult.textModels) {

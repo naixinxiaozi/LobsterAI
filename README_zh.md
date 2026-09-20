@@ -347,3 +347,15 @@ Bug 和功能建议请使用仓库 issue 模板。提交 PR 时请包含简要�
 [MIT License](LICENSE)
 
 由[网易有道](https://www.youdao.com/)开发维护。
+
+## 自部署认证与积分 Mock 服务
+
+如果不希望依赖外部账号服务，可以启动仓库内的自部署 Mock 服务：
+
+```text
+npm run server:mock
+```
+
+默认地址为 `http://127.0.0.1:8787`，提供登录、token 刷新、积分/额度、模型列表和 OpenAI 兼容的 Mock 回复。桌面端默认使用该地址；部署到其他服务器时，在启动或构建前设置 `LOBSTER_SERVER_BASE_URL` 和 `VITE_LOBSTER_SERVER_BASE_URL`。
+
+该服务使用内存数据，仅适合本地开发、联调和演示，不包含真实注册、支付、充值或持久化积分。

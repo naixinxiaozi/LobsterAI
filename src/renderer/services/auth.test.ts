@@ -113,31 +113,33 @@ describe('pricing catalog model mapping', () => {
 
 describe('authenticated server model mapping', () => {
   test('preserves K3 runtime, modality, token, and agentic metadata', () => {
-    const [model] = mapAvailableServerModelsToModels([{
-      modelId: 'kimi-k3-YoudaoInner',
-      modelName: 'Kimi K3',
-      provider: 'moonshot',
-      apiFormat: 'openai',
-      runtimeProfile: 'moonshot-kimi-k3',
-      supportsImage: true,
-      supportsVideo: true,
-      supportsThinking: true,
-      thinkingConfig: {
-        options: [
-          { level: 'off', openclawLevel: 'off' },
-          { level: 'high', openclawLevel: 'high' },
-          { level: 'max', openclawLevel: 'xhigh' },
-        ],
-        defaultLevel: 'high',
+    const [model] = mapAvailableServerModelsToModels([
+      {
+        modelId: 'kimi-k3-YoudaoInner',
+        modelName: 'Kimi K3',
+        provider: 'moonshot',
+        apiFormat: 'openai',
+        runtimeProfile: 'moonshot-kimi-k3',
+        supportsImage: true,
+        supportsVideo: true,
+        supportsThinking: true,
+        thinkingConfig: {
+          options: [
+            { level: 'off', openclawLevel: 'off' },
+            { level: 'high', openclawLevel: 'high' },
+            { level: 'max', openclawLevel: 'xhigh' },
+          ],
+          defaultLevel: 'high',
+        },
+        requestCapabilities: [LobsterAIRequestCapability.OptionsV1],
+        supportsToolCalling: true,
+        agenticReady: false,
+        contextWindow: 1_048_576,
+        maxTokens: 8_192,
+        moreModel: true,
+        accessible: true,
       },
-      requestCapabilities: [LobsterAIRequestCapability.OptionsV1],
-      supportsToolCalling: true,
-      agenticReady: false,
-      contextWindow: 1_048_576,
-      maxTokens: 8_192,
-      moreModel: true,
-      accessible: true,
-    }]);
+    ]);
 
     expect(model).toMatchObject({
       id: 'kimi-k3-YoudaoInner',
@@ -167,20 +169,22 @@ describe('authenticated server model mapping', () => {
   });
 
   test('ignores malformed thinking configuration without hiding the model', () => {
-    const [model] = mapAvailableServerModelsToModels([{
-      modelId: 'deepseek-v4-flash',
-      modelName: 'DeepSeek V4 Flash',
-      provider: 'LobsterAI',
-      apiFormat: 'openai',
-      supportsThinking: true,
-      thinkingConfig: {
-        options: [
-          { level: 'off', openclawLevel: 'off' },
-          { level: 'high', openclawLevel: 'high' },
-        ],
-        defaultLevel: 'max',
+    const [model] = mapAvailableServerModelsToModels([
+      {
+        modelId: 'deepseek-v4-flash',
+        modelName: 'DeepSeek V4 Flash',
+        provider: 'LobsterAI',
+        apiFormat: 'openai',
+        supportsThinking: true,
+        thinkingConfig: {
+          options: [
+            { level: 'off', openclawLevel: 'off' },
+            { level: 'high', openclawLevel: 'high' },
+          ],
+          defaultLevel: 'max',
+        },
       },
-    }]);
+    ]);
 
     expect(model.id).toBe('deepseek-v4-flash');
     expect(model.supportsThinking).toBe(true);
@@ -188,16 +192,15 @@ describe('authenticated server model mapping', () => {
   });
 
   test('filters unknown request capabilities from the server response', () => {
-    const [model] = mapAvailableServerModelsToModels([{
-      modelId: 'capability-test',
-      modelName: 'Capability Test',
-      provider: 'LobsterAI',
-      apiFormat: 'openai',
-      requestCapabilities: [
-        LobsterAIRequestCapability.OptionsV1,
-        'future-unknown-capability',
-      ],
-    }]);
+    const [model] = mapAvailableServerModelsToModels([
+      {
+        modelId: 'capability-test',
+        modelName: 'Capability Test',
+        provider: 'LobsterAI',
+        apiFormat: 'openai',
+        requestCapabilities: [LobsterAIRequestCapability.OptionsV1, 'future-unknown-capability'],
+      },
+    ]);
 
     expect(model.requestCapabilities).toEqual([LobsterAIRequestCapability.OptionsV1]);
   });
@@ -212,16 +215,23 @@ describe('auth-scoped renderer requests', () => {
     };
 
     expect(isAuthAccountRequestCurrent(personalA, { ...personalA })).toBe(true);
-    expect(isAuthAccountRequestCurrent(personalA, {
-      isLoggedIn: true,
-      ownerAccountKey: 'enterprise:6:1001',
-      accountGeneration: 4,
-    })).toBe(false);
-    expect(isAuthAccountRequestCurrent({
-      isLoggedIn: false,
-      ownerAccountKey: null,
-      accountGeneration: 4,
-    }, personalA)).toBe(false);
+    expect(
+      isAuthAccountRequestCurrent(personalA, {
+        isLoggedIn: true,
+        ownerAccountKey: 'enterprise:6:1001',
+        accountGeneration: 4,
+      }),
+    ).toBe(false);
+    expect(
+      isAuthAccountRequestCurrent(
+        {
+          isLoggedIn: false,
+          ownerAccountKey: null,
+          accountGeneration: 4,
+        },
+        personalA,
+      ),
+    ).toBe(false);
   });
 
   test('clears the previous renderer account when a committed exchange lacks a stable owner', async () => {
@@ -244,15 +254,17 @@ describe('auth-scoped renderer requests', () => {
         log: { fromRenderer: vi.fn() },
       },
     });
-    store.dispatch(setLoggedIn({
-      user: {
-        yid: 'previous-user',
-        nickname: 'Previous User',
-        avatarUrl: null,
-      },
-      quota: null,
-      ownerAccountKey: 'personal:previous-user',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: {
+          yid: 'previous-user',
+          nickname: 'Previous User',
+          avatarUrl: null,
+        },
+        quota: null,
+        ownerAccountKey: 'personal:previous-user',
+      }),
+    );
 
     await expect(authService.handleCallback('auth-code')).resolves.toBe(false);
     expect(store.getState().auth).toMatchObject({
@@ -269,18 +281,16 @@ describe('login diagnostics', () => {
     const fromRenderer = vi.fn();
     const loginResult = {
       success: true,
-      redirectUrl: 'https://lobsterai.youdao.com/portal#/login?source=electron',
+      redirectUrl: 'http://127.0.0.1:8787/login?source=electron',
     };
     const login = vi.fn().mockResolvedValue(loginResult);
+    const apiFetch = vi.fn().mockRejectedValue(new Error('login resolver should not be called'));
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'debug').mockImplementation(() => {});
     vi.stubGlobal('window', {
       electron: {
         api: {
-          fetch: vi.fn().mockResolvedValue({
-            ok: true,
-            data: { data: { value: 'https://lobsterai.youdao.com/portal#/login' } },
-          }),
+          fetch: apiFetch,
         },
         auth: { login },
         log: { fromRenderer },
@@ -289,7 +299,8 @@ describe('login diagnostics', () => {
 
     await expect(authService.login()).resolves.toEqual(loginResult);
 
-    expect(login).toHaveBeenCalledWith('https://lobsterai.youdao.com/portal#/login');
+    expect(login).toHaveBeenCalledWith('http://127.0.0.1:8787/login');
+    expect(apiFetch).not.toHaveBeenCalled();
     expect(fromRenderer).toHaveBeenCalledWith(
       'info',
       'AuthService',
@@ -300,7 +311,7 @@ describe('login diagnostics', () => {
       'AuthService',
       expect.stringMatching(/^login attempt \d+ handed off to the system browser$/),
     );
-    expect(fromRenderer.mock.calls.flat().join(' ')).not.toContain('lobsterai.youdao.com');
+    expect(fromRenderer.mock.calls.flat().join(' ')).not.toContain('youdao.com');
   });
 
   test('returns the IPC failure result without throwing and records a warning', async () => {
@@ -312,8 +323,7 @@ describe('login diagnostics', () => {
       electron: {
         api: {
           fetch: vi.fn().mockResolvedValue({
-            ok: true,
-            data: { data: { value: 'https://lobsterai.youdao.com/portal#/login' } },
+            ok: false,
           }),
         },
         auth: { login: vi.fn().mockResolvedValue({ success: false, error: 'open failed' }) },
@@ -375,13 +385,15 @@ describe('quota checks', () => {
     });
     const getModels = vi.fn().mockResolvedValue({
       success: true,
-      models: [{
-        modelId: 'qwen3.7-plus',
-        modelName: 'Qwen3.7 Plus',
-        provider: 'LobsterAI',
-        apiFormat: 'openai',
-        accessible: true,
-      }],
+      models: [
+        {
+          modelId: 'qwen3.7-plus',
+          modelName: 'Qwen3.7 Plus',
+          provider: 'LobsterAI',
+          apiFormat: 'openai',
+          accessible: true,
+        },
+      ],
     });
     vi.stubGlobal('window', {
       electron: {
@@ -392,15 +404,17 @@ describe('quota checks', () => {
         },
       },
     });
-    store.dispatch(setLoggedIn({
-      user: {
-        yid: 'tester',
-        nickname: 'Tester',
-        avatarUrl: null,
-      },
-      quota: null,
-      ownerAccountKey: 'personal:tester',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: {
+          yid: 'tester',
+          nickname: 'Tester',
+          avatarUrl: null,
+        },
+        quota: null,
+        ownerAccountKey: 'personal:tester',
+      }),
+    );
 
     await expect(authService.checkQuota()).resolves.toEqual({
       success: true,
@@ -411,26 +425,25 @@ describe('quota checks', () => {
     expect(getProfileSummary).toHaveBeenCalledOnce();
     expect(getModels).toHaveBeenCalledOnce();
     expect(store.getState().auth.quota?.creditsRemaining).toBe(90);
-    expect(store.getState().model.availableModels).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        id: 'qwen3.7-plus',
-        providerKey: ProviderName.LobsteraiServer,
-        accessible: true,
-      }),
-    ]));
+    expect(store.getState().model.availableModels).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'qwen3.7-plus',
+          providerKey: ProviderName.LobsteraiServer,
+          accessible: true,
+        }),
+      ]),
+    );
   });
 
   test('shares concurrent quota checks to avoid duplicate IPC requests', async () => {
-    let resolveQuota: ((value: {
-      success: boolean;
-      quota: null;
-      enterpriseContext: null;
-    }) => void) | undefined;
+    let resolveQuota:
+      ((value: { success: boolean; quota: null; enterpriseContext: null }) => void) | undefined;
     const quotaResponse = new Promise<{
       success: boolean;
       quota: null;
       enterpriseContext: null;
-    }>((resolve) => {
+    }>(resolve => {
       resolveQuota = resolve;
     });
     const getQuota = vi.fn().mockReturnValue(quotaResponse);
@@ -446,15 +459,17 @@ describe('quota checks', () => {
         log: { fromRenderer: vi.fn() },
       },
     });
-    store.dispatch(setLoggedIn({
-      user: {
-        yid: 'tester',
-        nickname: 'Tester',
-        avatarUrl: null,
-      },
-      quota: null,
-      ownerAccountKey: 'personal:tester',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: {
+          yid: 'tester',
+          nickname: 'Tester',
+          avatarUrl: null,
+        },
+        quota: null,
+        ownerAccountKey: 'personal:tester',
+      }),
+    );
 
     const firstCheck = authService.checkQuota();
     const secondCheck = authService.checkQuota();
@@ -486,13 +501,11 @@ describe('quota checks', () => {
     }>(resolve => {
       resolveFirstQuota = resolve;
     });
-    const getQuota = vi.fn()
-      .mockReturnValueOnce(firstQuotaResponse)
-      .mockResolvedValueOnce({
-        success: true,
-        quota: null,
-        enterpriseContext: null,
-      });
+    const getQuota = vi.fn().mockReturnValueOnce(firstQuotaResponse).mockResolvedValueOnce({
+      success: true,
+      quota: null,
+      enterpriseContext: null,
+    });
     vi.stubGlobal('window', {
       electron: {
         auth: {
@@ -503,18 +516,22 @@ describe('quota checks', () => {
         log: { fromRenderer: vi.fn() },
       },
     });
-    store.dispatch(setLoggedIn({
-      user: { yid: 'first', nickname: 'First', avatarUrl: null },
-      quota: null,
-      ownerAccountKey: 'personal:first',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: { yid: 'first', nickname: 'First', avatarUrl: null },
+        quota: null,
+        ownerAccountKey: 'personal:first',
+      }),
+    );
 
     const firstCheck = authService.checkQuota();
-    store.dispatch(setLoggedIn({
-      user: { yid: 'second', nickname: 'Second', avatarUrl: null },
-      quota: null,
-      ownerAccountKey: 'personal:second',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: { yid: 'second', nickname: 'Second', avatarUrl: null },
+        quota: null,
+        ownerAccountKey: 'personal:second',
+      }),
+    );
     const secondCheck = authService.checkQuota();
 
     await expect(secondCheck).resolves.toEqual({
@@ -564,22 +581,25 @@ describe('quota checks', () => {
         log: { fromRenderer: vi.fn() },
       },
     });
-    store.dispatch(setLoggedIn({
-      user: {
-        yid: 'tester',
-        nickname: 'Tester',
-        avatarUrl: null,
-      },
-      quota: null,
-      ownerAccountKey: 'enterprise:tester:1001',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: {
+          yid: 'tester',
+          nickname: 'Tester',
+          avatarUrl: null,
+        },
+        quota: null,
+        ownerAccountKey: 'enterprise:tester:1001',
+      }),
+    );
 
     await expect(authService.checkQuota()).resolves.toEqual({
       success: true,
       enterpriseQuotaAvailable: false,
     });
-    expect(store.getState().enterpriseAccount.context?.quotaStatus.reason)
-      .toBe(EnterpriseQuotaReason.MemberMonthlyQuotaExhausted);
+    expect(store.getState().enterpriseAccount.context?.quotaStatus.reason).toBe(
+      EnterpriseQuotaReason.MemberMonthlyQuotaExhausted,
+    );
   });
 });
 
@@ -593,21 +613,26 @@ describe('server model loading', () => {
   };
 
   const signIn = (ownerAccountKey = 'personal:tester') => {
-    store.dispatch(setLoggedIn({
-      user: { yid: 'tester', nickname: 'Tester', avatarUrl: null },
-      quota: null,
-      ownerAccountKey,
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: { yid: 'tester', nickname: 'Tester', avatarUrl: null },
+        quota: null,
+        ownerAccountKey,
+      }),
+    );
   };
 
-  const planModelIds = (): string[] => store.getState().model.availableModels
-    .filter(model => model.isServerModel)
-    .map(model => model.id);
+  const planModelIds = (): string[] =>
+    store
+      .getState()
+      .model.availableModels.filter(model => model.isServerModel)
+      .map(model => model.id);
 
   test('retries in the background after a transient failure', async () => {
     vi.useFakeTimers();
     vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const getModels = vi.fn()
+    const getModels = vi
+      .fn()
       .mockRejectedValueOnce(new Error('net::ERR_INTERNET_DISCONNECTED'))
       .mockResolvedValueOnce({ success: true, models: [serverModel] });
     vi.stubGlobal('window', {
@@ -699,7 +724,8 @@ describe('server model loading', () => {
   test('keeps the loaded plan models when a same-account reload fails', async () => {
     vi.useFakeTimers();
     vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const getModels = vi.fn()
+    const getModels = vi
+      .fn()
       .mockResolvedValueOnce({ success: true, models: [serverModel] })
       .mockRejectedValue(new Error('offline'));
     const getUser = vi.fn().mockResolvedValue({
@@ -710,7 +736,11 @@ describe('server model loading', () => {
     });
     vi.stubGlobal('window', {
       electron: {
-        auth: { getModels, getUser, getProfileSummary: vi.fn().mockResolvedValue({ success: false }) },
+        auth: {
+          getModels,
+          getUser,
+          getProfileSummary: vi.fn().mockResolvedValue({ success: false }),
+        },
         log: { fromRenderer: vi.fn() },
       },
     });
@@ -783,11 +813,13 @@ describe('enterprise quota period boundary refresh', () => {
   test('checks quota once after the current period boundary', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-08-16T23:59:58+08:00'));
-    store.dispatch(setLoggedIn({
-      user: { yid: 'tester', nickname: 'Tester', avatarUrl: null },
-      quota: null,
-      ownerAccountKey: 'enterprise:tester:1001',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: { yid: 'tester', nickname: 'Tester', avatarUrl: null },
+        quota: null,
+        ownerAccountKey: 'enterprise:tester:1001',
+      }),
+    );
     const enterpriseContext = context('2026-08-17T00:00:00+08:00');
     store.dispatch(setEnterpriseAccountContext(enterpriseContext));
     const quotaSpy = vi.spyOn(authService, 'checkQuota').mockResolvedValue({
@@ -795,9 +827,7 @@ describe('enterprise quota period boundary refresh', () => {
       enterpriseQuotaAvailable: true,
     });
     const boundaryService = authService as unknown as {
-      scheduleEnterpriseQuotaBoundary: (
-        value: EnterpriseAccountContext | null,
-      ) => void;
+      scheduleEnterpriseQuotaBoundary: (value: EnterpriseAccountContext | null) => void;
     };
 
     boundaryService.scheduleEnterpriseQuotaBoundary(enterpriseContext);
@@ -811,11 +841,13 @@ describe('enterprise quota period boundary refresh', () => {
   test('clears the old boundary timer when enterprise context is removed', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-08-16T23:59:58+08:00'));
-    store.dispatch(setLoggedIn({
-      user: { yid: 'tester', nickname: 'Tester', avatarUrl: null },
-      quota: null,
-      ownerAccountKey: 'enterprise:tester:1001',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: { yid: 'tester', nickname: 'Tester', avatarUrl: null },
+        quota: null,
+        ownerAccountKey: 'enterprise:tester:1001',
+      }),
+    );
     const enterpriseContext = context('2026-08-17T00:00:00+08:00');
     store.dispatch(setEnterpriseAccountContext(enterpriseContext));
     const quotaSpy = vi.spyOn(authService, 'checkQuota').mockResolvedValue({
@@ -823,9 +855,7 @@ describe('enterprise quota period boundary refresh', () => {
       enterpriseQuotaAvailable: true,
     });
     const boundaryService = authService as unknown as {
-      scheduleEnterpriseQuotaBoundary: (
-        value: EnterpriseAccountContext | null,
-      ) => void;
+      scheduleEnterpriseQuotaBoundary: (value: EnterpriseAccountContext | null) => void;
     };
 
     boundaryService.scheduleEnterpriseQuotaBoundary(enterpriseContext);
@@ -852,11 +882,13 @@ describe('auth state restoration', () => {
   };
 
   test('preserves the current login snapshot for a temporary verification failure', async () => {
-    store.dispatch(setLoggedIn({
-      user,
-      quota,
-      ownerAccountKey: 'personal:user@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota,
+        ownerAccountKey: 'personal:user@example.com',
+      }),
+    );
     vi.stubGlobal('window', {
       electron: {
         auth: {
@@ -882,11 +914,13 @@ describe('auth state restoration', () => {
   });
 
   test('clears the current login snapshot for terminal expiration', async () => {
-    store.dispatch(setLoggedIn({
-      user,
-      quota,
-      ownerAccountKey: 'personal:user@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota,
+        ownerAccountKey: 'personal:user@example.com',
+      }),
+    );
     vi.stubGlobal('window', {
       electron: {
         auth: {
@@ -916,11 +950,13 @@ describe('auth state restoration', () => {
 
   test('shows a re-login toast when the main process reports terminal expiration', async () => {
     const dispatchEvent = vi.fn();
-    store.dispatch(setLoggedIn({
-      user,
-      quota,
-      ownerAccountKey: 'personal:user@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota,
+        ownerAccountKey: 'personal:user@example.com',
+      }),
+    );
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.stubGlobal('window', {
       dispatchEvent,
@@ -951,11 +987,13 @@ describe('auth state restoration', () => {
 
   test('shows the dedicated signed-out toast when enterprise membership is revoked', async () => {
     const dispatchEvent = vi.fn();
-    store.dispatch(setLoggedIn({
-      user,
-      quota,
-      ownerAccountKey: 'enterprise:user@example.com:1001',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota,
+        ownerAccountKey: 'enterprise:user@example.com:1001',
+      }),
+    );
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.stubGlobal('window', {
       dispatchEvent,
@@ -988,8 +1026,8 @@ describe('auth state restoration', () => {
     i18nService.setLanguage('en', { persist: false });
 
     expect(i18nService.t('coworkErrorEnterpriseMembershipRevoked')).toBe(
-      'You have been removed from the current team and signed out. '
-      + 'Sign in again to choose an available identity.',
+      'You have been removed from the current team and signed out. ' +
+        'Sign in again to choose an available identity.',
     );
   });
 
@@ -1000,25 +1038,30 @@ describe('auth state restoration', () => {
       quota: typeof quota;
       enterpriseContext: null;
     }) => void;
-    const getUser = vi.fn(() => new Promise<{
-      success: true;
-      user: typeof user;
-      quota: typeof quota;
-      enterpriseContext: null;
-    }>(resolve => {
-      resolveUser = resolve;
-    }));
+    const getUser = vi.fn(
+      () =>
+        new Promise<{
+          success: true;
+          user: typeof user;
+          quota: typeof quota;
+          enterpriseContext: null;
+        }>(resolve => {
+          resolveUser = resolve;
+        }),
+    );
     vi.stubGlobal('window', {
       electron: {
         auth: { getUser },
         log: { fromRenderer: vi.fn() },
       },
     });
-    store.dispatch(setLoggedIn({
-      user,
-      quota,
-      ownerAccountKey: 'personal:user@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota,
+        ownerAccountKey: 'personal:user@example.com',
+      }),
+    );
 
     const refresh = authService.refreshAuthState({ clearOnFailure: true });
     const nextUser = {
@@ -1026,11 +1069,13 @@ describe('auth state restoration', () => {
       yid: 'next@example.com',
       nickname: 'Next User',
     };
-    store.dispatch(setLoggedIn({
-      user: nextUser,
-      quota: null,
-      ownerAccountKey: 'personal:next@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: nextUser,
+        quota: null,
+        ownerAccountKey: 'personal:next@example.com',
+      }),
+    );
     resolveUser({
       success: true,
       user,
@@ -1059,20 +1104,23 @@ describe('auth state restoration', () => {
         };
       };
     }) => void;
-    const getContext = vi.fn(() => new Promise<{
-      success: true;
-      context: {
-        enterpriseId: number;
-        enterpriseName: string;
-        role: EnterpriseMemberRole;
-        quotaStatus: {
-          available: true;
-          reason: null;
-        };
-      };
-    }>(resolve => {
-      resolveContext = resolve;
-    }));
+    const getContext = vi.fn(
+      () =>
+        new Promise<{
+          success: true;
+          context: {
+            enterpriseId: number;
+            enterpriseName: string;
+            role: EnterpriseMemberRole;
+            quotaStatus: {
+              available: true;
+              reason: null;
+            };
+          };
+        }>(resolve => {
+          resolveContext = resolve;
+        }),
+    );
     vi.stubGlobal('window', {
       electron: {
         auth: {
@@ -1086,11 +1134,13 @@ describe('auth state restoration', () => {
         log: { fromRenderer: vi.fn() },
       },
     });
-    store.dispatch(setLoggedIn({
-      user,
-      quota,
-      ownerAccountKey: 'personal:user@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user,
+        quota,
+        ownerAccountKey: 'personal:user@example.com',
+      }),
+    );
 
     const refresh = authService.refreshAuthState({ clearOnFailure: true });
     await vi.waitFor(() => expect(getContext).toHaveBeenCalledOnce());
@@ -1099,11 +1149,13 @@ describe('auth state restoration', () => {
       yid: 'next@example.com',
       nickname: 'Next User',
     };
-    store.dispatch(setLoggedIn({
-      user: nextUser,
-      quota: null,
-      ownerAccountKey: 'personal:next@example.com',
-    }));
+    store.dispatch(
+      setLoggedIn({
+        user: nextUser,
+        quota: null,
+        ownerAccountKey: 'personal:next@example.com',
+      }),
+    );
     resolveContext({
       success: true,
       context: {

@@ -2148,9 +2148,9 @@ const translations: Record<LanguageType, Record<string, string>> = {
     coworkErrorOAuthInvalid: 'OAuth 授权已失效或权限不足，请重新授权后重试。',
     coworkErrorModelAccessDenied: '当前账号无权访问该模型，请切换模型或检查服务商账号权限。',
     coworkErrorQuotaExhausted:
-      '积分额度已用完，请升级套餐后继续使用。[立即升级/充值](https://lobsterai.youdao.com/portal#/pricing)',
+      '积分额度已用完，请联系管理员充值或调整套餐后继续使用。',
     coworkErrorFreeQuotaExhausted:
-      '积分额度已用完，请升级套餐后继续使用。[立即升级/充值](https://lobsterai.youdao.com/portal#/pricing)',
+      '积分额度已用完，请联系管理员充值或调整套餐后继续使用。',
     coworkErrorInsufficientBalance: 'API 余额不足，请充值后重试。',
     coworkErrorModelServiceUnavailable: '该模型服务暂不可用，请切换模型或稍后重试。',
     coworkErrorProviderCooldown: '模型凭据暂时处于冷却期，请稍后重试或切换其他服务商。',
@@ -6263,9 +6263,9 @@ const translations: Record<LanguageType, Record<string, string>> = {
     coworkErrorModelAccessDenied:
       'This account is not allowed to access the selected model. Switch models or check provider account permissions.',
     coworkErrorQuotaExhausted:
-      'Your credits have been used up. Upgrade your plan to continue.\n\n[Upgrade or recharge](https://lobsterai.youdao.com/portal#/pricing)',
+      'Your credits have been used up. Contact the administrator to recharge or adjust the plan.',
     coworkErrorFreeQuotaExhausted:
-      'Your credits have been used up. Upgrade your plan to continue.\n\n[Upgrade or recharge](https://lobsterai.youdao.com/portal#/pricing)',
+      'Your credits have been used up. Contact the administrator to recharge or adjust the plan.',
     coworkErrorInsufficientBalance: 'Insufficient API balance. Please top up and try again.',
     coworkErrorModelServiceUnavailable: 'This model service is temporarily unavailable. Switch models or try again later.',
     coworkErrorProviderCooldown: 'The model credentials are temporarily in cooldown. Try again later or switch providers.',

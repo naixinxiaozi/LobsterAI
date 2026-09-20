@@ -138,6 +138,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "server:mock": "node server/self-hosted-auth-server.mjs",
     "prebuild": "node scripts/generate-keyfrom-build-info.cjs",
     "build": "tsc && vite build && vite build --config vite.thumbnail.config.ts",
     "lint": "eslint src/",

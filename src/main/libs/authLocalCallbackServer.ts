@@ -8,6 +8,7 @@ const AUTH_LOCAL_CALLBACK_TIMEOUT_MS = 5 * 60 * 1000;
 
 interface AuthLocalCallbackOptions {
   onCode: (code: string) => void;
+  allowedReturnToOrigins?: string[];
   timeoutMs?: number;
 }
 
@@ -25,7 +26,7 @@ let activeCallback: ActiveAuthLocalCallback | null = null;
 let startingCallback: Promise<ActiveAuthLocalCallback> | null = null;
 
 const escapeHtml = (value: string): string =>
-  value.replace(/[<>&"]/g, (char) => {
+  value.replace(/[<>&"]/g, char => {
     if (char === '<') return '&lt;';
     if (char === '>') return '&gt;';
     if (char === '&') return '&amp;';
@@ -45,9 +46,7 @@ const renderCallbackHtmlWithRedirect = (
   const safeRedirectScript = redirectUrl
     ? `<script>setTimeout(function(){ window.location.replace(${JSON.stringify(redirectUrl)}); }, 900);</script>`
     : '';
-  const redirectHint = redirectUrl
-    ? '<p class="hint">页面将自动返回 LobsterAI 登录页。</p>'
-    : '';
+  const redirectHint = redirectUrl ? '<p class="hint">页面将自动返回 LobsterAI 登录页。</p>' : '';
   const redirectAction = redirectUrl
     ? `<a class="action" href="${escapeHtml(redirectUrl)}">立即返回</a>`
     : '';
@@ -127,14 +126,17 @@ export function appendCallbackReturnTo(redirectUri: string, returnTo: string): s
   return parsed.toString();
 }
 
-function resolveSafeReturnTo(value: string | null): string | null {
+function resolveSafeReturnTo(
+  value: string | null,
+  allowedReturnToOrigins: string[],
+): string | null {
   if (!value) return null;
   try {
     const url = new URL(value);
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
-    const isYoudaoHost = url.hostname.endsWith('.youdao.com') || url.hostname === 'youdao.com';
     const isLoopbackHost = url.hostname === '127.0.0.1' || url.hostname === 'localhost';
-    if (!isYoudaoHost && !isLoopbackHost) return null;
+    const isAllowedOrigin = allowedReturnToOrigins.includes(url.origin);
+    if (!isAllowedOrigin && !isLoopbackHost) return null;
     return url.toString();
   } catch {
     return null;
@@ -192,7 +194,10 @@ async function createAuthLocalCallback(
 
     const code = reqUrl.searchParams.get('code')?.trim();
     const returnedState = reqUrl.searchParams.get('state')?.trim();
-    const returnTo = resolveSafeReturnTo(reqUrl.searchParams.get('return_to'));
+    const returnTo = resolveSafeReturnTo(
+      reqUrl.searchParams.get('return_to'),
+      options.allowedReturnToOrigins ?? [],
+    );
 
     if (!code) {
       console.warn('[AuthLocalCallback] callback was rejected because the auth code was missing');
@@ -211,13 +216,7 @@ async function createAuthLocalCallback(
     try {
       console.log('[AuthLocalCallback] received login callback, delivering auth code');
       options.onCode(code);
-      sendHtmlWithRedirect(
-        res,
-        200,
-        true,
-        '登录已完成，正在返回 LobsterAI 登录页。',
-        returnTo,
-      );
+      sendHtmlWithRedirect(res, 200, true, '登录已完成，正在返回 LobsterAI 登录页。', returnTo);
     } catch (error) {
       console.error('[AuthLocalCallback] failed to deliver auth code:', error);
       sendHtml(res, 500, false, '登录回调处理失败，请返回 LobsterAI 后重试。');
@@ -249,10 +248,15 @@ async function createAuthLocalCallback(
   callback.redirectUri = `http://${AUTH_LOCAL_CALLBACK_HOST}:${address.port}${AUTH_CALLBACK_PATH}`;
   activeCallback = callback;
   server.on('error', error => {
-    console.error(`[AuthLocalCallback] local callback server failed at ${callback.redirectUri}:`, error);
+    console.error(
+      `[AuthLocalCallback] local callback server failed at ${callback.redirectUri}:`,
+      error,
+    );
     void callback.close();
   });
-  console.log(`[AuthLocalCallback] started local callback server on ${AUTH_LOCAL_CALLBACK_HOST}:${address.port}`);
+  console.log(
+    `[AuthLocalCallback] started local callback server on ${AUTH_LOCAL_CALLBACK_HOST}:${address.port}`,
+  );
 
   callback.refreshTimeout(options.timeoutMs ?? AUTH_LOCAL_CALLBACK_TIMEOUT_MS);
 
@@ -267,7 +271,9 @@ export async function startAuthLocalCallback(
   if (activeCallback) {
     // Existing browser tabs still target this URL, so keep it valid across repeated login clicks.
     activeCallback.refreshTimeout(timeoutMs);
-    console.log(`[AuthLocalCallback] reusing active local callback server at ${activeCallback.redirectUri}`);
+    console.log(
+      `[AuthLocalCallback] reusing active local callback server at ${activeCallback.redirectUri}`,
+    );
     return activeCallback;
   }
 
@@ -275,7 +281,9 @@ export async function startAuthLocalCallback(
     // Coalesce clicks that arrive before the first server has finished binding its port.
     const callback = await startingCallback;
     callback.refreshTimeout(timeoutMs);
-    console.log(`[AuthLocalCallback] reusing starting local callback server at ${callback.redirectUri}`);
+    console.log(
+      `[AuthLocalCallback] reusing starting local callback server at ${callback.redirectUri}`,
+    );
     return callback;
   }
 

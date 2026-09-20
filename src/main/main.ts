@@ -33,9 +33,7 @@ import {
   migrateScheduledTaskRunsToOpenclaw,
   migrateScheduledTasksToOpenclaw,
 } from '../scheduledTask/migrate';
-import {
-  AgentId,
-} from '../shared/agent/constants';
+import { AgentId } from '../shared/agent/constants';
 import {
   LogReporterAction,
   LogReporterSource,
@@ -44,8 +42,16 @@ import {
 import { AppIpcChannel } from '../shared/app/constants';
 import { AppSettingsAutoLaunchErrorCode, AppSettingsIpc } from '../shared/appSettings/constants';
 import { type AppUpdateActiveWorkloads, AppUpdateIpc } from '../shared/appUpdate/constants';
-import { ArtifactBrowserPartition, ArtifactPreviewIpc, ArtifactPreviewProtocol } from '../shared/artifactPreview/constants';
-import { ReviewIpc, ReviewScope, type ReviewScopeRequest } from '../shared/artifactPreview/reviewScopes';
+import {
+  ArtifactBrowserPartition,
+  ArtifactPreviewIpc,
+  ArtifactPreviewProtocol,
+} from '../shared/artifactPreview/constants';
+import {
+  ReviewIpc,
+  ReviewScope,
+  type ReviewScopeRequest,
+} from '../shared/artifactPreview/reviewScopes';
 import type { ReviewSourceRequest } from '../shared/artifactPreview/reviewSource';
 import { buildWorkspaceChangesArtifact } from '../shared/artifactPreview/workspaceChanges';
 import { createAccountOwnerKey } from '../shared/auth/accountOwner';
@@ -84,7 +90,10 @@ import {
   normalizeBrowserWebAccessConfig,
 } from '../shared/browserWebAccess/constants';
 import { ClipboardIpc } from '../shared/clipboard/constants';
-import { BACKGROUND_JOB_EVENT_CHANNEL, type CoworkBackgroundJobsEvent } from '../shared/cowork/backgroundJobs';
+import {
+  BACKGROUND_JOB_EVENT_CHANNEL,
+  type CoworkBackgroundJobsEvent,
+} from '../shared/cowork/backgroundJobs';
 import {
   type CoworkBrowserAnnotationMessageBatch,
   normalizeBrowserAnnotationBatches,
@@ -126,10 +135,7 @@ import {
   type CoworkSelectedTextSnippet,
   normalizeCoworkSelectedTextSnippets,
 } from '../shared/cowork/selectedText';
-import {
-  CoworkSteerRejectReason,
-  CoworkSteerStatus,
-} from '../shared/cowork/steer';
+import { CoworkSteerRejectReason, CoworkSteerStatus } from '../shared/cowork/steer';
 import { stripNullChars } from '../shared/cowork/text';
 import {
   DataMigrationIpc,
@@ -176,7 +182,11 @@ import {
   type LocalWebService,
   LocalWebServicesIpc,
 } from '../shared/localWebServices/constants';
-import { canonicalizeMediaModelId, HAPPYHORSE_1_1_MODEL_ID, mediaModelDisplayName } from '../shared/mediaModelAliases';
+import {
+  canonicalizeMediaModelId,
+  HAPPYHORSE_1_1_MODEL_ID,
+  mediaModelDisplayName,
+} from '../shared/mediaModelAliases';
 import {
   normalizeNotificationSettings,
   type NotificationSettings,
@@ -214,12 +224,26 @@ import {
   type ShareDeploymentSelectPersistencePathInput,
 } from '../shared/shareDeployment/constants';
 import type { ShellOpenFailureReason as ShellOpenFailureReasonType } from '../shared/shell/constants';
-import { type ShellGetBrowserAppsInput, ShellIpc, ShellOpenFailureReason } from '../shared/shell/constants';
+import {
+  type ShellGetBrowserAppsInput,
+  ShellIpc,
+  ShellOpenFailureReason,
+} from '../shared/shell/constants';
 import { AgentManager } from './agentManager';
 import { APP_NAME, APP_USER_MODEL_ID, DB_FILENAME } from './appConstants';
 import { createLocalFileProtocolResponse } from './artifactLocalFileProtocol';
-import { authQuotaGateStateFromQuota, AuthSubscriptionStatus, createDefaultAuthQuotaGateState, normalizeAuthQuota } from './authQuota';
-import { type AutoLaunchStatus, getAutoLaunchStatus, isAutoLaunched, setAutoLaunchEnabled } from './autoLaunchManager';
+import {
+  authQuotaGateStateFromQuota,
+  AuthSubscriptionStatus,
+  createDefaultAuthQuotaGateState,
+  normalizeAuthQuota,
+} from './authQuota';
+import {
+  type AutoLaunchStatus,
+  getAutoLaunchStatus,
+  isAutoLaunched,
+  setAutoLaunchEnabled,
+} from './autoLaunchManager';
 import { BackgroundJobStore } from './backgroundJobStore';
 import { BrowserCredentialApprovalService } from './browserCredentials/browserCredentialApprovalService';
 import { BrowserCredentialService } from './browserCredentials/browserCredentialService';
@@ -275,7 +299,10 @@ import { registerCoworkSubagentHandlers } from './ipcHandlers/coworkSubagent';
 import { ensureDshEngineReady, registerDshHandlers } from './ipcHandlers/dsh/handlers';
 import { registerEnterpriseAccountHandlers } from './ipcHandlers/enterpriseAccount';
 import { registerKitHandlers } from './ipcHandlers/kits';
-import { hasUnsafeMarkdownEdits, registerMarkdownEditingHandlers } from './ipcHandlers/markdownEditing';
+import {
+  hasUnsafeMarkdownEdits,
+  registerMarkdownEditingHandlers,
+} from './ipcHandlers/markdownEditing';
 import { registerMcpHandlers } from './ipcHandlers/mcp';
 import { registerNimQrLoginHandlers } from './ipcHandlers/nimQrLogin';
 import { registerPermissionIpcHandlers } from './ipcHandlers/permissions/handlers';
@@ -303,6 +330,7 @@ import {
   OpenClawRuntimeAdapter,
   type PermissionResult,
 } from './libs/agentEngine';
+import { ensureCoworkEngineReady } from './libs/agentEngine/coworkEngineReadiness';
 import {
   appQuitConfirmationGate,
   AppQuitRequestVerdict,
@@ -317,11 +345,11 @@ import {
   appendLoginParams,
   startAuthLocalCallback,
 } from './libs/authLocalCallbackServer';
-import {
-  AuthSessionManager,
-  resolveAuthSessionStatusFromError,
-} from './libs/authSessionManager';
-import type { BrowserAnnotationAssetIdentity, SaveBrowserAnnotationAssetInput } from './libs/browserAnnotationAssetStore';
+import { AuthSessionManager, resolveAuthSessionStatusFromError } from './libs/authSessionManager';
+import type {
+  BrowserAnnotationAssetIdentity,
+  SaveBrowserAnnotationAssetInput,
+} from './libs/browserAnnotationAssetStore';
 import { BrowserAnnotationAssetStore } from './libs/browserAnnotationAssetStore';
 import {
   clearServerModelMetadata,
@@ -441,7 +469,14 @@ import {
   type DevelopmentMainWindowLoadRecovery,
   MainWindowLoadErrorCode,
 } from './libs/mainWindowLoadRecovery';
-import { inferImageMimeTypeFromDataUrl, type PersistedGeneratedImageAsset, persistGeneratedImageAssets, type PersistGeneratedImageAssetsResult, persistGeneratedVideoAssets, type RemoteGeneratedMediaAsset } from './libs/mediaAssetPersistence';
+import {
+  inferImageMimeTypeFromDataUrl,
+  type PersistedGeneratedImageAsset,
+  persistGeneratedImageAssets,
+  type PersistGeneratedImageAssetsResult,
+  persistGeneratedVideoAssets,
+  type RemoteGeneratedMediaAsset,
+} from './libs/mediaAssetPersistence';
 import { getCodexHomeDir } from './libs/openaiCodexAuth';
 import {
   migrateAgentModelRefs,
@@ -457,7 +492,12 @@ import {
   DEFAULT_MANAGED_AGENT_ID,
   OpenClawChannelSessionSync,
 } from './libs/openclawChannelSessionSync';
-import { createOpenClawRepairBackupDirectory, OpenClawRepairFailure, runOpenClawCompatibilityRepair, runOpenClawDoctorRepair } from './libs/openclawCompatibilityRepair';
+import {
+  createOpenClawRepairBackupDirectory,
+  OpenClawRepairFailure,
+  runOpenClawCompatibilityRepair,
+  runOpenClawDoctorRepair,
+} from './libs/openclawCompatibilityRepair';
 import {
   CONFIG_DELIVERY_FALLBACK_REASON_PREFIX,
   DEFERRED_SYNC_REASON_PREFIX,
@@ -514,7 +554,10 @@ import {
   migrateLegacyOpenClawPluginInstalls,
   OpenClawPluginInstallMigrationStatus,
 } from './libs/openclawPluginInstallMigration';
-import { collectReferencedEnvVarNames, pickReferencedSecretEnvVars } from './libs/openclawSecretEnv';
+import {
+  collectReferencedEnvVarNames,
+  pickReferencedSecretEnvVars,
+} from './libs/openclawSecretEnv';
 import {
   getOpenClawTokenProxyPort,
   startOpenClawTokenProxy,
@@ -774,7 +817,10 @@ function sanitizeHtmlShareAnalyticsInput(input: unknown): HtmlShareAnalyticsInpu
   if (Boolean(from) !== Boolean(to)) {
     throw new Error('from and to must be provided together.');
   }
-  for (const [fieldName, value] of [['from', from], ['to', to]] as const) {
+  for (const [fieldName, value] of [
+    ['from', from],
+    ['to', to],
+  ] as const) {
     if (!value) continue;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
       throw new Error(`${fieldName} must use YYYY-MM-DD format.`);
@@ -852,7 +898,9 @@ function sanitizeArtifactFileShareSourceType(value: unknown): ArtifactFileShareS
     sourceType !== HtmlShareSourceType.MarkdownFile &&
     sourceType !== HtmlShareSourceType.MermaidFile
   ) {
-    throw new Error('sourceType must be image_file, svg_file, document_file, markdown_file, or mermaid_file.');
+    throw new Error(
+      'sourceType must be image_file, svg_file, document_file, markdown_file, or mermaid_file.',
+    );
   }
   return sourceType;
 }
@@ -941,10 +989,7 @@ function sanitizeCreateFromArtifactFileInput(input: unknown): HtmlShareCreateFro
     accessMode: sanitizeHtmlShareAccessMode(source.accessMode, HtmlShareAccessMode.Code),
     fileName: sanitizeOptionalHtmlShareString(source.fileName, 'fileName', 255),
     filePath: sanitizeOptionalHtmlShareString(source.filePath, 'filePath', 4096),
-    content: sanitizeOptionalHtmlShareContent(
-      source.content,
-      MAX_ARTIFACT_SHARE_CONTENT_CHARS,
-    ),
+    content: sanitizeOptionalHtmlShareContent(source.content, MAX_ARTIFACT_SHARE_CONTENT_CHARS),
     remoteUrl: sanitizeOptionalHtmlShareString(source.remoteUrl, 'remoteUrl', 4096),
   };
   if (!options.filePath && !options.content && !options.remoteUrl) {
@@ -953,9 +998,7 @@ function sanitizeCreateFromArtifactFileInput(input: unknown): HtmlShareCreateFro
   return options;
 }
 
-function sanitizeUpdateFromArtifactFileInput(
-  input: unknown,
-): HtmlShareUpdateFromArtifactFileInput {
+function sanitizeUpdateFromArtifactFileInput(input: unknown): HtmlShareUpdateFromArtifactFileInput {
   const source = sanitizeCreateFromArtifactFileInput(input);
   const record = input as Record<string, unknown>;
   return {
@@ -1059,11 +1102,7 @@ function sanitizeGetHtmlShareBySourceInput(input: unknown): HtmlShareGetBySource
   }
   return {
     sourceType: sourceType as HtmlShareSourceTypeValue,
-    clientSourceKey: sanitizeHtmlShareString(
-      source.clientSourceKey,
-      'clientSourceKey',
-      128,
-    ),
+    clientSourceKey: sanitizeHtmlShareString(source.clientSourceKey, 'clientSourceKey', 128),
   };
 }
 
@@ -1117,7 +1156,7 @@ function sanitizeShareDeploymentCandidateSource(
 ): ShareDeploymentProjectCandidate['source'] | null {
   if (typeof value !== 'string') return null;
   return SHARE_DEPLOYMENT_CANDIDATE_SOURCES.has(value)
-    ? value as ShareDeploymentProjectCandidate['source']
+    ? (value as ShareDeploymentProjectCandidate['source'])
     : null;
 }
 
@@ -1127,9 +1166,7 @@ function sanitizeShareDeploymentCandidateConfidence(value: unknown): number {
   return Math.max(0, Math.min(100, Math.round(confidence)));
 }
 
-function sanitizeOptionalShareDeploymentCandidateInteger(
-  value: unknown,
-): number | undefined {
+function sanitizeOptionalShareDeploymentCandidateInteger(value: unknown): number | undefined {
   if (value === undefined || value === null) return undefined;
   const numberValue = typeof value === 'number' ? value : Number(value);
   return Number.isInteger(numberValue) && numberValue >= 0 ? numberValue : undefined;
@@ -1183,7 +1220,9 @@ function sanitizeShareDeploymentProjectCandidate(
   };
 }
 
-function sanitizeShareDeploymentProjectCandidates(value: unknown): ShareDeploymentProjectCandidate[] {
+function sanitizeShareDeploymentProjectCandidates(
+  value: unknown,
+): ShareDeploymentProjectCandidate[] {
   if (value === undefined || value === null) return [];
   if (!Array.isArray(value)) {
     throw new Error('projectCandidates must be an array.');
@@ -1203,7 +1242,11 @@ function sanitizeShareDeploymentDetectProjectCandidatesInput(
   const source = input as Record<string, unknown>;
   return {
     localServiceUrl: sanitizeHtmlShareString(source.localServiceUrl, 'localServiceUrl', 2048),
-    workingDirectory: sanitizeOptionalHtmlShareString(source.workingDirectory, 'workingDirectory', 4096),
+    workingDirectory: sanitizeOptionalHtmlShareString(
+      source.workingDirectory,
+      'workingDirectory',
+      4096,
+    ),
     projectCandidates: sanitizeShareDeploymentProjectCandidates(source.projectCandidates),
     cachedProjectDirectory: sanitizeOptionalHtmlShareString(
       source.cachedProjectDirectory,
@@ -1222,22 +1265,28 @@ function sanitizeShareDeploymentAnalyzeProjectDirectoryInput(
   const source = input as Record<string, unknown>;
   return {
     projectDirectory: sanitizeHtmlShareString(source.projectDirectory, 'projectDirectory', 4096),
-    localServiceUrl: sanitizeOptionalHtmlShareString(source.localServiceUrl, 'localServiceUrl', 2048),
+    localServiceUrl: sanitizeOptionalHtmlShareString(
+      source.localServiceUrl,
+      'localServiceUrl',
+      2048,
+    ),
   };
 }
 
-function sanitizeShareDeploymentPersistenceBinding(value: unknown): ShareDeploymentPersistence['bindings'][number] | null {
+function sanitizeShareDeploymentPersistenceBinding(
+  value: unknown,
+): ShareDeploymentPersistence['bindings'][number] | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const source = value as Record<string, unknown>;
   const appPath = sanitizeOptionalHtmlShareString(source.appPath, 'appPath', 256);
   const dataPath = sanitizeOptionalHtmlShareString(source.dataPath, 'dataPath', 256);
   if (!appPath || !dataPath) return null;
-  const kind = source.kind === ShareDeploymentPersistenceBindingKind.Directory
-    ? ShareDeploymentPersistenceBindingKind.Directory
-    : ShareDeploymentPersistenceBindingKind.File;
-  const sizeBytes = typeof source.sizeBytes === 'number'
-    ? Math.max(0, Math.round(source.sizeBytes))
-    : undefined;
+  const kind =
+    source.kind === ShareDeploymentPersistenceBindingKind.Directory
+      ? ShareDeploymentPersistenceBindingKind.Directory
+      : ShareDeploymentPersistenceBindingKind.File;
+  const sizeBytes =
+    typeof source.sizeBytes === 'number' ? Math.max(0, Math.round(source.sizeBytes)) : undefined;
   return {
     appPath,
     dataPath,
@@ -1246,7 +1295,9 @@ function sanitizeShareDeploymentPersistenceBinding(value: unknown): ShareDeploym
   };
 }
 
-function sanitizeShareDeploymentPersistence(value: unknown): ShareDeploymentPersistence | undefined {
+function sanitizeShareDeploymentPersistence(
+  value: unknown,
+): ShareDeploymentPersistence | undefined {
   if (value === undefined || value === null) return undefined;
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error('Invalid service data settings.');
@@ -1256,15 +1307,18 @@ function sanitizeShareDeploymentPersistence(value: unknown): ShareDeploymentPers
     ? source.bindings
         .slice(0, 8)
         .map(sanitizeShareDeploymentPersistenceBinding)
-        .filter((binding): binding is ShareDeploymentPersistence['bindings'][number] => Boolean(binding))
+        .filter((binding): binding is ShareDeploymentPersistence['bindings'][number] =>
+          Boolean(binding),
+        )
     : [];
   return {
     enabled: Boolean(source.enabled) && bindings.length > 0,
     provider: ShareDeploymentPersistenceProvider.Filesystem,
     mountPath: sanitizeOptionalHtmlShareString(source.mountPath, 'mountPath', 256),
-    quotaBytes: typeof source.quotaBytes === 'number' && source.quotaBytes > 0
-      ? Math.round(source.quotaBytes)
-      : undefined,
+    quotaBytes:
+      typeof source.quotaBytes === 'number' && source.quotaBytes > 0
+        ? Math.round(source.quotaBytes)
+        : undefined,
     bindings,
   };
 }
@@ -1294,11 +1348,13 @@ function formatShareDeploymentAccessSyncError(
 ): string | undefined {
   if (failures.length === 0) return undefined;
   const message = failures
-    .map(failure => failure.error || (
-      failure.operation === ShareDeploymentAccessSyncOperation.AccessMode
-        ? t('htmlShareAccessModeUpdateFailed')
-        : t('htmlShareStatusUpdateFailed')
-    ))
+    .map(
+      failure =>
+        failure.error ||
+        (failure.operation === ShareDeploymentAccessSyncOperation.AccessMode
+          ? t('htmlShareAccessModeUpdateFailed')
+          : t('htmlShareStatusUpdateFailed')),
+    )
     .join('; ');
   return t('nodeDeploymentAccessStatusApplyFailed', { message });
 }
@@ -1345,7 +1401,11 @@ function sanitizeShareDeploymentGetByLocalServiceInput(
   return {
     sessionId: sanitizeHtmlShareString(source.sessionId, 'sessionId', 128),
     localServiceUrl: sanitizeHtmlShareString(source.localServiceUrl, 'localServiceUrl', 2048),
-    projectDirectory: sanitizeOptionalHtmlShareString(source.projectDirectory, 'projectDirectory', 4096),
+    projectDirectory: sanitizeOptionalHtmlShareString(
+      source.projectDirectory,
+      'projectDirectory',
+      4096,
+    ),
   };
 }
 
@@ -1381,7 +1441,11 @@ function sanitizeShareDeploymentDownloadPersistenceInput(
   const source = input as Record<string, unknown>;
   return {
     deploymentId: sanitizeShareDeploymentPersistenceDeploymentIdInput(source.deploymentId),
-    projectDirectory: sanitizeOptionalHtmlShareString(source.projectDirectory, 'projectDirectory', 4096),
+    projectDirectory: sanitizeOptionalHtmlShareString(
+      source.projectDirectory,
+      'projectDirectory',
+      4096,
+    ),
     shareId: sanitizeOptionalHtmlShareString(source.shareId, 'shareId', 128),
   };
 }
@@ -1397,12 +1461,16 @@ const SHARE_DEPLOYMENT_PERSISTENCE_EXCLUDED_SEGMENTS = new Set([
 
 function isSensitiveShareDeploymentPersistenceFileName(fileName: string): boolean {
   const normalized = fileName.trim().toLowerCase();
-  return normalized === '.env' ||
+  return (
+    normalized === '.env' ||
     normalized.startsWith('.env.') ||
-    /(?:^|[-_.])(secret|credential|credentials|token|private[-_.]?key)(?:[-_.]|$)/i.test(fileName);
+    /(?:^|[-_.])(secret|credential|credentials|token|private[-_.]?key)(?:[-_.]|$)/i.test(fileName)
+  );
 }
 
-async function estimateShareDeploymentPersistencePathBytes(filePath: string): Promise<number | undefined> {
+async function estimateShareDeploymentPersistencePathBytes(
+  filePath: string,
+): Promise<number | undefined> {
   const maxVisited = 2000;
   let visited = 0;
   let total = 0;
@@ -1484,7 +1552,11 @@ function sanitizeShellGetBrowserAppsInput(input: unknown): ShellGetBrowserAppsIn
   }
   const source = input as Record<string, unknown>;
   return {
-    projectDirectory: sanitizeOptionalHtmlShareString(source.projectDirectory, 'projectDirectory', 4096),
+    projectDirectory: sanitizeOptionalHtmlShareString(
+      source.projectDirectory,
+      'projectDirectory',
+      4096,
+    ),
   };
 }
 
@@ -1676,8 +1748,7 @@ const buildAvailableOpenClawProviders = (): Record<string, { models: Array<{ id:
     .map(model => model.modelId.trim())
     .filter(Boolean);
   if (serverModelIds.length > 0) {
-    const serverProvider = providerMap[OpenClawProviderId.LobsteraiServer]
-      ?? { models: [] };
+    const serverProvider = providerMap[OpenClawProviderId.LobsteraiServer] ?? { models: [] };
     for (const modelId of serverModelIds) {
       if (!serverProvider.models.some(model => model.id === modelId)) {
         serverProvider.models.push({ id: modelId });
@@ -1700,7 +1771,8 @@ const openClawConfigHasServerModels = (modelIds: string[]): boolean => {
         providers?: Record<string, { models?: Array<{ id?: string }> }>;
       };
     };
-    const serverProviderModels = parsed.models?.providers?.[OpenClawProviderId.LobsteraiServer]?.models;
+    const serverProviderModels =
+      parsed.models?.providers?.[OpenClawProviderId.LobsteraiServer]?.models;
     if (!Array.isArray(serverProviderModels)) return false;
 
     const configuredModelIds = new Set(
@@ -1710,7 +1782,10 @@ const openClawConfigHasServerModels = (modelIds: string[]): boolean => {
     );
     return normalizedModelIds.every(modelId => configuredModelIds.has(modelId));
   } catch (error) {
-    console.debug('[Auth:getModels] OpenClaw config inspection failed; scheduling model sync.', error);
+    console.debug(
+      '[Auth:getModels] OpenClaw config inspection failed; scheduling model sync.',
+      error,
+    );
     return false;
   }
 };
@@ -1866,16 +1941,13 @@ const sanitizeCoworkMessageForIpc = (message: unknown): unknown => {
   // normalizeBrowserAnnotationBatches enforces its own count/length bounds.
   let sanitizedMetadata: unknown;
   if (messageRecord.metadata && typeof messageRecord.metadata === 'object') {
-    const {
-      imageAttachments,
-      imageAttachmentPreviews,
-      browserAnnotations,
-      ...rest
-    } = messageRecord.metadata as Record<string, unknown>;
+    const { imageAttachments, imageAttachmentPreviews, browserAnnotations, ...rest } =
+      messageRecord.metadata as Record<string, unknown>;
     const sanitizedRest = sanitizeIpcPayload(rest) as Record<string, unknown> | undefined;
-    const sanitizedBrowserAnnotations = Array.isArray(browserAnnotations) && browserAnnotations.length > 0
-      ? normalizeBrowserAnnotationBatches(browserAnnotations)
-      : [];
+    const sanitizedBrowserAnnotations =
+      Array.isArray(browserAnnotations) && browserAnnotations.length > 0
+        ? normalizeBrowserAnnotationBatches(browserAnnotations)
+        : [];
     sanitizedMetadata = {
       ...(sanitizedRest && typeof sanitizedRest === 'object' ? sanitizedRest : {}),
       ...(Array.isArray(imageAttachments) && imageAttachments.length > 0
@@ -2019,10 +2091,8 @@ const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
 const DEV_SERVER_URL = process.env.ELECTRON_START_URL || 'http://localhost:5175';
 const shouldOpenDevTools =
-  isDev && (
-    process.env.ELECTRON_OPEN_DEVTOOLS === '1'
-    || process.env.ELECTRON_OPEN_DEVTOOLS === 'true'
-  );
+  isDev &&
+  (process.env.ELECTRON_OPEN_DEVTOOLS === '1' || process.env.ELECTRON_OPEN_DEVTOOLS === 'true');
 const enableVerboseLogging =
   process.env.ELECTRON_ENABLE_LOGGING === '1' || process.env.ELECTRON_ENABLE_LOGGING === 'true';
 const disableGpu =
@@ -2221,10 +2291,7 @@ const getOpenClawEngineManager = (): OpenClawEngineManager => {
 
 const getBrowserCredentialService = (): BrowserCredentialService => {
   if (!browserCredentialService) {
-    browserCredentialService = new BrowserCredentialService(
-      getStore().getDatabase(),
-      safeStorage,
-    );
+    browserCredentialService = new BrowserCredentialService(getStore().getDatabase(), safeStorage);
   }
   return browserCredentialService;
 };
@@ -2232,11 +2299,8 @@ const getBrowserCredentialService = (): BrowserCredentialService => {
 const getBrowserCredentialApprovalService = (): BrowserCredentialApprovalService => {
   if (!browserCredentialApprovalService) {
     browserCredentialApprovalService = new BrowserCredentialApprovalService({
-      askUser: (questions, timeoutMs, options) => getMcpRuntime().askUserInternal(
-        questions,
-        timeoutMs,
-        options,
-      ),
+      askUser: (questions, timeoutMs, options) =>
+        getMcpRuntime().askUserInternal(questions, timeoutMs, options),
       translate: t,
     });
   }
@@ -2251,9 +2315,11 @@ const getAgentBrowserHost = (): AgentBrowserHost => {
       useSystemProxy: () => {
         const appConfig = getStore().get<AppConfigSettings>('app_config');
         const browserConfig = normalizeBrowserWebAccessConfig(appConfig?.browserWebAccess);
-        return getUseSystemProxyFromConfig(appConfig)
-          && browserConfig.followGlobalProxy
-          && browserConfig.networkMode === BrowserNetworkMode.ProxyCompatible;
+        return (
+          getUseSystemProxyFromConfig(appConfig) &&
+          browserConfig.followGlobalProxy &&
+          browserConfig.networkMode === BrowserNetworkMode.ProxyCompatible
+        );
       },
       emitState: event => {
         for (const window of BrowserWindow.getAllWindows()) {
@@ -2276,7 +2342,10 @@ const getAgentBrowserHost = (): AgentBrowserHost => {
 
 const formatAutoLaunchStatusForLog = (status: AutoLaunchStatus): string => {
   const launchItems = status.launchItems
-    ?.map(item => `${item.name}:${item.enabled ? 'enabled' : 'disabled'}:${item.args.join(' ') || '(no-args)'}`)
+    ?.map(
+      item =>
+        `${item.name}:${item.enabled ? 'enabled' : 'disabled'}:${item.args.join(' ') || '(no-args)'}`,
+    )
     .join(',');
 
   return [
@@ -2284,7 +2353,9 @@ const formatAutoLaunchStatusForLog = (status: AutoLaunchStatus): string => {
     `openAtLogin=${status.openAtLogin}`,
     `executableWillLaunchAtLogin=${status.executableWillLaunchAtLogin ?? 'unknown'}`,
     launchItems ? `launchItems=${launchItems}` : null,
-  ].filter(Boolean).join(', ');
+  ]
+    .filter(Boolean)
+    .join(', ');
 };
 
 const getAppUpdateCoordinator = (): AppUpdateCoordinator => {
@@ -2396,9 +2467,11 @@ const bootstrapOpenClawEngine = async (
       console.log(
         `[OpenClaw] bootstrap: ensureReady done (${elapsed()}), phase=${ensuredStatus.phase}`,
       );
-      if (ensuredStatus.phase !== OpenClawEnginePhase.Ready
-        && ensuredStatus.phase !== OpenClawEnginePhase.Running
-        && ensuredStatus.phase !== OpenClawEnginePhase.Starting) {
+      if (
+        ensuredStatus.phase !== OpenClawEnginePhase.Ready &&
+        ensuredStatus.phase !== OpenClawEnginePhase.Running &&
+        ensuredStatus.phase !== OpenClawEnginePhase.Starting
+      ) {
         return ensuredStatus;
       }
       if (isQuitting || isDataMigrationRestoreInProgress) return manager.getStatus();
@@ -2408,7 +2481,9 @@ const bootstrapOpenClawEngine = async (
     } catch (error) {
       console.error(`[OpenClaw] bootstrap failed (${reason}, ${elapsed()}):`, error);
       if (manager.getStatus().phase === OpenClawEnginePhase.Starting) {
-        return manager.setExternalError(error instanceof Error ? error.message : 'OpenClaw startup failed.');
+        return manager.setExternalError(
+          error instanceof Error ? error.message : 'OpenClaw startup failed.',
+        );
       }
       return manager.getStatus();
     }
@@ -2556,7 +2631,8 @@ const getOpenClawConfigSync = (): OpenClawConfigSync => {
     openClawConfigSync = new OpenClawConfigSync({
       engineManager: getOpenClawEngineManager(),
       getCoworkConfig: () => getCoworkStore().getConfig(),
-      getBrowserWebAccessConfig: () => getStore().get<AppConfigSettings>('app_config')?.browserWebAccess,
+      getBrowserWebAccessConfig: () =>
+        getStore().get<AppConfigSettings>('app_config')?.browserWebAccess,
       isEnterprise: () => !!getStore().get('enterprise_config'),
       getOpenClawSessionPolicy: () => loadOpenClawSessionPolicyConfig(getStore()),
       getSkillsList: () =>
@@ -2719,26 +2795,44 @@ const hasActiveGatewayWorkloads = (): boolean => {
 const getConfigRestartWorkloads = () => {
   const runtime = openClawRuntimeAdapter?.getConfigRestartWorkloadSnapshot();
   let cronBusy: boolean | null = null;
-  try { cronBusy = peekCronJobService()?.hasRunningJobs() ?? null; } catch { /* Observation unavailable. */ }
-  const state = runtime?.state === ConfigWorkloadState.Busy || cronBusy === true
-    ? ConfigWorkloadState.Busy
-    : !runtime || runtime.state === ConfigWorkloadState.Unknown || cronBusy === null
-      ? ConfigWorkloadState.Unknown : ConfigWorkloadState.Idle;
+  try {
+    cronBusy = peekCronJobService()?.hasRunningJobs() ?? null;
+  } catch {
+    /* Observation unavailable. */
+  }
+  const state =
+    runtime?.state === ConfigWorkloadState.Busy || cronBusy === true
+      ? ConfigWorkloadState.Busy
+      : !runtime || runtime.state === ConfigWorkloadState.Unknown || cronBusy === null
+        ? ConfigWorkloadState.Unknown
+        : ConfigWorkloadState.Idle;
   return { state, runtime, cronBusy };
 };
 
 let lastConfigRestartWorkloadSignature = '';
-const hasActiveConfigRestartWorkloads = (reason: string, forceLog = false, syncId?: number): boolean => {
+const hasActiveConfigRestartWorkloads = (
+  reason: string,
+  forceLog = false,
+  syncId?: number,
+): boolean => {
   const workloads = getConfigRestartWorkloads();
   // Tick/sample ages change on every poll; only log changes in the decision evidence.
   const signature = JSON.stringify([
-    reason, workloads.state, workloads.cronBusy, workloads.runtime?.connectionGeneration,
-    workloads.runtime?.activeTurns, workloads.runtime?.im.activeSessions, workloads.runtime?.im.staleSessions,
+    reason,
+    workloads.state,
+    workloads.cronBusy,
+    workloads.runtime?.connectionGeneration,
+    workloads.runtime?.activeTurns,
+    workloads.runtime?.im.activeSessions,
+    workloads.runtime?.im.staleSessions,
   ]);
   if (forceLog || signature !== lastConfigRestartWorkloadSignature) {
     lastConfigRestartWorkloadSignature = signature;
     writeConfigDiagnostic({
-      event: 'restart-workload-check', reason, syncId, workloads,
+      event: 'restart-workload-check',
+      reason,
+      syncId,
+      workloads,
       blocksAutomaticRestart: workloads.state === ConfigWorkloadState.Busy,
     });
   }
@@ -2802,7 +2896,9 @@ const buildConfigApplyPendingStatus = (message: string): OpenClawEngineStatus =>
   };
 };
 
-const waitForOpenClawConfigApply = async (context: string): Promise<OpenClawEngineStatus | null> => {
+const waitForOpenClawConfigApply = async (
+  context: string,
+): Promise<OpenClawEngineStatus | null> => {
   const pendingApply = openClawConfigApplyState;
   if (pendingApply) {
     console.log(
@@ -2814,18 +2910,14 @@ const waitForOpenClawConfigApply = async (context: string): Promise<OpenClawEngi
     try {
       await pendingApply.promise;
     } catch (error) {
-      const message = error instanceof Error
-        ? error.message
-        : 'OpenClaw config sync failed.';
+      const message = error instanceof Error ? error.message : 'OpenClaw config sync failed.';
       return buildConfigApplyPendingStatus(message);
     }
   }
 
   if (deferredRestartReason) {
     return buildConfigApplyPendingStatus(
-      deferredRestartOverdue
-        ? t('openClawConfigApplyOverdue')
-        : t('openClawConfigApplyPending'),
+      deferredRestartOverdue ? t('openClawConfigApplyOverdue') : t('openClawConfigApplyPending'),
     );
   }
 
@@ -2957,7 +3049,10 @@ const _syncOpenClawConfigImpl = async (
   });
   if (pluginInstallMigration.status === OpenClawPluginInstallMigrationStatus.Failed) {
     const message = `OpenClaw legacy plugin install migration failed: ${pluginInstallMigration.error}`;
-    console.error('[OpenClaw] Legacy plugin install migration blocked config sync:', new Error(message));
+    console.error(
+      '[OpenClaw] Legacy plugin install migration blocked config sync:',
+      new Error(message),
+    );
     const status = manager.setExternalError(message);
     return {
       success: false,
@@ -3015,7 +3110,10 @@ const _syncOpenClawConfigImpl = async (
     const configText = fs.readFileSync(manager.getConfigPath(), 'utf8');
     referencedSecretEnvVarNames = collectReferencedEnvVarNames(configText);
   } catch (error) {
-    console.warn('[OpenClawConfigSync] failed to inspect referenced secret env vars, comparing all secrets:', error);
+    console.warn(
+      '[OpenClawConfigSync] failed to inspect referenced secret env vars, comparing all secrets:',
+      error,
+    );
   }
   const effectiveNextSecretEnvVars = referencedSecretEnvVarNames
     ? pickReferencedSecretEnvVars(nextSecretEnvVars, referencedSecretEnvVarNames)
@@ -3023,12 +3121,16 @@ const _syncOpenClawConfigImpl = async (
   const effectivePrevSecretEnvVars = referencedSecretEnvVarNames
     ? pickReferencedSecretEnvVars(prevSecretEnvVars, referencedSecretEnvVarNames)
     : prevSecretEnvVars;
-  const secretEnvVarsChanged = JSON.stringify(effectiveNextSecretEnvVars) !== JSON.stringify(effectivePrevSecretEnvVars);
+  const secretEnvVarsChanged =
+    JSON.stringify(effectiveNextSecretEnvVars) !== JSON.stringify(effectivePrevSecretEnvVars);
   manager.setSecretEnvVars(nextSecretEnvVars);
 
   // Diagnostic: print which env vars changed
   if (secretEnvVarsChanged) {
-    const allKeys = new Set([...Object.keys(effectivePrevSecretEnvVars), ...Object.keys(effectiveNextSecretEnvVars)]);
+    const allKeys = new Set([
+      ...Object.keys(effectivePrevSecretEnvVars),
+      ...Object.keys(effectiveNextSecretEnvVars),
+    ]);
     const added: string[] = [];
     const removed: string[] = [];
     const modified: string[] = [];
@@ -3049,18 +3151,18 @@ const _syncOpenClawConfigImpl = async (
     if (removed.length) console.log(`${D()}   removed: ${removed.join(', ')}`);
     if (modified.length) console.log(`${D()}   modified: ${modified.join(', ')}`);
   } else {
-    console.log(`${D()} secretEnvVars unchanged (${Object.keys(effectiveNextSecretEnvVars).length}/${Object.keys(nextSecretEnvVars).length} referenced keys)`);
+    console.log(
+      `${D()} secretEnvVars unchanged (${Object.keys(effectiveNextSecretEnvVars).length}/${Object.keys(nextSecretEnvVars).length} referenced keys)`,
+    );
   }
 
   // Force a hard restart when env/bindings changed, or when the caller explicitly
   // requires a running gateway restart. Some IM account state changes are stored
   // outside openclaw.json, so the explicit flag must not depend on config diffing.
   const expectedRestartImpact =
-    effectiveConfigChanged
-    && options.expectedImpact === OpenClawConfigImpact.Restart;
+    effectiveConfigChanged && options.expectedImpact === OpenClawConfigImpact.Restart;
   const syncRestartImpact =
-    nspClawguardPatched ||
-    syncResult.restartImpact === OpenClawConfigImpact.Restart;
+    nspClawguardPatched || syncResult.restartImpact === OpenClawConfigImpact.Restart;
   const imRestartSatisfied = imConfigRestartTracker.isRestartSatisfied(
     options.imConfigRestartFingerprint,
     effectiveConfigChanged,
@@ -3073,18 +3175,21 @@ const _syncOpenClawConfigImpl = async (
     (options.restartGatewayIfRunning === true && !imRestartSatisfied);
 
   if (imRestartSatisfied && !needsHardRestart) {
-    console.log('[OpenClawConfigSync] IM config already loaded by a completed gateway restart; skipping duplicate restart.');
+    console.log(
+      '[OpenClawConfigSync] IM config already loaded by a completed gateway restart; skipping duplicate restart.',
+    );
   }
 
   console.log(
     `${D()} needsHardRestart=${needsHardRestart} (envChanged=${secretEnvVarsChanged} bindingsChanged=${!!syncResult.bindingsChanged} configChanged=${effectiveConfigChanged} restartImpact=${syncResult.restartImpact ?? OpenClawConfigImpact.None} expectedRestart=${expectedRestartImpact} restartFlag=${!!options.restartGatewayIfRunning})`,
   );
 
-  const retryDeferredDelivery = options.reason.startsWith(DEFERRED_SYNC_REASON_PREFIX)
-    && isConfigDeliveryFallbackReason(options.reason)
-    && !secretEnvVarsChanged
-    && !syncResult.bindingsChanged
-    && !syncRestartImpact;
+  const retryDeferredDelivery =
+    options.reason.startsWith(DEFERRED_SYNC_REASON_PREFIX) &&
+    isConfigDeliveryFallbackReason(options.reason) &&
+    !secretEnvVarsChanged &&
+    !syncResult.bindingsChanged &&
+    !syncRestartImpact;
   if (!needsHardRestart || retryDeferredDelivery) {
     if (!effectiveConfigChanged && !retryDeferredDelivery) {
       console.log(`${D()} ──── NO RESTART, config unchanged. reason=${options.reason}`);
@@ -3104,29 +3209,40 @@ const _syncOpenClawConfigImpl = async (
       gatewayPhase: deliveryManager.getStatus().phase,
       readConfigFile: () => fs.readFileSync(deliveryManager.getConfigPath(), 'utf8'),
       configPath: deliveryManager.getConfigPath(),
-      ensureRpcClient: async () => (
-        openClawRuntimeAdapter ? openClawRuntimeAdapter.ensureGatewayRpcClient() : null
-      ),
+      ensureRpcClient: async () =>
+        openClawRuntimeAdapter ? openClawRuntimeAdapter.ensureGatewayRpcClient() : null,
       scheduleDeferredRestart: retryDeferredDelivery ? undefined : scheduleDeferredGatewayRestart,
       onDiagnostic: event => {
         if (event.payloadDigest) payloadDigest = event.payloadDigest;
         const terminal = event.stage === ConfigDiagnosticStage.Complete;
         const failed = event.outcome === ConfigDiagnosticOutcome.Failed;
-        const warn = (failed && event.errorKind !== ConfigDiagnosticErrorKind.HashConflict)
-          || (event.timeoutMs !== undefined && event.elapsedMs >= event.timeoutMs * 0.8);
+        const warn =
+          (failed && event.errorKind !== ConfigDiagnosticErrorKind.HashConflict) ||
+          (event.timeoutMs !== undefined && event.elapsedMs >= event.timeoutMs * 0.8);
         const workloads = terminal || failed ? getConfigRestartWorkloads() : undefined;
-        writeConfigDiagnostic({
-          syncId, reason: options.reason, skillChangeBatch: options.skillChangeBatch,
-          // Logical host attempt, not the runtime's private wire request ID.
-          hostAttemptId: `${syncId}:${event.attempt}:${event.stage}`,
-          ...event, payloadDigest, workloads,
-          gatewayPid: deliveryManager.getGatewayProcessPid(),
-          gatewayGeneration: deliveryManager.getGatewayProcessGeneration(),
-          observation: terminal && event.evidence && event.actualAction ? observeConfigRecovery({
-            evidence: event.evidence, actualAction: event.actualAction,
-            workloadState: workloads?.state ?? ConfigWorkloadState.Unknown,
-          }) : undefined,
-        }, warn);
+        writeConfigDiagnostic(
+          {
+            syncId,
+            reason: options.reason,
+            skillChangeBatch: options.skillChangeBatch,
+            // Logical host attempt, not the runtime's private wire request ID.
+            hostAttemptId: `${syncId}:${event.attempt}:${event.stage}`,
+            ...event,
+            payloadDigest,
+            workloads,
+            gatewayPid: deliveryManager.getGatewayProcessPid(),
+            gatewayGeneration: deliveryManager.getGatewayProcessGeneration(),
+            observation:
+              terminal && event.evidence && event.actualAction
+                ? observeConfigRecovery({
+                    evidence: event.evidence,
+                    actualAction: event.actualAction,
+                    workloadState: workloads?.state ?? ConfigWorkloadState.Unknown,
+                  })
+                : undefined,
+          },
+          warn,
+        );
       },
     });
     if (delivery.mode === OpenClawConfigDeliveryMode.Rejected) {
@@ -3146,7 +3262,9 @@ const _syncOpenClawConfigImpl = async (
         changed: true,
       };
     }
-    console.warn(`${D()} deferred config delivery still failed; retaining queued restart. reason=${options.reason}`);
+    console.warn(
+      `${D()} deferred config delivery still failed; retaining queued restart. reason=${options.reason}`,
+    );
   }
 
   const status = manager.getStatus();
@@ -3175,10 +3293,12 @@ const _syncOpenClawConfigImpl = async (
     // Killing the gateway mid self-restart poisons its single-instance lock
     // (empty lock file → 30s of "gateway already running; lock timeout").
     // Park the demand; the gateway-ready callback re-evaluates it.
-    const requiresRespawn = nspClawguardPatched || !selfRestartSatisfiesSync(options, secretEnvVarsChanged);
+    const requiresRespawn =
+      nspClawguardPatched || !selfRestartSatisfiesSync(options, secretEnvVarsChanged);
     pendingSelfRestartReevaluation = {
       reasons: [...(pendingSelfRestartReevaluation?.reasons ?? []), options.reason],
-      requiresRespawn: (pendingSelfRestartReevaluation?.requiresRespawn ?? false) || requiresRespawn,
+      requiresRespawn:
+        (pendingSelfRestartReevaluation?.requiresRespawn ?? false) || requiresRespawn,
       gatewayPid: pendingSelfRestartReevaluation?.gatewayPid ?? manager.getGatewayProcessPid(),
     };
     console.log(
@@ -3201,9 +3321,8 @@ const _syncOpenClawConfigImpl = async (
     openClawRuntimeAdapter.disconnectGatewayClient();
   }
 
-  const restarted = await imConfigRestartTracker.restartGateway(
-    imConfigFingerprint,
-    () => manager.restartGateway(`config-sync:${options.reason}`),
+  const restarted = await imConfigRestartTracker.restartGateway(imConfigFingerprint, () =>
+    manager.restartGateway(`config-sync:${options.reason}`),
   );
   if (restarted.phase !== 'running') {
     return {
@@ -3235,28 +3354,35 @@ const syncOpenClawConfig = async (
   const enqueuedAt = Date.now();
   const startAfterPrevious = openClawConfigApplyQueue.catch(() => {});
   const restartRequired =
-    options.restartGatewayIfRunning === true
-    || options.expectedImpact === OpenClawConfigImpact.Restart;
+    options.restartGatewayIfRunning === true ||
+    options.expectedImpact === OpenClawConfigImpact.Restart;
   const resultPromise = startAfterPrevious.then(async () => {
     const startedAt = Date.now();
     const cpuAtStart = process.cpuUsage();
     writeConfigDiagnostic({
-      event: 'sync-start', syncId: generation, reason: options.reason,
-      skillChangeBatch: options.skillChangeBatch, queueWaitMs: startedAt - enqueuedAt,
+      event: 'sync-start',
+      syncId: generation,
+      reason: options.reason,
+      skillChangeBatch: options.skillChangeBatch,
+      queueWaitMs: startedAt - enqueuedAt,
     });
     try {
       return await _syncOpenClawConfigImpl(options, generation);
     } finally {
       const cpu = process.cpuUsage(cpuAtStart);
       writeConfigDiagnostic({
-        event: 'sync-finish', syncId: generation, reason: options.reason,
-        elapsedMs: Date.now() - startedAt, hostPid: process.pid,
-        hostCpuUserMs: cpu.user / 1_000, hostCpuSystemMs: cpu.system / 1_000,
+        event: 'sync-finish',
+        syncId: generation,
+        reason: options.reason,
+        elapsedMs: Date.now() - startedAt,
+        hostPid: process.pid,
+        hostCpuUserMs: cpu.user / 1_000,
+        hostCpuSystemMs: cpu.system / 1_000,
         hostRssBytes: process.memoryUsage().rss,
       });
     }
   });
-  const barrierPromise = resultPromise.then((result) => {
+  const barrierPromise = resultPromise.then(result => {
     if (!result.success) {
       throw new Error(result.error || 'OpenClaw config sync failed.');
     }
@@ -3305,7 +3431,8 @@ const handleGatewaySelfRestartSettled = () => {
   }
   pendingSelfRestartReevaluation = null;
   const currentPid = manager.getGatewayProcessPid();
-  const respawned = pending.gatewayPid != null && currentPid != null && currentPid !== pending.gatewayPid;
+  const respawned =
+    pending.gatewayPid != null && currentPid != null && currentPid !== pending.gatewayPid;
   if (pending.requiresRespawn && !respawned) {
     console.log(
       `${gwDiagTs()} parked restart still required after gateway self-restart (reasons: ${pending.reasons.join(', ')}); executing now`,
@@ -3378,7 +3505,9 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
 
     const pendingApplyStatus = await waitForOpenClawConfigApply('manual OpenClaw repair');
     if (pendingApplyStatus) {
-      console.warn('[OpenClawRepair] repair was blocked while configuration changes are still applying.');
+      console.warn(
+        '[OpenClawRepair] repair was blocked while configuration changes are still applying.',
+      );
       return {
         success: false,
         status: pendingApplyStatus,
@@ -3391,7 +3520,9 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
 
     const postApplyBusyResult = buildOpenClawRepairBusyResult(originalPath, manager.getStatus());
     if (postApplyBusyResult) {
-      console.warn('[OpenClawRepair] repair was blocked because gateway work started during the check.');
+      console.warn(
+        '[OpenClawRepair] repair was blocked because gateway work started during the check.',
+      );
       return postApplyBusyResult;
     }
 
@@ -3403,9 +3534,14 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
       });
     }
 
-    const postBootstrapBusyResult = buildOpenClawRepairBusyResult(originalPath, manager.getStatus());
+    const postBootstrapBusyResult = buildOpenClawRepairBusyResult(
+      originalPath,
+      manager.getStatus(),
+    );
     if (postBootstrapBusyResult) {
-      console.warn('[OpenClawRepair] repair was blocked because gateway work started after startup finished.');
+      console.warn(
+        '[OpenClawRepair] repair was blocked because gateway work started after startup finished.',
+      );
       return postBootstrapBusyResult;
     }
 
@@ -3414,7 +3550,9 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
     let releaseConfigMaintenance: (() => void) | undefined;
     try {
       openClawManualRepairActive = true;
-      openClawManualRepairBarrier = new Promise<void>(resolve => { releaseConfigMaintenance = resolve; });
+      openClawManualRepairBarrier = new Promise<void>(resolve => {
+        releaseConfigMaintenance = resolve;
+      });
       await openClawConfigApplyQueue;
       const pendingWork = buildOpenClawRepairBusyResult(originalPath, manager.getStatus());
       if (pendingWork) return pendingWork;
@@ -3423,11 +3561,15 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
         openClawRuntimeAdapter.disconnectGatewayClient();
       }
 
-      const preserveConfig = preserveOpenClawConfigForStartupRecovery(originalPath, manager.getStatus().errorCode);
+      const preserveConfig = preserveOpenClawConfigForStartupRecovery(
+        originalPath,
+        manager.getStatus().errorCode,
+      );
       await manager.withGatewayStoppedForRepair(async () => {
         await manager.prepareRuntimeForStartupConfigSync('manual-repair');
         const ensured = await manager.ensureReady();
-        if (ensured.phase !== OpenClawEnginePhase.Ready) throw new Error(ensured.message || 'OpenClaw runtime is unavailable.');
+        if (ensured.phase !== OpenClawEnginePhase.Ready)
+          throw new Error(ensured.message || 'OpenClaw runtime is unavailable.');
         backupPath = createOpenClawRepairBackupDirectory(manager.getBaseDir());
         const electronNodeRuntimePath = getElectronNodeRuntimePath();
         const npmBinDir = app.isPackaged
@@ -3435,27 +3577,48 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
           : path.join(app.getAppPath(), 'node_modules', 'npm', 'bin');
         const nodeShimDir = ensureElectronNodeShim(electronNodeRuntimePath, npmBinDir);
         const repairOptions = {
-          stateDir: manager.getStateDir(), configPath: originalPath,
-          runtimeRoot: manager.getRuntimeRoot(), electronNodeRuntimePath,
-          backupDir: backupPath, env: {
-            ...process.env, ...manager.getSecretEnvVars(), ...getOpenClawConfigSync().collectSecretEnvVars(),
-            PATH: [nodeShimDir, process.env.PATH || process.env.Path].filter(Boolean).join(path.delimiter),
+          stateDir: manager.getStateDir(),
+          configPath: originalPath,
+          runtimeRoot: manager.getRuntimeRoot(),
+          electronNodeRuntimePath,
+          backupDir: backupPath,
+          env: {
+            ...process.env,
+            ...manager.getSecretEnvVars(),
+            ...getOpenClawConfigSync().collectSecretEnvVars(),
+            PATH: [nodeShimDir, process.env.PATH || process.env.Path]
+              .filter(Boolean)
+              .join(path.delimiter),
             LOBSTERAI_NPM_BIN_DIR: npmBinDir,
           },
         };
-        await runOpenClawCompatibilityRepair({ ...repairOptions, phase: OpenClawRepairPhase.LockRecovery });
-        await runOpenClawCompatibilityRepair({ ...repairOptions, phase: OpenClawRepairPhase.Snapshot });
+        await runOpenClawCompatibilityRepair({
+          ...repairOptions,
+          phase: OpenClawRepairPhase.LockRecovery,
+        });
+        await runOpenClawCompatibilityRepair({
+          ...repairOptions,
+          phase: OpenClawRepairPhase.Snapshot,
+        });
         await runOpenClawDoctorRepair(repairOptions);
-        await runOpenClawCompatibilityRepair({ ...repairOptions, phase: OpenClawRepairPhase.Recovery });
+        await runOpenClawCompatibilityRepair({
+          ...repairOptions,
+          phase: OpenClawRepairPhase.Recovery,
+        });
         // The snapshot already backs up config. Retain compatibility sources
         // through migration and config sync instead of regenerating from scratch.
         repairStage = OpenClawRepairStage.Configuration;
         if (!preserveConfig) backupOpenClawConfig(originalPath, backupPath);
         await startAskUserServer();
-        const sync = await syncOpenClawConfig({ reason: 'manual-repair', restartGatewayIfRunning: false, manualRepair: true });
+        const sync = await syncOpenClawConfig({
+          reason: 'manual-repair',
+          restartGatewayIfRunning: false,
+          manualRepair: true,
+        });
         if (!sync.success) throw new Error(sync.error || 'OpenClaw config regeneration failed.');
         await runOpenClawCompatibilityRepair({
-          ...repairOptions, phase: OpenClawRepairPhase.Plugins,
+          ...repairOptions,
+          phase: OpenClawRepairPhase.Plugins,
           env: { ...repairOptions.env, ...manager.getSecretEnvVars() },
           legacyConfigPath: path.join(backupPath, 'original', 'openclaw.json'),
         });
@@ -3474,7 +3637,9 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
       if (success) {
         console.log('[OpenClawRepair] gateway state repair completed successfully.');
       } else {
-        console.warn('[OpenClawRepair] gateway state repair completed but the gateway is not ready.');
+        console.warn(
+          '[OpenClawRepair] gateway state repair completed but the gateway is not ready.',
+        );
       }
 
       return {
@@ -3482,12 +3647,15 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
         status,
         originalPath,
         backupPath,
-        error: success ? undefined : status.message || 'Failed to restart OpenClaw gateway after repair.',
+        error: success
+          ? undefined
+          : status.message || 'Failed to restart OpenClaw gateway after repair.',
         failedStage: success ? undefined : repairStage,
       };
     } catch (error) {
       console.error('[OpenClawRepair] gateway state repair failed:', error);
-      const message = error instanceof Error ? error.message : 'Failed to repair OpenClaw gateway state.';
+      const message =
+        error instanceof Error ? error.message : 'Failed to repair OpenClaw gateway state.';
       const failedStage = error instanceof OpenClawRepairFailure ? error.stage : repairStage;
       return {
         success: false,
@@ -3497,7 +3665,10 @@ const repairOpenClawGatewayState = (): Promise<OpenClawGatewayRepairResult> => {
         error: message,
         failedStage,
         failurePath: error instanceof OpenClawRepairFailure ? error.failurePath : undefined,
-        errorCode: failedStage === OpenClawRepairStage.Snapshot ? OpenClawGatewayRepairErrorCode.SnapshotFailed : undefined,
+        errorCode:
+          failedStage === OpenClawRepairStage.Snapshot
+            ? OpenClawGatewayRepairErrorCode.SnapshotFailed
+            : undefined,
       };
     } finally {
       openClawManualRepairActive = false;
@@ -3521,17 +3692,34 @@ const bindCoworkRuntimeForwarder = (): void => {
   runtime.on('message', (sessionId: string, message: unknown, beforeMessageId?: string) => {
     const safeMessage = sanitizeCoworkMessageForIpc(message);
     const windows = BrowserWindow.getAllWindows();
-    const messageType = typeof message === 'object' && message && 'type' in message
-      ? (message as { type?: unknown }).type
-      : undefined;
+    const messageType =
+      typeof message === 'object' && message && 'type' in message
+        ? (message as { type?: unknown }).type
+        : undefined;
     if (beforeMessageId) {
-      console.log('[ThinkingOrder] IPC forwarding with beforeMessageId=', beforeMessageId, 'type=', messageType);
+      console.log(
+        '[ThinkingOrder] IPC forwarding with beforeMessageId=',
+        beforeMessageId,
+        'type=',
+        messageType,
+      );
     }
-    console.log('[CoworkForwarder] forwarding message: sessionId=', sessionId, 'type=', messageType, 'windowCount=', windows.length);
-    windows.forEach((win) => {
+    console.log(
+      '[CoworkForwarder] forwarding message: sessionId=',
+      sessionId,
+      'type=',
+      messageType,
+      'windowCount=',
+      windows.length,
+    );
+    windows.forEach(win => {
       if (win.isDestroyed()) return;
       try {
-        win.webContents.send('cowork:stream:message', { sessionId, message: safeMessage, beforeMessageId });
+        win.webContents.send('cowork:stream:message', {
+          sessionId,
+          message: safeMessage,
+          beforeMessageId,
+        });
       } catch (error) {
         console.error('Failed to forward cowork message:', error);
       }
@@ -3675,7 +3863,7 @@ const bindCoworkRuntimeForwarder = (): void => {
   });
 
   runtime.on('backgroundJobsChanged', (_sessionId: string, event: CoworkBackgroundJobsEvent) => {
-    BrowserWindow.getAllWindows().forEach((win) => {
+    BrowserWindow.getAllWindows().forEach(win => {
       if (win.isDestroyed()) return;
       win.webContents.send(BACKGROUND_JOB_EVENT_CHANNEL, event);
     });
@@ -3794,8 +3982,10 @@ const getCoworkEngineRouter = () => {
       codexRuntimeAdapter = new CodexRuntimeAdapter({
         client: codexManager.startSync(),
         getSkillInstructions: () => getSkillManager().buildAutoRoutingPrompt(),
-        getPersistedThreadId: sessionId => getCoworkStore().getSession(sessionId, 0)?.claudeSessionId ?? null,
-        saveThreadId: (sessionId, threadId) => getCoworkStore().updateSession(sessionId, { claudeSessionId: threadId }),
+        getPersistedThreadId: sessionId =>
+          getCoworkStore().getSession(sessionId, 0)?.claudeSessionId ?? null,
+        saveThreadId: (sessionId, threadId) =>
+          getCoworkStore().updateSession(sessionId, { claudeSessionId: threadId }),
       });
       void codexManager.reloadMcpServers(getMcpRuntime().getResolvedServersCache()).catch(error => {
         console.warn('[Codex] failed to project MCP configuration:', error);
@@ -3846,11 +4036,14 @@ const getDesktopNotificationManager = (): DesktopNotificationManager => {
       },
       focusMainWindow: focusMainWindowForReason,
       openSession: (sessionId: string) => {
-        const targetWindow = mainWindow && !mainWindow.isDestroyed()
-          ? mainWindow
-          : ensureMainWindowForReason?.('desktop notification') ?? null;
+        const targetWindow =
+          mainWindow && !mainWindow.isDestroyed()
+            ? mainWindow
+            : (ensureMainWindowForReason?.('desktop notification') ?? null);
         if (!targetWindow || targetWindow.isDestroyed()) {
-          console.warn(`[DesktopNotification] could not open session ${sessionId} because no main window was available`);
+          console.warn(
+            `[DesktopNotification] could not open session ${sessionId} because no main window was available`,
+          );
           return;
         }
 
@@ -3863,7 +4056,7 @@ const getDesktopNotificationManager = (): DesktopNotificationManager => {
         flushOpenSessionFromNotification();
       },
       updateTrayReminder: (count: number, onClick?: () => void) => {
-        updateTrayReminder(() => isQuitting ? null : mainWindow, { count, onClick });
+        updateTrayReminder(() => (isQuitting ? null : mainWindow), { count, onClick });
       },
     });
   }
@@ -3885,7 +4078,7 @@ const getMcpRuntime = (): McpRuntime => {
       onAskUserRequested: (sessionId, request) => {
         getDesktopNotificationManager().handlePermissionRequest(sessionId, request);
       },
-      onAskUserDismissed: (requestId) => {
+      onAskUserDismissed: requestId => {
         getDesktopNotificationManager().handlePermissionResolved(requestId);
       },
     });
@@ -3926,12 +4119,15 @@ const getIMGatewayManager = () => {
           reason: reason || 'im-gateway-sync',
           restartGatewayIfRunning: options?.restartGatewayIfRunning,
         });
-        if (options?.requireSuccess && !result.success) throw new Error(result.error || t('openClawConfigSyncFailed'));
+        if (options?.requireSuccess && !result.success)
+          throw new Error(result.error || t('openClawConfigSyncFailed'));
       },
       ensureOpenClawGatewayConnected: async () => {
         const configApplyStatus = await waitForOpenClawConfigApply('IM gateway client connection');
         if (configApplyStatus) {
-          throw new Error(configApplyStatus.message || 'OpenClaw is applying configuration changes.');
+          throw new Error(
+            configApplyStatus.message || 'OpenClaw is applying configuration changes.',
+          );
         }
         if (openClawRuntimeAdapter) {
           await openClawRuntimeAdapter.connectGatewayIfNeeded();
@@ -3944,7 +4140,9 @@ const getIMGatewayManager = () => {
         }
         const configApplyStatus = await waitForOpenClawConfigApply('IM gateway readiness check');
         if (configApplyStatus) {
-          throw new Error(configApplyStatus.message || 'OpenClaw is applying configuration changes.');
+          throw new Error(
+            configApplyStatus.message || 'OpenClaw is applying configuration changes.',
+          );
         }
         await openClawRuntimeAdapter.ensureReady();
         await openClawRuntimeAdapter.connectGatewayIfNeeded();
@@ -4262,9 +4460,10 @@ const flushOpenSessionFromNotification = (): void => {
 
 const focusMainWindowForReason = (reason: string): void => {
   if (isQuitting) return;
-  const targetWindow = mainWindow && !mainWindow.isDestroyed()
-    ? mainWindow
-    : ensureMainWindowForReason?.(reason) ?? null;
+  const targetWindow =
+    mainWindow && !mainWindow.isDestroyed()
+      ? mainWindow
+      : (ensureMainWindowForReason?.(reason) ?? null);
   if (!targetWindow || targetWindow.isDestroyed()) {
     console.warn(`[Main] no main window was available after ${reason}`);
     return;
@@ -4290,7 +4489,9 @@ const hideMainWindowForClose = (win: BrowserWindow): void => {
   if (win.isDestroyed()) return;
 
   if (!isMac || !win.isFullScreen()) {
-    console.log(`[Main] hiding main window for close, platform=${process.platform}, fullscreen=${win.isFullScreen()}, maximized=${win.isMaximized()}, visible=${win.isVisible()}`);
+    console.log(
+      `[Main] hiding main window for close, platform=${process.platform}, fullscreen=${win.isFullScreen()}, maximized=${win.isMaximized()}, visible=${win.isVisible()}`,
+    );
     win.hide();
     return;
   }
@@ -4300,7 +4501,9 @@ const hideMainWindowForClose = (win: BrowserWindow): void => {
     return;
   }
 
-  console.log('[Main] main window close requested while macOS full-screen; leaving full-screen before hiding');
+  console.log(
+    '[Main] main window close requested while macOS full-screen; leaving full-screen before hiding',
+  );
   isHidingMainWindowAfterFullScreen = true;
   let settled = false;
   let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
@@ -4314,7 +4517,9 @@ const hideMainWindowForClose = (win: BrowserWindow): void => {
       fallbackTimer = null;
     }
     if (!win.isDestroyed()) {
-      console.log(`[Main] hiding main window after macOS full-screen exit, source=${source}, fullscreen=${win.isFullScreen()}, visible=${win.isVisible()}`);
+      console.log(
+        `[Main] hiding main window after macOS full-screen exit, source=${source}, fullscreen=${win.isFullScreen()}, visible=${win.isVisible()}`,
+      );
       win.hide();
     }
   };
@@ -4380,18 +4585,17 @@ const MEDIA_POLL_MEDIUM_COUNT = 10;
 const MEDIA_TASK_DEFAULT_TIMEOUT_MS = 172_800_000;
 const TERMINAL_MEDIA_TASK_STATUSES = new Set(['succeeded', 'failed', 'cancelled']);
 
-const rememberMediaTaskOwnership = (
-  ownerAccountKey: string,
-  ...taskIds: unknown[]
-): void => {
+const rememberMediaTaskOwnership = (ownerAccountKey: string, ...taskIds: unknown[]): void => {
   rememberMediaTaskOwnerAliases(mediaTaskOwnerById, ownerAccountKey, taskIds);
 };
 
 const resolveMediaTaskOwner = (taskId: unknown): string | undefined => {
   const normalizedTaskId = String(taskId ?? '').trim();
   if (!normalizedTaskId) return undefined;
-  return pendingMediaTasks.get(normalizedTaskId)?.ownerAccountKey
-    ?? mediaTaskOwnerById.get(normalizedTaskId);
+  return (
+    pendingMediaTasks.get(normalizedTaskId)?.ownerAccountKey ??
+    mediaTaskOwnerById.get(normalizedTaskId)
+  );
 };
 
 const normalizeOptionalMediaModelId = (modelId: string | undefined): string | undefined => {
@@ -4399,7 +4603,9 @@ const normalizeOptionalMediaModelId = (modelId: string | undefined): string | un
   return canonicalModelId || undefined;
 };
 
-const normalizeMediaSelectionState = (selection?: MediaSelectionState): MediaSelectionState | undefined => {
+const normalizeMediaSelectionState = (
+  selection?: MediaSelectionState,
+): MediaSelectionState | undefined => {
   if (!selection) return undefined;
   const normalized: MediaSelectionState = {
     ...selection,
@@ -4414,7 +4620,9 @@ const normalizeMediaSelectionState = (selection?: MediaSelectionState): MediaSel
   return normalized;
 };
 
-const resolveMediaSelectionForSession = (sessionId: string | null): MediaSelectionState | undefined => {
+const resolveMediaSelectionForSession = (
+  sessionId: string | null,
+): MediaSelectionState | undefined => {
   let current = sessionId?.trim() || null;
   const seen = new Set<string>();
 
@@ -4422,10 +4630,12 @@ const resolveMediaSelectionForSession = (sessionId: string | null): MediaSelecti
     if (seen.has(current)) return undefined;
     seen.add(current);
 
-    const selection = normalizeMediaSelectionState(resolveAccountBoundValue(
-      mediaSelectionBySession.get(current),
-      resolveCurrentMediaAccountScope(),
-    ));
+    const selection = normalizeMediaSelectionState(
+      resolveAccountBoundValue(
+        mediaSelectionBySession.get(current),
+        resolveCurrentMediaAccountScope(),
+      ),
+    );
     if (selection && selection.mode !== 'none') {
       return selection;
     }
@@ -4469,15 +4679,12 @@ const getSkinRuntimeController = (): SkinRuntimeController => {
   if (!skinRuntimeController) {
     skinRuntimeController = new SkinRuntimeController({
       rootDir: path.join(app.getPath('userData'), 'skins'),
-      getInstalledKits: () => (
-        getStore().get<Record<string, InstalledKitRecord>>(KitStoreKey.Installed) ?? {}
-      ),
-      getParentSessionId: sessionId => (
-        getCoworkParentSessionId(getStore().getDatabase(), sessionId)
-      ),
-      resolveSessionId: sessionKey => (
-        resolveCoworkSessionIdByOpenClawSessionKey(getStore().getDatabase(), sessionKey)
-      ),
+      getInstalledKits: () =>
+        getStore().get<Record<string, InstalledKitRecord>>(KitStoreKey.Installed) ?? {},
+      getParentSessionId: sessionId =>
+        getCoworkParentSessionId(getStore().getDatabase(), sessionId),
+      resolveSessionId: sessionKey =>
+        resolveCoworkSessionIdByOpenClawSessionKey(getStore().getDatabase(), sessionKey),
       resolveMediaSelection: resolveMediaSelectionForSession,
       onChanged: notifySkinChanged,
     });
@@ -4625,26 +4832,30 @@ const hasBrowserWebAccessConfigChanged = (
 ): boolean => {
   const previousBrowserConfig = normalizeBrowserWebAccessConfig(previousConfig?.browserWebAccess);
   const nextBrowserConfig = normalizeBrowserWebAccessConfig(nextConfig?.browserWebAccess);
-  return JSON.stringify({
-    ...previousBrowserConfig,
-    credentialUseMode: undefined,
-    credentialSaveMode: undefined,
-  }) !== JSON.stringify({
-    ...nextBrowserConfig,
-    credentialUseMode: undefined,
-    credentialSaveMode: undefined,
-  });
+  return (
+    JSON.stringify({
+      ...previousBrowserConfig,
+      credentialUseMode: undefined,
+      credentialSaveMode: undefined,
+    }) !==
+    JSON.stringify({
+      ...nextBrowserConfig,
+      credentialUseMode: undefined,
+      credentialSaveMode: undefined,
+    })
+  );
 };
 
 const hasBrowserHostConfigChanged = (
   previousConfig?: AppConfigSettings,
   nextConfig?: AppConfigSettings,
-): boolean => JSON.stringify(normalizeBrowserWebAccessConfig(previousConfig?.browserWebAccess)) !==
+): boolean =>
+  JSON.stringify(normalizeBrowserWebAccessConfig(previousConfig?.browserWebAccess)) !==
   JSON.stringify(normalizeBrowserWebAccessConfig(nextConfig?.browserWebAccess));
 
-const getSqliteAutoBackupEnabledFromConfig = (
-  config?: { sqliteAutoBackupEnabled?: boolean },
-): boolean => {
+const getSqliteAutoBackupEnabledFromConfig = (config?: {
+  sqliteAutoBackupEnabled?: boolean;
+}): boolean => {
   return config?.sqliteAutoBackupEnabled === true;
 };
 
@@ -4669,9 +4880,8 @@ const getMediaStatusPollKey = (
   sessionId: string | null,
   ownerAccountKey: string,
   taskId: string,
-): string => (
-  [sessionId ?? 'unknown', ownerAccountKey, taskId].join(MEDIA_STATUS_POLL_KEY_SEPARATOR)
-);
+): string =>
+  [sessionId ?? 'unknown', ownerAccountKey, taskId].join(MEDIA_STATUS_POLL_KEY_SEPARATOR);
 
 const incrementMediaStatusPollCount = (
   sessionId: string | null,
@@ -4700,9 +4910,8 @@ const isMediaTaskHandledByStatusPolling = (
   sessionId: string,
   ownerAccountKey: string,
   taskId: string,
-): boolean => (
-  mediaTasksHandledByStatusPolling.has(getMediaStatusPollKey(sessionId, ownerAccountKey, taskId))
-);
+): boolean =>
+  mediaTasksHandledByStatusPolling.has(getMediaStatusPollKey(sessionId, ownerAccountKey, taskId));
 
 const clearMediaStatusPollCountsForSession = (sessionId: string): void => {
   const prefix = `${sessionId}${MEDIA_STATUS_POLL_KEY_SEPARATOR}`;
@@ -4849,11 +5058,27 @@ const installEditContextMenu = (webContents: WebContents) => {
     const template: MenuItemConstructorOptions[] = [];
 
     template.push(
-      { label: t('contextMenuCut'), role: 'cut', enabled: isEditContext && params.editFlags.canCut },
-      { label: t('contextMenuCopy'), role: 'copy', enabled: isEditContext ? params.editFlags.canCopy : true },
-      { label: t('contextMenuPaste'), role: 'paste', enabled: isEditContext && params.editFlags.canPaste },
+      {
+        label: t('contextMenuCut'),
+        role: 'cut',
+        enabled: isEditContext && params.editFlags.canCut,
+      },
+      {
+        label: t('contextMenuCopy'),
+        role: 'copy',
+        enabled: isEditContext ? params.editFlags.canCopy : true,
+      },
+      {
+        label: t('contextMenuPaste'),
+        role: 'paste',
+        enabled: isEditContext && params.editFlags.canPaste,
+      },
       { type: 'separator' },
-      { label: t('contextMenuSelectAll'), role: 'selectAll', enabled: isEditContext && params.editFlags.canSelectAll },
+      {
+        label: t('contextMenuSelectAll'),
+        role: 'selectAll',
+        enabled: isEditContext && params.editFlags.canSelectAll,
+      },
     );
 
     const targetWindow = BrowserWindow.fromWebContents(webContents);
@@ -4892,7 +5117,9 @@ const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
   if (isDev) {
-    console.warn('[Main] Development startup skipped: another LobsterAI instance is already running. Quit that instance and restart electron:dev to load the current source.');
+    console.warn(
+      '[Main] Development startup skipped: another LobsterAI instance is already running. Quit that instance and restart electron:dev to load the current source.',
+    );
   }
   app.quit();
 } else {
@@ -4900,9 +5127,7 @@ if (!gotTheLock) {
   if (!app.isPackaged) {
     // In dev mode, setAsDefaultProtocolClient needs the electron exe path
     // and the app entry point as extra args so the OS can relaunch correctly
-    app.setAsDefaultProtocolClient('lobsterai', process.execPath, [
-      path.resolve(process.argv[1]),
-    ]);
+    app.setAsDefaultProtocolClient('lobsterai', process.execPath, [path.resolve(process.argv[1])]);
   } else {
     app.setAsDefaultProtocolClient('lobsterai');
   }
@@ -4938,7 +5163,9 @@ if (!gotTheLock) {
     try {
       if (!mainWindow.isVisible() && !hasRenderedFirstFrame) {
         pendingShowOnFirstFrame = true;
-        console.log(`[Main] deferred showing main window after ${reason}: renderer has not painted yet`);
+        console.log(
+          `[Main] deferred showing main window after ${reason}: renderer has not painted yet`,
+        );
         return;
       }
       if (mainWindow.isMinimized()) mainWindow.restore();
@@ -4963,15 +5190,19 @@ if (!gotTheLock) {
   };
 
   ipcMain.on('log:fromRenderer', (_event, level: string, tag: string, message: string) => {
-    const fn = level === 'error' ? console.error
-      : level === 'warn' ? console.warn
-        : level === 'debug' ? console.debug
-          : console.log;
+    const fn =
+      level === 'error'
+        ? console.error
+        : level === 'warn'
+          ? console.warn
+          : level === 'debug'
+            ? console.debug
+            : console.log;
     // Keep renderer diagnostics useful without allowing an accidental large
     // payload or malformed tag to inflate the main-process log indefinitely.
-    const safeTag = (typeof tag === 'string' ? tag : 'Unknown')
-      .replace(/[^a-zA-Z0-9_.-]/g, '_')
-      .slice(0, 64) || 'Unknown';
+    const safeTag =
+      (typeof tag === 'string' ? tag : 'Unknown').replace(/[^a-zA-Z0-9_.-]/g, '_').slice(0, 64) ||
+      'Unknown';
     const safeMessage = (typeof message === 'string' ? message : String(message ?? ''))
       .replace(/\s+/g, ' ')
       .trim()
@@ -4981,7 +5212,8 @@ if (!gotTheLock) {
 
   // Allow renderer to retrieve a buffered auth code on init
   ipcMain.handle(AuthIpcChannel.GetPendingCallback, () =>
-    authCallbackRouter.markListenerReadyAndConsumePending());
+    authCallbackRouter.markListenerReadyAndConsumePending(),
+  );
 
   // macOS: handle open-url event for deep links
   app.on('open-url', (event, url) => {
@@ -4992,7 +5224,9 @@ if (!gotTheLock) {
   app.on('second-instance', (_event, commandLine, workingDirectory) => {
     console.debug('[Main] second-instance event', { commandLine, workingDirectory });
     if (isDataMigrationRestoreInProgress) {
-      console.log('[DataMigration] ignored second-instance activation while restore is in progress.');
+      console.log(
+        '[DataMigration] ignored second-instance activation while restore is in progress.',
+      );
       return;
     }
 
@@ -5018,9 +5252,8 @@ if (!gotTheLock) {
   });
 
   ipcMain.handle('store:set', async (_event, key, value) => {
-    const previousAppConfig = key === 'app_config'
-      ? getStore().get<AppConfigSettings>('app_config')
-      : undefined;
+    const previousAppConfig =
+      key === 'app_config' ? getStore().get<AppConfigSettings>('app_config') : undefined;
     getStore().set(key, value);
     if (key === 'app_config') {
       const nextAppConfig = value as AppConfigSettings | undefined;
@@ -5031,10 +5264,14 @@ if (!gotTheLock) {
         nextAppConfig?.notificationSettings,
       );
       if (
-        previousNotificationSettings.taskCompletionNotificationMode !== TaskCompletionNotificationMode.Off &&
-        nextNotificationSettings.taskCompletionNotificationMode === TaskCompletionNotificationMode.Off
+        previousNotificationSettings.taskCompletionNotificationMode !==
+          TaskCompletionNotificationMode.Off &&
+        nextNotificationSettings.taskCompletionNotificationMode ===
+          TaskCompletionNotificationMode.Off
       ) {
-        getDesktopNotificationManager().clearAllCompletions('task completion notifications disabled');
+        getDesktopNotificationManager().clearAllCompletions(
+          'task completion notifications disabled',
+        );
       }
       if (
         previousNotificationSettings.permissionNotificationsEnabled &&
@@ -5054,14 +5291,25 @@ if (!gotTheLock) {
           'question notifications disabled',
         );
       }
-      const browserWebAccessChanged = hasBrowserWebAccessConfigChanged(previousAppConfig, nextAppConfig);
-      const browserHostConfigChanged = hasBrowserHostConfigChanged(previousAppConfig, nextAppConfig);
-      if (browserHostConfigChanged || previousAppConfig?.useSystemProxy !== nextAppConfig?.useSystemProxy) {
+      const browserWebAccessChanged = hasBrowserWebAccessConfigChanged(
+        previousAppConfig,
+        nextAppConfig,
+      );
+      const browserHostConfigChanged = hasBrowserHostConfigChanged(
+        previousAppConfig,
+        nextAppConfig,
+      );
+      if (
+        browserHostConfigChanged ||
+        previousAppConfig?.useSystemProxy !== nextAppConfig?.useSystemProxy
+      ) {
         agentBrowserHost?.refreshConfig();
       }
       refreshEndpointsTestMode(getStore());
       const impactDecision = classifyAppConfigChange(previousAppConfig, value);
-      const proxyChanged = impactDecision.reasons.includes(OpenClawConfigImpactReason.AppUseSystemProxy);
+      const proxyChanged = impactDecision.reasons.includes(
+        OpenClawConfigImpactReason.AppUseSystemProxy,
+      );
       const actionDecision = removeImpactDecisionReasons(impactDecision, [
         OpenClawConfigImpactReason.AppUseSystemProxy,
       ]);
@@ -5071,7 +5319,8 @@ if (!gotTheLock) {
         return;
       }
 
-      const shouldSyncOpenClawConfig = actionDecision.impact !== OpenClawConfigImpact.None || browserWebAccessChanged;
+      const shouldSyncOpenClawConfig =
+        actionDecision.impact !== OpenClawConfigImpact.None || browserWebAccessChanged;
       if (shouldSyncOpenClawConfig) {
         const syncResult = await syncOpenClawConfig({
           reason: 'app-config-change',
@@ -5079,7 +5328,10 @@ if (!gotTheLock) {
             actionDecision.impact === OpenClawConfigImpact.Restart || browserWebAccessChanged,
         });
         if (!syncResult.success) {
-          console.error('[OpenClaw] Failed to sync config after app_config update:', syncResult.error);
+          console.error(
+            '[OpenClaw] Failed to sync config after app_config update:',
+            syncResult.error,
+          );
         }
       }
     }
@@ -5212,9 +5464,10 @@ if (!gotTheLock) {
         return {
           success: false,
           enabled: status.enabled,
-          errorCode: status.status === 'requires-approval'
-            ? AppSettingsAutoLaunchErrorCode.RequiresApproval
-            : AppSettingsAutoLaunchErrorCode.UpdateFailed,
+          errorCode:
+            status.status === 'requires-approval'
+              ? AppSettingsAutoLaunchErrorCode.RequiresApproval
+              : AppSettingsAutoLaunchErrorCode.UpdateFailed,
         };
       }
       getStore().set('auto_launch_enabled', status.enabled);
@@ -5268,7 +5521,7 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.on('window-close', (event) => {
+  ipcMain.on('window-close', event => {
     console.log(`[Main] window-close IPC received from renderer, url=${event.sender.getURL()}`);
     mainWindow?.close();
   });
@@ -5306,7 +5559,8 @@ if (!gotTheLock) {
       console.warn('[DesktopNotification] failed to open system notification settings:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to open system notification settings',
+        error:
+          error instanceof Error ? error.message : 'Failed to open system notification settings',
       };
     }
   });
@@ -5332,27 +5586,23 @@ if (!gotTheLock) {
     const tokens = getAuthTokens();
     return tokens
       ? {
-        accountGeneration: authAccountGeneration,
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-      }
+          accountGeneration: authAccountGeneration,
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+        }
       : null;
   };
 
-  const isCurrentAuthStateSnapshot = (snapshot: AuthStateSnapshot | null): boolean => (
-    snapshot !== null
-    && isAuthStateSnapshotCurrent(snapshot, authAccountGeneration, getAuthTokens())
-  );
+  const isCurrentAuthStateSnapshot = (snapshot: AuthStateSnapshot | null): boolean =>
+    snapshot !== null &&
+    isAuthStateSnapshotCurrent(snapshot, authAccountGeneration, getAuthTokens());
 
   const clearAuthTokens = () => {
     getStore().delete('auth_tokens');
   };
 
-  const getEnterpriseAccountHeaders = (): Record<string, string> => (
-    buildEnterpriseAccountRequestHeaders(
-      getPersistedEnterpriseAccountContext(getStore()),
-    )
-  );
+  const getEnterpriseAccountHeaders = (): Record<string, string> =>
+    buildEnterpriseAccountRequestHeaders(getPersistedEnterpriseAccountContext(getStore()));
 
   const getAuthUser = (): Record<string, unknown> | null => {
     try {
@@ -5377,11 +5627,9 @@ if (!gotTheLock) {
       const user = getStore().get<Record<string, unknown>>(LogReporterStoreKey.AuthUser);
       const enterpriseContext = getPersistedEnterpriseAccountContext(getStore());
       if (
-        !enterpriseContext
-        && (
-          user?.accountMode === EnterpriseAccountMode.Enterprise
-          || cachedSubscriptionStatus === AuthSubscriptionStatus.Enterprise
-        )
+        !enterpriseContext &&
+        (user?.accountMode === EnterpriseAccountMode.Enterprise ||
+          cachedSubscriptionStatus === AuthSubscriptionStatus.Enterprise)
       ) {
         return null;
       }
@@ -5389,9 +5637,7 @@ if (!gotTheLock) {
         user,
         enterpriseId: enterpriseContext?.enterpriseId,
       });
-      return ownerAccountKey
-        ? { ownerAccountKey, accountGeneration: authAccountGeneration }
-        : null;
+      return ownerAccountKey ? { ownerAccountKey, accountGeneration: authAccountGeneration } : null;
     } catch (error) {
       console.warn('[MediaGeneration] failed to resolve authenticated account owner:', error);
       return null;
@@ -5399,20 +5645,19 @@ if (!gotTheLock) {
   };
   resolveCurrentMediaAccountScope = getCurrentMediaAccountScope;
 
-  const captureEnterpriseAuthSessionSnapshot = (
-    accountScope = getCurrentMediaAccountScope(),
-  ) => createEnterpriseAuthSessionSnapshot(
-    accountScope,
-    getPersistedEnterpriseAccountContext(getStore())?.enterpriseId,
-  );
+  const captureEnterpriseAuthSessionSnapshot = (accountScope = getCurrentMediaAccountScope()) =>
+    createEnterpriseAuthSessionSnapshot(
+      accountScope,
+      getPersistedEnterpriseAccountContext(getStore())?.enterpriseId,
+    );
 
   const handleEnterpriseMembershipRevocation = createEnterpriseMembershipRevocationHandler({
     getCurrentSession: captureEnterpriseAuthSessionSnapshot,
-    invalidateCurrentSession: (event) => {
+    invalidateCurrentSession: event => {
       console.warn(
-        '[EnterpriseAccount] invalidating revoked enterprise auth session '
-        + `source=${event.source} code=${event.code} `
-        + `generation=${event.requestSession?.accountGeneration ?? 'unknown'}`,
+        '[EnterpriseAccount] invalidating revoked enterprise auth session ' +
+          `source=${event.source} code=${event.code} ` +
+          `generation=${event.requestSession?.accountGeneration ?? 'unknown'}`,
       );
       clearLocalAuthSession({
         reason: AuthSessionChangeReason.EnterpriseMembershipRevoked,
@@ -5441,9 +5686,9 @@ if (!gotTheLock) {
 
     const currentAccountScope = getCurrentMediaAccountScope();
     if (
-      code !== EnterpriseApiErrorCode.AccountModeMismatch
-      || !getAuthTokens()
-      || !isMediaAccountScopeSnapshotCurrent(requestAccountScope, currentAccountScope)
+      code !== EnterpriseApiErrorCode.AccountModeMismatch ||
+      !getAuthTokens() ||
+      !isMediaAccountScopeSnapshotCurrent(requestAccountScope, currentAccountScope)
     ) {
       return false;
     }
@@ -5451,10 +5696,8 @@ if (!gotTheLock) {
     authExchangeIntentSequence += 1;
     activeAuthExchangeIntent = null;
     authAccountGeneration += 1;
-    const quotaGateChanged = (
-      cachedSubscriptionStatus !== AuthSubscriptionStatus.Free
-      || cachedMediaGenerationEntitled
-    );
+    const quotaGateChanged =
+      cachedSubscriptionStatus !== AuthSubscriptionStatus.Free || cachedMediaGenerationEntitled;
     cachedSubscriptionStatus = AuthSubscriptionStatus.Free;
     cachedMediaGenerationEntitled = false;
     clearAuthTokens();
@@ -5474,7 +5717,10 @@ if (!gotTheLock) {
       reason: 'enterprise-account-context-invalidated',
       restartGatewayIfRunning: quotaGateChanged,
     }).catch(error => {
-      console.warn('[EnterpriseAccount] failed to sync OpenClaw after context invalidation:', error);
+      console.warn(
+        '[EnterpriseAccount] failed to sync OpenClaw after context invalidation:',
+        error,
+      );
     });
 
     BrowserWindow.getAllWindows().forEach(win => {
@@ -5489,8 +5735,9 @@ if (!gotTheLock) {
       message: t('enterpriseAccountContextMismatchMessage'),
       buttons: [t('enterpriseAccountContextMismatchConfirm')],
     };
-    const ownerWindow = BrowserWindow.getFocusedWindow()
-      ?? (mainWindow && !mainWindow.isDestroyed() ? mainWindow : null);
+    const ownerWindow =
+      BrowserWindow.getFocusedWindow() ??
+      (mainWindow && !mainWindow.isDestroyed() ? mainWindow : null);
     const prompt = ownerWindow
       ? dialog.showMessageBox(ownerWindow, dialogOptions)
       : dialog.showMessageBox(dialogOptions);
@@ -5610,7 +5857,7 @@ if (!gotTheLock) {
     },
     getRefreshUrl: () => `${getServerApiBaseUrl()}/api/auth/refresh`,
     buildRefreshRequestBody: refreshToken => JSON.stringify(withKeyfromBody({ refreshToken })),
-    onTerminalFailure: (result) => {
+    onTerminalFailure: result => {
       if (result.errorCode === EnterpriseApiErrorCode.NotMember) {
         handleEnterpriseMembershipRevocation({
           code: result.errorCode,
@@ -5628,7 +5875,7 @@ if (!gotTheLock) {
       syncOpenClawConfig({
         reason: `token-refresh:${result.reason}`,
         restartGatewayIfRunning: false,
-      }).catch((error) => {
+      }).catch(error => {
         console.warn('[Auth] post-refresh OpenClaw config sync failed:', error);
       });
     },
@@ -5650,8 +5897,8 @@ if (!gotTheLock) {
     const requestEnterpriseSession = captureEnterpriseAuthSessionSnapshot();
     const response = await authSessionManager.fetchWithAuth(url, options);
     if (
-      requestEnterpriseSession
-      && response.headers.get('content-type')?.includes('application/json')
+      requestEnterpriseSession &&
+      response.headers.get('content-type')?.includes('application/json')
     ) {
       try {
         const code = readEnterpriseApiErrorCode(await response.clone().json());
@@ -5706,12 +5953,9 @@ if (!gotTheLock) {
       data?: AvailableServerModel[];
     };
     if (
-      authAccountGeneration !== requestAccountGeneration
-      || !isCurrentAuthStateSnapshot(responseAuthState)
-      || !isMediaAccountScopeSnapshotCurrent(
-        requestAccountScope,
-        getCurrentMediaAccountScope(),
-      )
+      authAccountGeneration !== requestAccountGeneration ||
+      !isCurrentAuthStateSnapshot(responseAuthState) ||
+      !isMediaAccountScopeSnapshotCurrent(requestAccountScope, getCurrentMediaAccountScope())
     ) {
       throw new Error('Account changed while loading server models');
     }
@@ -5733,29 +5977,33 @@ if (!gotTheLock) {
     };
     if (shouldSyncServerModelConfig(configSyncOptions)) {
       console.log(
-        `[Auth:getModels] syncing OpenClaw config for ${serverModelIds.length} server model(s); `
-        + `metadataChanged=${serverModelsChanged} missingFromConfig=${serverModelsMissingFromConfig} `
-        + `forced=${options.forceConfigSync === true}`,
+        `[Auth:getModels] syncing OpenClaw config for ${serverModelIds.length} server model(s); ` +
+          `metadataChanged=${serverModelsChanged} missingFromConfig=${serverModelsMissingFromConfig} ` +
+          `forced=${options.forceConfigSync === true}`,
       );
       const syncPromise = syncServerModelConfigIfNeeded({
         ...configSyncOptions,
-        sync: () => syncOpenClawConfig({
-          reason: options.reason,
-          restartGatewayIfRunning: false,
-        }),
+        sync: () =>
+          syncOpenClawConfig({
+            reason: options.reason,
+            restartGatewayIfRunning: false,
+          }),
       });
       if (options.awaitConfigSync) {
         await syncPromise;
       } else {
-        syncPromise.catch((error) => {
-          console.warn('[Auth:getModels] failed to sync OpenClaw config after loading server models:', error);
+        syncPromise.catch(error => {
+          console.warn(
+            '[Auth:getModels] failed to sync OpenClaw config after loading server models:',
+            error,
+          );
         });
       }
     } else {
       console.debug('[Auth:getModels] server model metadata unchanged, skipping config sync');
     }
 
-    return data.data.map((model) => {
+    return data.data.map(model => {
       const metadata = getServerModelMetadata(model.modelId);
       return {
         ...model,
@@ -5795,14 +6043,13 @@ if (!gotTheLock) {
     modelOverride?: string;
     agentId?: string;
   }): string => {
-    const session = options.sessionId
-      ? getCoworkStore().getSession(options.sessionId)
-      : null;
+    const session = options.sessionId ? getCoworkStore().getSession(options.sessionId) : null;
     const agentId = options.agentId?.trim() || session?.agentId || 'main';
-    const rawModelRef = options.modelOverride?.trim()
-      || session?.modelOverride?.trim()
-      || getAgentManager().getAgent(agentId)?.model?.trim()
-      || resolveDefaultAgentModelRef();
+    const rawModelRef =
+      options.modelOverride?.trim() ||
+      session?.modelOverride?.trim() ||
+      getAgentManager().getAgent(agentId)?.model?.trim() ||
+      resolveDefaultAgentModelRef();
     return rawModelRef?.trim() || '';
   };
 
@@ -5824,20 +6071,21 @@ if (!gotTheLock) {
   const ensureServerModelReadyForRun = async (
     modelRef: string,
   ): Promise<{ allowed: true } | { allowed: false; error: string }> => {
-    const resolveRunModelRef = () => resolveServerModelRefForRun({
-      modelRef,
-      availableProviders: buildAvailableOpenClawProviders(),
-      isKnownServerModelCandidate: isKnownPackageKimiK3ModelId,
-    });
+    const resolveRunModelRef = () =>
+      resolveServerModelRefForRun({
+        modelRef,
+        availableProviders: buildAvailableOpenClawProviders(),
+        isKnownServerModelCandidate: isKnownPackageKimiK3ModelId,
+      });
     const blockForUnavailableIdentity = (
       status: string,
       modelId: string,
       providerIds?: string[],
     ): { allowed: false; error: string } => {
       console.warn(
-        `[Cowork] blocked server model run for "${modelId}"; `
-        + `providerResolution=${status}`
-        + (providerIds?.length ? ` providers=${providerIds.join(',')}` : ''),
+        `[Cowork] blocked server model run for "${modelId}"; ` +
+          `providerResolution=${status}` +
+          (providerIds?.length ? ` providers=${providerIds.join(',')}` : ''),
       );
       return {
         allowed: false,
@@ -5875,15 +6123,15 @@ if (!gotTheLock) {
       return blockForUnavailableIdentity(resolution.status, resolution.modelId);
     }
     if (
-      resolution.status === ServerModelRefResolutionStatus.NonServer
-      || resolution.status === ServerModelRefResolutionStatus.Unresolved
+      resolution.status === ServerModelRefResolutionStatus.NonServer ||
+      resolution.status === ServerModelRefResolutionStatus.Unresolved
     ) {
       return { allowed: true };
     }
 
     let gate = evaluateServerModelRunGate(resolution.modelId);
-    const requiresFreshK3Metadata = gate.allowed === true
-      && gate.metadata.runtimeProfile === ModelRuntimeProfile.MoonshotKimiK3;
+    const requiresFreshK3Metadata =
+      gate.allowed === true && gate.metadata.runtimeProfile === ModelRuntimeProfile.MoonshotKimiK3;
     if (!refreshed && (gate.allowed === false || requiresFreshK3Metadata)) {
       try {
         await refreshServerModelsForRunPreflight();
@@ -5900,15 +6148,13 @@ if (!gotTheLock) {
       }
       const refreshedResolution = resolveRunModelRef();
       if (
-        refreshedResolution.status !== ServerModelRefResolutionStatus.Server
-        || refreshedResolution.modelId !== resolution.modelId
+        refreshedResolution.status !== ServerModelRefResolutionStatus.Server ||
+        refreshedResolution.modelId !== resolution.modelId
       ) {
         return blockForUnavailableIdentity(
           refreshedResolution.status,
           refreshedResolution.modelId,
-          'providerIds' in refreshedResolution
-            ? refreshedResolution.providerIds
-            : undefined,
+          'providerIds' in refreshedResolution ? refreshedResolution.providerIds : undefined,
         );
       }
       resolution = refreshedResolution;
@@ -5985,13 +6231,13 @@ if (!gotTheLock) {
     return promise;
   };
 
-  const syncEnterpriseAccountContextFromPayload = async (
-    payload: unknown,
-  ) => {
+  const syncEnterpriseAccountContextFromPayload = async (payload: unknown) => {
     const context = normalizeEnterpriseAccountContext(payload);
     if (context) {
       persistEnterpriseAccountContext(getStore(), context);
-      console.debug(`[EnterpriseAccount] applied context from auth payload for enterprise ${context.enterpriseId} with role ${context.role}`);
+      console.debug(
+        `[EnterpriseAccount] applied context from auth payload for enterprise ${context.enterpriseId} with role ${context.role}`,
+      );
       return context;
     }
 
@@ -6018,18 +6264,24 @@ if (!gotTheLock) {
     requestQuotaIncrease: (enterpriseId, requestType) => {
       const currentContext = getPersistedEnterpriseAccountContext(getStore());
       if (!currentContext || currentContext.enterpriseId !== enterpriseId) {
-        console.warn('[EnterpriseAccount] rejected quota request outside the current enterprise context');
+        console.warn(
+          '[EnterpriseAccount] rejected quota request outside the current enterprise context',
+        );
         return Promise.resolve({
           success: false,
           error: 'Enterprise account context changed before the quota request',
         });
       }
       const generation = authAccountGeneration;
-      return requestEnterpriseQuotaIncrease({
-        getServerBaseUrl: getServerApiBaseUrl,
-        fetchWithAuth,
-        isRequestCurrent: () => authAccountGeneration === generation && getAuthTokens() !== null,
-      }, enterpriseId, requestType);
+      return requestEnterpriseQuotaIncrease(
+        {
+          getServerBaseUrl: getServerApiBaseUrl,
+          fetchWithAuth,
+          isRequestCurrent: () => authAccountGeneration === generation && getAuthTokens() !== null,
+        },
+        enterpriseId,
+        requestType,
+      );
     },
   });
 
@@ -6043,7 +6295,11 @@ if (!gotTheLock) {
     tool: string;
     args: Record<string, unknown>;
     context: { sessionKey: string; toolCallId: string };
-  }): Promise<{ content: Array<{ type: string; text: string }>; isError?: boolean; details?: Record<string, unknown> }> => {
+  }): Promise<{
+    content: Array<{ type: string; text: string }>;
+    isError?: boolean;
+    details?: Record<string, unknown>;
+  }> => {
     const { tool, args } = request;
     const skinRuntime = getSkinRuntimeController();
     if (skinRuntime.handlesTool(tool)) {
@@ -6053,67 +6309,86 @@ if (!gotTheLock) {
     const serverBaseUrl = getServerApiBaseUrl();
     const sessionId = extractSessionIdFromKey(request.context.sessionKey);
     const requestAccountScope = resolveMediaTurnAccountScopeForSession(sessionId);
-    const isRequestAccountCurrent = (): boolean => (
-      requestAccountScope !== null
-      && isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
-    );
+    const isRequestAccountCurrent = (): boolean =>
+      requestAccountScope !== null &&
+      isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope());
     const staleAccountResult = () => ({
-      content: [{
-        type: 'text',
-        text: t('authAccountChanged'),
-      }],
+      content: [
+        {
+          type: 'text',
+          text: t('authAccountChanged'),
+        },
+      ],
       isError: true,
       details: { status: 'cancelled', warnings: ['MEDIA_ACCOUNT_CHANGED'] },
     });
     if (
-      requestAccountScope === null
-      || !isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
+      requestAccountScope === null ||
+      !isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
     ) {
       return staleAccountResult();
     }
     const selection = resolveMediaSelectionForSession(sessionId);
     const prompt = typeof args.prompt === 'string' ? args.prompt : '';
-    const explicitModel = canonicalizeMediaModelId(typeof args.model === 'string' ? args.model : '');
-    const resolvedModelFromSelection = tool === MediaGenerationTool.Image
-      ? canonicalizeMediaModelId(selection?.imageModelId || selection?.modelId || '')
-      : canonicalizeMediaModelId(selection?.videoModelId || selection?.modelId || '');
+    const explicitModel = canonicalizeMediaModelId(
+      typeof args.model === 'string' ? args.model : '',
+    );
+    const resolvedModelFromSelection =
+      tool === MediaGenerationTool.Image
+        ? canonicalizeMediaModelId(selection?.imageModelId || selection?.modelId || '')
+        : canonicalizeMediaModelId(selection?.videoModelId || selection?.modelId || '');
     let selectedModel = explicitModel || resolvedModelFromSelection;
-    let selectedModelSource = explicitModel ? 'tool' : resolvedModelFromSelection ? 'selection' : 'none';
+    let selectedModelSource = explicitModel
+      ? 'tool'
+      : resolvedModelFromSelection
+        ? 'selection'
+        : 'none';
 
     if (action === 'generate' && tool === MediaGenerationTool.Image) {
-      const skinPreflight = await skinRuntime.preflightLobsterImageGeneration(
-        sessionId,
-        selection,
-      );
+      const skinPreflight = await skinRuntime.preflightLobsterImageGeneration(sessionId, selection);
       if (!isRequestAccountCurrent()) return staleAccountResult();
       if (skinPreflight) return skinPreflight;
     }
 
-    if (action === 'generate' && resolvedModelFromSelection && explicitModel && explicitModel !== resolvedModelFromSelection) {
-      console.warn(`[MediaGeneration] overriding LLM model choice "${explicitModel}" with user selection "${resolvedModelFromSelection}"`);
+    if (
+      action === 'generate' &&
+      resolvedModelFromSelection &&
+      explicitModel &&
+      explicitModel !== resolvedModelFromSelection
+    ) {
+      console.warn(
+        `[MediaGeneration] overriding LLM model choice "${explicitModel}" with user selection "${resolvedModelFromSelection}"`,
+      );
       selectedModel = resolvedModelFromSelection;
       selectedModelSource = 'selection-override';
     }
-    console.log('[MediaGeneration] received tool request:', serializeForLog({
-      tool,
-      action,
-      sessionId: sessionId ?? '',
-      toolCallId: request.context.toolCallId,
-      selectionMode: selection?.mode ?? 'none',
-      selectedModel,
-      selectedModelSource,
-      promptLength: prompt.length,
-      promptPreview: prompt.slice(0, 120),
-    }));
+    console.log(
+      '[MediaGeneration] received tool request:',
+      serializeForLog({
+        tool,
+        action,
+        sessionId: sessionId ?? '',
+        toolCallId: request.context.toolCallId,
+        selectionMode: selection?.mode ?? 'none',
+        selectedModel,
+        selectedModelSource,
+        promptLength: prompt.length,
+        promptPreview: prompt.slice(0, 120),
+      }),
+    );
 
     // Tool gating: for generate action, check if media selection allows this tool
     if (action === 'generate') {
       const gate = resolveMediaGenerationGate({ action, tool, selection });
       if (gate.allowed === false) {
         if (gate.reason === MediaGenerationGateReason.MediaNotEnabled) {
-          console.warn('[MediaGeneration] blocked generate request because no media model was selected for this turn.');
+          console.warn(
+            '[MediaGeneration] blocked generate request because no media model was selected for this turn.',
+          );
         } else {
-          console.warn('[MediaGeneration] blocked generate request because the selected turn model has a different media type.');
+          console.warn(
+            '[MediaGeneration] blocked generate request because the selected turn model has a different media type.',
+          );
         }
         return {
           content: [{ type: 'text', text: gate.message }],
@@ -6126,11 +6401,14 @@ if (!gotTheLock) {
     try {
       if (action === 'list') {
         const mediaType = tool === MediaGenerationTool.Image ? 'image' : 'video';
-        const endpoint = mediaType === 'image' ? '/api/media/images/models' : '/api/media/videos/models';
+        const endpoint =
+          mediaType === 'image' ? '/api/media/images/models' : '/api/media/videos/models';
         console.log(`[MediaGeneration] listing ${mediaType} models from server.`);
         const resp = await fetchWithAuth(`${serverBaseUrl}${endpoint}`);
-        console.log(`[MediaGeneration] server returned HTTP ${resp.status} for ${mediaType} model list.`);
-        const body = await resp.json() as { code: number; data?: unknown[]; message?: string };
+        console.log(
+          `[MediaGeneration] server returned HTTP ${resp.status} for ${mediaType} model list.`,
+        );
+        const body = (await resp.json()) as { code: number; data?: unknown[]; message?: string };
         if (!isRequestAccountCurrent()) return staleAccountResult();
         if (handleEnterpriseAccountContextMismatch(body.code, requestAccountScope)) {
           return {
@@ -6139,8 +6417,14 @@ if (!gotTheLock) {
           };
         }
         if (body.code !== 0) {
-          console.warn('[MediaGeneration] server rejected model list request:', serializeForLog({ mediaType, code: body.code, message: body.message }));
-          return { content: [{ type: 'text', text: body.message || 'Failed to list models.' }], isError: true };
+          console.warn(
+            '[MediaGeneration] server rejected model list request:',
+            serializeForLog({ mediaType, code: body.code, message: body.message }),
+          );
+          return {
+            content: [{ type: 'text', text: body.message || 'Failed to list models.' }],
+            isError: true,
+          };
         }
         const models = (body.data || []).map(model => {
           const mediaModel = model as { modelId?: string; displayName?: string };
@@ -6152,14 +6436,25 @@ if (!gotTheLock) {
           };
         });
         console.log(`[MediaGeneration] server returned ${models.length} ${mediaType} models.`);
-        let text = models.length > 0
-          ? `Available ${mediaType} models:\n\n${(models as Array<{ modelId: string; displayName: string; capabilities?: string; parameterSpec?: Record<string, unknown> }>).map(m => {
-              let line = `### ${m.displayName} (model: "${m.modelId}")`;
-              if (m.capabilities) line += `\n${m.capabilities}`;
-              if (m.parameterSpec) line += `\nSupported parameters:\n${JSON.stringify(m.parameterSpec, null, 2)}`;
-              return line;
-            }).join('\n\n')}`
-          : `No ${mediaType} models available.`;
+        let text =
+          models.length > 0
+            ? `Available ${mediaType} models:\n\n${(
+                models as Array<{
+                  modelId: string;
+                  displayName: string;
+                  capabilities?: string;
+                  parameterSpec?: Record<string, unknown>;
+                }>
+              )
+                .map(m => {
+                  let line = `### ${m.displayName} (model: "${m.modelId}")`;
+                  if (m.capabilities) line += `\n${m.capabilities}`;
+                  if (m.parameterSpec)
+                    line += `\nSupported parameters:\n${JSON.stringify(m.parameterSpec, null, 2)}`;
+                  return line;
+                })
+                .join('\n\n')}`
+            : `No ${mediaType} models available.`;
         if (resolvedModelFromSelection) {
           text += `\n\n---\n**Note:** The user has already selected model "${resolvedModelFromSelection}" for this session. You MUST use this model for the generate action. Do NOT choose a different model.`;
         }
@@ -6170,7 +6465,10 @@ if (!gotTheLock) {
         const taskId = args.taskId as string;
         if (!taskId) {
           console.warn('[MediaGeneration] blocked status request because taskId was missing.');
-          return { content: [{ type: 'text', text: 'taskId is required for status action.' }], isError: true };
+          return {
+            content: [{ type: 'text', text: 'taskId is required for status action.' }],
+            isError: true,
+          };
         }
         if (requestAccountScope === null) return staleAccountResult();
         const taskOwnerAccountKey = resolveMediaTaskOwner(taskId);
@@ -6186,8 +6484,14 @@ if (!gotTheLock) {
         const statusMediaType = tool === MediaGenerationTool.Image ? 'image' : 'video';
         console.log(`[MediaGeneration] checking ${mediaType} task status for task ${taskId}.`);
         const resp = await fetchWithAuth(`${serverBaseUrl}/api/media/${mediaType}/tasks/${taskId}`);
-        console.log(`[MediaGeneration] server returned HTTP ${resp.status} for ${mediaType} task status.`);
-        const body = await resp.json() as { code: number; data?: Record<string, unknown>; message?: string };
+        console.log(
+          `[MediaGeneration] server returned HTTP ${resp.status} for ${mediaType} task status.`,
+        );
+        const body = (await resp.json()) as {
+          code: number;
+          data?: Record<string, unknown>;
+          message?: string;
+        };
         if (!isRequestAccountCurrent()) return staleAccountResult();
         if (handleEnterpriseAccountContextMismatch(body.code, requestAccountScope)) {
           return {
@@ -6200,8 +6504,14 @@ if (!gotTheLock) {
           };
         }
         if (body.code !== 0) {
-          console.warn('[MediaGeneration] server rejected task status request:', serializeForLog({ mediaType, taskId, code: body.code, message: body.message }));
-          return { content: [{ type: 'text', text: body.message || 'Failed to get task status.' }], isError: true };
+          console.warn(
+            '[MediaGeneration] server rejected task status request:',
+            serializeForLog({ mediaType, taskId, code: body.code, message: body.message }),
+          );
+          return {
+            content: [{ type: 'text', text: body.message || 'Failed to get task status.' }],
+            isError: true,
+          };
         }
         const task = body.data!;
         rememberMediaTaskOwnership(
@@ -6212,12 +6522,14 @@ if (!gotTheLock) {
         const status = task.status as string;
         const resultUrls = (task.resultUrls as string[]) || [];
         const outputModel = mediaModelIdForOutput(task.model);
-        const upstreamModel = typeof task.upstreamModel === 'string' && task.upstreamModel.trim()
-          ? task.upstreamModel.trim()
-          : undefined;
-        const modelSelectionReason = typeof task.modelSelectionReason === 'string' && task.modelSelectionReason.trim()
-          ? task.modelSelectionReason.trim()
-          : undefined;
+        const upstreamModel =
+          typeof task.upstreamModel === 'string' && task.upstreamModel.trim()
+            ? task.upstreamModel.trim()
+            : undefined;
+        const modelSelectionReason =
+          typeof task.modelSelectionReason === 'string' && task.modelSelectionReason.trim()
+            ? task.modelSelectionReason.trim()
+            : undefined;
         if (sessionId && TERMINAL_MEDIA_TASK_STATUSES.has(status)) {
           markMediaTaskHandledByStatusPolling(
             sessionId,
@@ -6239,27 +6551,30 @@ if (!gotTheLock) {
           if (!isRequestAccountCurrent()) return staleAccountResult();
           if (persistResult && persistResult.saved.length > 0) {
             detailsAssets = persistResult.saved;
-            resultLines = persistResult.saved.map(asset =>
-              `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`
+            resultLines = persistResult.saved.map(
+              asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`,
             );
           } else {
-            resultLines = resultUrls.map((url, index) => `  - ![Generated image ${index + 1}](${url})`);
+            resultLines = resultUrls.map(
+              (url, index) => `  - ![Generated image ${index + 1}](${url})`,
+            );
           }
         } else if (status === 'succeeded' && statusMediaType === 'video' && sessionId) {
           const persistResult = await persistGeneratedVideos(sessionId, assets);
           if (!isRequestAccountCurrent()) return staleAccountResult();
           if (persistResult && persistResult.saved.length > 0) {
             detailsAssets = persistResult.saved;
-            resultLines = persistResult.saved.map(asset =>
-              `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`
+            resultLines = persistResult.saved.map(
+              asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`,
             );
           } else {
             resultLines = resultUrls.map(url => `  - ${url}`);
           }
         } else {
-          resultLines = statusMediaType === 'image'
-            ? resultUrls.map((_url, index) => `  - Generated image ${index + 1}`)
-            : resultUrls.map(url => `  - ${url}`);
+          resultLines =
+            statusMediaType === 'image'
+              ? resultUrls.map((_url, index) => `  - Generated image ${index + 1}`)
+              : resultUrls.map(url => `  - ${url}`);
         }
 
         const lines = [
@@ -6282,7 +6597,9 @@ if (!gotTheLock) {
           ...(modelSelectionReason ? { modelSelectionReason } : {}),
           mediaType: statusMediaType,
           ...(detailsAssets.length > 0 ? { assets: detailsAssets } : {}),
-          ...(task.quotaRemaining != null ? { billing: { quotaRemaining: task.quotaRemaining } } : {}),
+          ...(task.quotaRemaining != null
+            ? { billing: { quotaRemaining: task.quotaRemaining } }
+            : {}),
         };
         if (sessionId) {
           emitMediaStatusPollUpdate({
@@ -6302,7 +6619,10 @@ if (!gotTheLock) {
         const taskId = args.taskId as string;
         if (!taskId) {
           console.warn('[MediaGeneration] blocked cancel request because taskId was missing.');
-          return { content: [{ type: 'text', text: 'taskId is required for cancel action.' }], isError: true };
+          return {
+            content: [{ type: 'text', text: 'taskId is required for cancel action.' }],
+            isError: true,
+          };
         }
         if (requestAccountScope === null) return staleAccountResult();
         const taskOwnerAccountKey = resolveMediaTaskOwner(taskId);
@@ -6310,9 +6630,12 @@ if (!gotTheLock) {
           return staleAccountResult();
         }
         console.log(`[MediaGeneration] cancelling video task ${taskId}.`);
-        const resp = await fetchWithAuth(`${serverBaseUrl}/api/media/videos/tasks/${taskId}/cancel`, { method: 'POST' });
+        const resp = await fetchWithAuth(
+          `${serverBaseUrl}/api/media/videos/tasks/${taskId}/cancel`,
+          { method: 'POST' },
+        );
         console.log(`[MediaGeneration] server returned HTTP ${resp.status} for video task cancel.`);
-        const body = await resp.json() as { code: number; message?: string };
+        const body = (await resp.json()) as { code: number; message?: string };
         if (!isRequestAccountCurrent()) return staleAccountResult();
         if (handleEnterpriseAccountContextMismatch(body.code, requestAccountScope)) {
           return {
@@ -6321,8 +6644,14 @@ if (!gotTheLock) {
           };
         }
         if (body.code !== 0) {
-          console.warn('[MediaGeneration] server rejected task cancel request:', serializeForLog({ taskId, code: body.code, message: body.message }));
-          return { content: [{ type: 'text', text: body.message || 'Failed to cancel task.' }], isError: true };
+          console.warn(
+            '[MediaGeneration] server rejected task cancel request:',
+            serializeForLog({ taskId, code: body.code, message: body.message }),
+          );
+          return {
+            content: [{ type: 'text', text: body.message || 'Failed to cancel task.' }],
+            isError: true,
+          };
         }
         return {
           content: [{ type: 'text', text: `Task ${taskId} cancelled successfully.` }],
@@ -6332,7 +6661,8 @@ if (!gotTheLock) {
 
       // action === 'generate'
       const mediaType = tool === MediaGenerationTool.Image ? 'image' : 'video';
-      const endpoint = mediaType === 'image' ? '/api/media/images/generate' : '/api/media/videos/generate';
+      const endpoint =
+        mediaType === 'image' ? '/api/media/images/generate' : '/api/media/videos/generate';
 
       // Video generation confirmation: inform user about cost and duration
       if (mediaType === 'video') {
@@ -6350,21 +6680,24 @@ if (!gotTheLock) {
           '~~（链接有时效性，请尽快下载）~~',
         ].join('\n');
         const confirmResponse = await getMcpRuntime().askUserInternal(
-          [{
-            question: questionText,
-            title: '确认生成视频？',
-            subtitle,
-            options: [
-              { label: '确认生成', description: '开始视频生成任务' },
-              { label: '取消', description: '暂不生成' },
-            ],
-          }],
+          [
+            {
+              question: questionText,
+              title: '确认生成视频？',
+              subtitle,
+              options: [
+                { label: '确认生成', description: '开始视频生成任务' },
+                { label: '取消', description: '暂不生成' },
+              ],
+            },
+          ],
           undefined,
           { sessionKey: request.context.sessionKey },
         );
 
-        const userCancelled = confirmResponse?.behavior === 'deny'
-          || confirmResponse?.answers?.[questionText] === '取消';
+        const userCancelled =
+          confirmResponse?.behavior === 'deny' ||
+          confirmResponse?.answers?.[questionText] === '取消';
 
         if (!isRequestAccountCurrent()) return staleAccountResult();
         if (userCancelled) {
@@ -6418,7 +6751,11 @@ if (!gotTheLock) {
       if (args.providerOptions) {
         params.providerOptions = args.providerOptions;
         const providerOptions = args.providerOptions;
-        if (providerOptions && typeof providerOptions === 'object' && !Array.isArray(providerOptions)) {
+        if (
+          providerOptions &&
+          typeof providerOptions === 'object' &&
+          !Array.isArray(providerOptions)
+        ) {
           const rawMedia = (providerOptions as Record<string, unknown>).media;
           if (!params.media && Array.isArray(rawMedia)) {
             params.media = rawMedia;
@@ -6428,21 +6765,29 @@ if (!gotTheLock) {
 
       const refs = sessionId ? mediaReferencesBySession.get(sessionId) : undefined;
       params = applyMediaReferencesToGenerationParams({
-        mediaType: mediaType === MediaGenerationRequestType.Video
-          ? MediaGenerationRequestType.Video
-          : MediaGenerationRequestType.Image,
+        mediaType:
+          mediaType === MediaGenerationRequestType.Video
+            ? MediaGenerationRequestType.Video
+            : MediaGenerationRequestType.Image,
         params,
         refs,
       });
 
       // Convert local file paths to data URLs
       const MEDIA_MIME: Record<string, string> = {
-        '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
-        '.gif': 'image/gif', '.webp': 'image/webp', '.bmp': 'image/bmp',
-        '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.webp': 'image/webp',
+        '.bmp': 'image/bmp',
+        '.mp4': 'video/mp4',
+        '.mov': 'video/quicktime',
+        '.webm': 'video/webm',
       };
       const resolveRef = async (ref: string): Promise<string> => {
-        if (!ref || ref.startsWith('http') || ref.startsWith('oss://') || ref.startsWith('data:')) return ref;
+        if (!ref || ref.startsWith('http') || ref.startsWith('oss://') || ref.startsWith('data:'))
+          return ref;
         const filePath = ref.startsWith('file://') ? fileURLToPath(ref) : path.resolve(ref);
         const buf = await fs.promises.readFile(filePath);
         const mime = MEDIA_MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
@@ -6505,48 +6850,56 @@ if (!gotTheLock) {
         const imageRoles = Array.isArray(params.imageRoles)
           ? (params.imageRoles as unknown[]).map(role => String(role).toLowerCase())
           : [];
-        const mediaItems = Array.isArray(params.media) ? params.media as unknown[] : [];
+        const mediaItems = Array.isArray(params.media) ? (params.media as unknown[]) : [];
         const mediaTypes = mediaItems
           .filter(item => item && typeof item === 'object' && !Array.isArray(item))
           .map(item => String((item as Record<string, unknown>).type || '').toLowerCase());
-        const hasReferenceImage = (Array.isArray(params.referenceImages) && (params.referenceImages as unknown[]).length > 0)
-          || imageRoles.some(role => role === 'reference_image' || role === 'reference')
-          || mediaTypes.some(type => type === 'reference_image');
+        const hasReferenceImage =
+          (Array.isArray(params.referenceImages) &&
+            (params.referenceImages as unknown[]).length > 0) ||
+          imageRoles.some(role => role === 'reference_image' || role === 'reference') ||
+          mediaTypes.some(type => type === 'reference_image');
         if (hasReferenceImage) return 'r2v';
 
-        const hasFirstFrame = typeof params.firstFrame === 'string'
-          || imageRoles.some(role => role === 'first_frame' || role === 'firstframe')
-          || mediaTypes.some(type => type === 'first_frame')
-          || (Array.isArray(params.images) && (params.images as unknown[]).length > 0);
+        const hasFirstFrame =
+          typeof params.firstFrame === 'string' ||
+          imageRoles.some(role => role === 'first_frame' || role === 'firstframe') ||
+          mediaTypes.some(type => type === 'first_frame') ||
+          (Array.isArray(params.images) && (params.images as unknown[]).length > 0);
         return hasFirstFrame ? 'i2v' : 't2v';
       };
 
-      const happyHorse11Selection = mediaType === 'video'
-        ? resolveHappyHorse11Selection(selectedModel, params)
-        : null;
+      const happyHorse11Selection =
+        mediaType === 'video' ? resolveHappyHorse11Selection(selectedModel, params) : null;
       const generateReq = {
         model: selectedModel,
-        type: mediaType === 'video'
-          ? (happyHorse11Selection?.type ?? inferVideoGenerationType())
-          : mediaType,
+        type:
+          mediaType === 'video'
+            ? (happyHorse11Selection?.type ?? inferVideoGenerationType())
+            : mediaType,
         prompt,
         params,
       };
 
-      console.log('[MediaGeneration] sending generate request to server:', serializeForLog({
-        endpoint,
-        mediaType,
-        selectedModel,
-        selectedModelSource,
-        ...(happyHorse11Selection ? {
-          upstreamModel: happyHorse11Selection.upstreamModel,
-          modelSelectionReason: happyHorse11Selection.reason,
-          inputImageCount: happyHorse11Selection.imageCount,
-        } : {}),
-        promptLength: prompt.length,
-        promptPreview: prompt.slice(0, 120),
-        params: summarizeMediaGenerationParamsForLog(params),
-      }));
+      console.log(
+        '[MediaGeneration] sending generate request to server:',
+        serializeForLog({
+          endpoint,
+          mediaType,
+          selectedModel,
+          selectedModelSource,
+          ...(happyHorse11Selection
+            ? {
+                upstreamModel: happyHorse11Selection.upstreamModel,
+                modelSelectionReason: happyHorse11Selection.reason,
+                inputImageCount: happyHorse11Selection.imageCount,
+              }
+            : {}),
+          promptLength: prompt.length,
+          promptPreview: prompt.slice(0, 120),
+          params: summarizeMediaGenerationParamsForLog(params),
+        }),
+      );
       if (!isRequestAccountCurrent()) return staleAccountResult();
       const idempotencyKey = crypto.randomUUID();
       const resp = await fetchWithAuth(`${serverBaseUrl}${endpoint}`, {
@@ -6557,8 +6910,14 @@ if (!gotTheLock) {
         },
         body: JSON.stringify(generateReq),
       });
-      console.log(`[MediaGeneration] server returned HTTP ${resp.status} for ${mediaType} generate request.`);
-      const body = await resp.json() as { code: number; data?: Record<string, unknown>; message?: string };
+      console.log(
+        `[MediaGeneration] server returned HTTP ${resp.status} for ${mediaType} generate request.`,
+      );
+      const body = (await resp.json()) as {
+        code: number;
+        data?: Record<string, unknown>;
+        message?: string;
+      };
       if (!isRequestAccountCurrent()) return staleAccountResult();
       if (handleEnterpriseAccountContextMismatch(body.code, requestAccountScope)) {
         return {
@@ -6573,20 +6932,25 @@ if (!gotTheLock) {
 
       const enterpriseQuotaError = resolveEnterpriseQuotaError(body.code, body.message);
       if (enterpriseQuotaError) {
-        console.warn('[MediaGeneration] server rejected generate request because enterprise quota is unavailable:', serializeForLog({
-          mediaType,
-          selectedModel,
-          code: enterpriseQuotaError.code,
-          reason: enterpriseQuotaError.reason,
-          message: body.message,
-        }));
+        console.warn(
+          '[MediaGeneration] server rejected generate request because enterprise quota is unavailable:',
+          serializeForLog({
+            mediaType,
+            selectedModel,
+            code: enterpriseQuotaError.code,
+            reason: enterpriseQuotaError.reason,
+            message: body.message,
+          }),
+        );
         notifyAuthQuotaChanged();
         const message = body.message?.trim() || t('enterpriseMediaQuotaUnavailable');
         return {
-          content: [{
-            type: 'text',
-            text: `${message} (error ${enterpriseQuotaError.code})`,
-          }],
+          content: [
+            {
+              type: 'text',
+              text: `${message} (error ${enterpriseQuotaError.code})`,
+            },
+          ],
           isError: true,
           details: {
             status: 'failed',
@@ -6597,23 +6961,40 @@ if (!gotTheLock) {
         };
       }
       if (body.code === 40203) {
-        console.warn('[MediaGeneration] server rejected generate request because subscription is required.');
+        console.warn(
+          '[MediaGeneration] server rejected generate request because subscription is required.',
+        );
         return {
-          content: [{ type: 'text', text: 'Media generation requires an active subscription. Please subscribe to use this feature.' }],
+          content: [
+            {
+              type: 'text',
+              text: 'Media generation requires an active subscription. Please subscribe to use this feature.',
+            },
+          ],
           isError: true,
           details: { status: 'failed', warnings: ['MEDIA_SUBSCRIPTION_REQUIRED'] },
         };
       }
       if (body.code === 40204) {
-        console.warn('[MediaGeneration] server rejected generate request because quota was exhausted.');
+        console.warn(
+          '[MediaGeneration] server rejected generate request because quota was exhausted.',
+        );
         return {
-          content: [{ type: 'text', text: 'Media generation quota exhausted for this period. Please wait for quota reset or upgrade your plan.' }],
+          content: [
+            {
+              type: 'text',
+              text: 'Media generation quota exhausted for this period. Please wait for quota reset or upgrade your plan.',
+            },
+          ],
           isError: true,
           details: { status: 'failed', warnings: ['MEDIA_QUOTA_EXHAUSTED'] },
         };
       }
       if (body.code !== 0) {
-        console.warn('[MediaGeneration] server rejected generate request:', serializeForLog({ mediaType, selectedModel, code: body.code, message: body.message }));
+        console.warn(
+          '[MediaGeneration] server rejected generate request:',
+          serializeForLog({ mediaType, selectedModel, code: body.code, message: body.message }),
+        );
         return {
           content: [{ type: 'text', text: body.message || 'Media generation request failed.' }],
           isError: true,
@@ -6630,22 +7011,27 @@ if (!gotTheLock) {
       const status = task.status as string;
       const resultUrls = (task.resultUrls as string[]) || [];
       const outputModel = mediaModelIdForOutput(task.model, selectedModel);
-      const upstreamModel = typeof task.upstreamModel === 'string' && task.upstreamModel.trim()
-        ? task.upstreamModel.trim()
-        : happyHorse11Selection?.upstreamModel;
-      const modelSelectionReason = typeof task.modelSelectionReason === 'string' && task.modelSelectionReason.trim()
-        ? task.modelSelectionReason.trim()
-        : happyHorse11Selection?.reason;
-      console.log('[MediaGeneration] server accepted generate request:', serializeForLog({
-        mediaType,
-        taskId: task.taskId,
-        status,
-        model: outputModel,
-        upstreamModel,
-        modelSelectionReason,
-        resultCount: resultUrls.length,
-        quotaRemaining: task.quotaRemaining,
-      }));
+      const upstreamModel =
+        typeof task.upstreamModel === 'string' && task.upstreamModel.trim()
+          ? task.upstreamModel.trim()
+          : happyHorse11Selection?.upstreamModel;
+      const modelSelectionReason =
+        typeof task.modelSelectionReason === 'string' && task.modelSelectionReason.trim()
+          ? task.modelSelectionReason.trim()
+          : happyHorse11Selection?.reason;
+      console.log(
+        '[MediaGeneration] server accepted generate request:',
+        serializeForLog({
+          mediaType,
+          taskId: task.taskId,
+          status,
+          model: outputModel,
+          upstreamModel,
+          modelSelectionReason,
+          resultCount: resultUrls.length,
+          quotaRemaining: task.quotaRemaining,
+        }),
+      );
       const assets = resultUrls.map((url, outputIndex) => ({
         type: mediaType,
         url,
@@ -6679,12 +7065,14 @@ if (!gotTheLock) {
         if (!isRequestAccountCurrent()) return staleAccountResult();
         if (persistResult && persistResult.saved.length > 0) {
           detailsAssets = persistResult.saved;
-          const fileLines = persistResult.saved.map(asset =>
-            `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`
+          const fileLines = persistResult.saved.map(
+            asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`,
           );
           lines.push(`Results:\n${fileLines.join('\n')}`);
         } else if (assets.length > 0) {
-          const resultLines = resultUrls.map((url, index) => `  - ![Generated image ${index + 1}](${url})`);
+          const resultLines = resultUrls.map(
+            (url, index) => `  - ![Generated image ${index + 1}](${url})`,
+          );
           lines.push(`Results:\n${resultLines.join('\n')}`);
         }
       } else if (status === 'succeeded' && mediaType === 'video' && sessionId) {
@@ -6692,8 +7080,8 @@ if (!gotTheLock) {
         if (!isRequestAccountCurrent()) return staleAccountResult();
         if (persistResult && persistResult.saved.length > 0) {
           detailsAssets = persistResult.saved;
-          const fileLines = persistResult.saved.map(asset =>
-            `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`
+          const fileLines = persistResult.saved.map(
+            asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`,
           );
           lines.push(`Results:\n${fileLines.join('\n')}`);
         } else if (assets.length > 0) {
@@ -6710,9 +7098,10 @@ if (!gotTheLock) {
         if (sessionId && requestAccountScope && isRequestAccountCurrent()) {
           const metadata = task.metadata as Record<string, unknown> | undefined;
           const expiresAfterSec = metadata?.execution_expires_after ?? task.execution_expires_after;
-          const timeoutMs = typeof expiresAfterSec === 'number' && expiresAfterSec > 0
-            ? expiresAfterSec * 1000
-            : MEDIA_TASK_DEFAULT_TIMEOUT_MS;
+          const timeoutMs =
+            typeof expiresAfterSec === 'number' && expiresAfterSec > 0
+              ? expiresAfterSec * 1000
+              : MEDIA_TASK_DEFAULT_TIMEOUT_MS;
           registerMediaTaskForPolling({
             taskId: String(task.taskId),
             sessionId,
@@ -6746,7 +7135,9 @@ if (!gotTheLock) {
       if (!isRequestAccountCurrent()) return staleAccountResult();
       const msg = error instanceof Error ? error.message : String(error);
       if (msg === 'No auth tokens') {
-        console.warn('[MediaGeneration] blocked media generation because the user is not logged in.');
+        console.warn(
+          '[MediaGeneration] blocked media generation because the user is not logged in.',
+        );
         return { content: [{ type: 'text', text: t('authLoginRequired') }], isError: true };
       }
       console.error('[MediaGeneration] media generation request failed:', error);
@@ -6767,11 +7158,13 @@ if (!gotTheLock) {
     mediaTaskPollTimer = setInterval(() => {
       if (mediaTaskPollInFlight) return;
       mediaTaskPollInFlight = true;
-      void pollPendingMediaTasks().catch(error => {
-        console.warn('[MediaGeneration] pending task polling cycle failed:', error);
-      }).finally(() => {
-        mediaTaskPollInFlight = false;
-      });
+      void pollPendingMediaTasks()
+        .catch(error => {
+          console.warn('[MediaGeneration] pending task polling cycle failed:', error);
+        })
+        .finally(() => {
+          mediaTaskPollInFlight = false;
+        });
     }, MEDIA_POLL_FAST_MS);
   };
 
@@ -6810,18 +7203,17 @@ if (!gotTheLock) {
         accountGeneration: tracker.accountGeneration,
       };
 
-      if (isMediaTaskHandledByStatusPolling(
-        tracker.sessionId,
-        tracker.ownerAccountKey,
-        taskId,
-      )) {
+      if (isMediaTaskHandledByStatusPolling(tracker.sessionId, tracker.ownerAccountKey, taskId)) {
         tasksToRemove.set(taskId, tracker);
         continue;
       }
 
       if (now - tracker.startedAt > tracker.timeoutMs) {
         tasksToRemove.set(taskId, tracker);
-        emitMediaTaskMessage(tracker.sessionId, `${tracker.mediaType === 'video' ? 'Video' : 'Image'} generation timed out.\nTask ID: ${taskId}\nStatus: timeout`);
+        emitMediaTaskMessage(
+          tracker.sessionId,
+          `${tracker.mediaType === 'video' ? 'Video' : 'Image'} generation timed out.\nTask ID: ${taskId}\nStatus: timeout`,
+        );
         continue;
       }
 
@@ -6845,7 +7237,11 @@ if (!gotTheLock) {
       try {
         const endpoint = tracker.mediaType === 'video' ? 'videos' : 'images';
         const resp = await fetchWithAuth(`${serverBaseUrl}/api/media/${endpoint}/tasks/${taskId}`);
-        const body = await resp.json() as { code: number; data?: Record<string, unknown>; message?: string };
+        const body = (await resp.json()) as {
+          code: number;
+          data?: Record<string, unknown>;
+          message?: string;
+        };
 
         if (!isMediaAccountScopeCurrent(trackerAccountScope, getCurrentMediaAccountScope())) {
           continue;
@@ -6853,17 +7249,9 @@ if (!gotTheLock) {
         if (handleEnterpriseAccountContextMismatch(body.code, trackerAccountScope)) continue;
         if (body.code !== 0) continue;
         const task = body.data!;
-        rememberMediaTaskOwnership(
-          tracker.ownerAccountKey,
-          task.taskId,
-          task.upstreamTaskId,
-        );
+        rememberMediaTaskOwnership(tracker.ownerAccountKey, task.taskId, task.upstreamTaskId);
         const status = task.status as string;
-        if (isMediaTaskHandledByStatusPolling(
-          tracker.sessionId,
-          tracker.ownerAccountKey,
-          taskId,
-        )) {
+        if (isMediaTaskHandledByStatusPolling(tracker.sessionId, tracker.ownerAccountKey, taskId)) {
           tasksToRemove.set(taskId, tracker);
           continue;
         }
@@ -6871,12 +7259,14 @@ if (!gotTheLock) {
         if (TERMINAL_MEDIA_TASK_STATUSES.has(status)) {
           const resultUrls = (task.resultUrls as string[]) || [];
           const outputModel = mediaModelIdForOutput(task.model, tracker.model);
-          const upstreamModel = typeof task.upstreamModel === 'string' && task.upstreamModel.trim()
-            ? task.upstreamModel.trim()
-            : undefined;
-          const modelSelectionReason = typeof task.modelSelectionReason === 'string' && task.modelSelectionReason.trim()
-            ? task.modelSelectionReason.trim()
-            : undefined;
+          const upstreamModel =
+            typeof task.upstreamModel === 'string' && task.upstreamModel.trim()
+              ? task.upstreamModel.trim()
+              : undefined;
+          const modelSelectionReason =
+            typeof task.modelSelectionReason === 'string' && task.modelSelectionReason.trim()
+              ? task.modelSelectionReason.trim()
+              : undefined;
           const displayModel = upstreamModel || outputModel;
           const assets = resultUrls.map((url, outputIndex) => ({
             type: tracker.mediaType,
@@ -6890,7 +7280,9 @@ if (!gotTheLock) {
               continue;
             }
             if (persistResult && persistResult.saved.length > 0) {
-              const fileLines = persistResult.saved.map(asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`);
+              const fileLines = persistResult.saved.map(
+                asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`,
+              );
               emitMediaTaskMessage(
                 tracker.sessionId,
                 `Saved generated ${persistResult.saved.length === 1 ? 'image' : 'images'}:\n${fileLines.join('\n')}`,
@@ -6904,15 +7296,20 @@ if (!gotTheLock) {
                 },
               );
             } else {
-              const resultLines = resultUrls.map((_url, index) => `  - Generated image ${index + 1}`);
-              emitMediaTaskMessage(tracker.sessionId, [
-                'Image generation succeeded.',
-                `Task ID: ${taskId}`,
-                `Model: ${displayModel}`,
-                ...(modelSelectionReason ? [`Selection reason: ${modelSelectionReason}`] : []),
-                ...(resultUrls.length > 0 ? [`Results:\n${resultLines.join('\n')}`] : []),
-                ...(task.errorMessage ? [`Error: ${task.errorMessage}`] : []),
-              ].join('\n'));
+              const resultLines = resultUrls.map(
+                (_url, index) => `  - Generated image ${index + 1}`,
+              );
+              emitMediaTaskMessage(
+                tracker.sessionId,
+                [
+                  'Image generation succeeded.',
+                  `Task ID: ${taskId}`,
+                  `Model: ${displayModel}`,
+                  ...(modelSelectionReason ? [`Selection reason: ${modelSelectionReason}`] : []),
+                  ...(resultUrls.length > 0 ? [`Results:\n${resultLines.join('\n')}`] : []),
+                  ...(task.errorMessage ? [`Error: ${task.errorMessage}`] : []),
+                ].join('\n'),
+              );
             }
           } else if (status === 'succeeded' && tracker.mediaType === 'video') {
             const persistResult = await persistGeneratedVideos(tracker.sessionId, assets);
@@ -6920,7 +7317,9 @@ if (!gotTheLock) {
               continue;
             }
             if (persistResult && persistResult.saved.length > 0) {
-              const fileLines = persistResult.saved.map(asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`);
+              const fileLines = persistResult.saved.map(
+                asset => `  - [${asset.filename}](${pathToFileURL(asset.filePath).toString()})`,
+              );
               emitMediaTaskMessage(
                 tracker.sessionId,
                 [
@@ -6964,9 +7363,10 @@ if (!gotTheLock) {
               );
             }
           } else {
-            const resultLines = tracker.mediaType === 'image'
-              ? resultUrls.map((_url, index) => `  - Generated image ${index + 1}`)
-              : resultUrls.map(url => `  - ${url}`);
+            const resultLines =
+              tracker.mediaType === 'image'
+                ? resultUrls.map((_url, index) => `  - Generated image ${index + 1}`)
+                : resultUrls.map(url => `  - ${url}`);
             const lines = [
               `${tracker.mediaType === 'video' ? 'Video' : 'Image'} generation ${status}.`,
               `Task ID: ${taskId}`,
@@ -6976,11 +7376,13 @@ if (!gotTheLock) {
             ];
             emitMediaTaskMessage(tracker.sessionId, lines.join('\n'));
           }
-          if (!shouldRemoveMediaTaskAfterPoll(
-            trackerAccountScope,
-            getCurrentMediaAccountScope(),
-            true,
-          )) {
+          if (
+            !shouldRemoveMediaTaskAfterPoll(
+              trackerAccountScope,
+              getCurrentMediaAccountScope(),
+              true,
+            )
+          ) {
             continue;
           }
           tasksToRemove.set(taskId, tracker);
@@ -7009,7 +7411,11 @@ if (!gotTheLock) {
     }
   };
 
-  const emitMediaTaskMessage = (sessionId: string, content: string, metadata?: Record<string, unknown>) => {
+  const emitMediaTaskMessage = (
+    sessionId: string,
+    content: string,
+    metadata?: Record<string, unknown>,
+  ) => {
     let message: CoworkMessage = {
       id: `media-task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: 'system' as const,
@@ -7043,7 +7449,9 @@ if (!gotTheLock) {
     const sessionForAssets = getCoworkStore().getSession(sessionId);
     const cwd = sessionForAssets?.cwd?.trim();
     if (!cwd) {
-      console.warn('[MediaGeneration] skipped image persistence because the session working directory was missing.');
+      console.warn(
+        '[MediaGeneration] skipped image persistence because the session working directory was missing.',
+      );
       return null;
     }
 
@@ -7068,10 +7476,16 @@ if (!gotTheLock) {
         fetchAsset: url => session.defaultSession.fetch(url),
       });
       for (const saved of result.saved) {
-        persistedGeneratedImageAssetsByUrl.set(`${sessionId}:${saved.originalUrl || saved.url}`, saved);
+        persistedGeneratedImageAssetsByUrl.set(
+          `${sessionId}:${saved.originalUrl || saved.url}`,
+          saved,
+        );
       }
       for (const failed of result.failed) {
-        console.warn('[MediaGeneration] failed to persist generated image:', serializeForLog({ sessionId, error: failed.error }));
+        console.warn(
+          '[MediaGeneration] failed to persist generated image:',
+          serializeForLog({ sessionId, error: failed.error }),
+        );
       }
       return {
         saved: [...cachedAssets, ...result.saved],
@@ -7093,7 +7507,9 @@ if (!gotTheLock) {
     const sessionForAssets = getCoworkStore().getSession(sessionId);
     const cwd = sessionForAssets?.cwd?.trim();
     if (!cwd) {
-      console.warn('[MediaGeneration] skipped video persistence because the session working directory was missing.');
+      console.warn(
+        '[MediaGeneration] skipped video persistence because the session working directory was missing.',
+      );
       return null;
     }
 
@@ -7118,10 +7534,16 @@ if (!gotTheLock) {
         fetchAsset: url => session.defaultSession.fetch(url),
       });
       for (const saved of result.saved) {
-        persistedGeneratedVideoAssetsByUrl.set(`${sessionId}:${saved.originalUrl || saved.url}`, saved);
+        persistedGeneratedVideoAssetsByUrl.set(
+          `${sessionId}:${saved.originalUrl || saved.url}`,
+          saved,
+        );
       }
       for (const failed of result.failed) {
-        console.warn('[MediaGeneration] failed to persist generated video:', serializeForLog({ sessionId, error: failed.error }));
+        console.warn(
+          '[MediaGeneration] failed to persist generated video:',
+          serializeForLog({ sessionId, error: failed.error }),
+        );
       }
       return {
         saved: [...cachedAssets, ...result.saved],
@@ -7140,17 +7562,21 @@ if (!gotTheLock) {
     mediaGenerationEntitled: cachedMediaGenerationEntitled,
   });
 
-  const hasAuthQuotaGateStateChanged = (previous: ReturnType<typeof getAuthQuotaGateState>) => (
-    cachedSubscriptionStatus !== previous.subscriptionStatus
-    || cachedMediaGenerationEntitled !== previous.mediaGenerationEntitled
-  );
+  const hasAuthQuotaGateStateChanged = (previous: ReturnType<typeof getAuthQuotaGateState>) =>
+    cachedSubscriptionStatus !== previous.subscriptionStatus ||
+    cachedMediaGenerationEntitled !== previous.mediaGenerationEntitled;
 
-  const syncOpenClawConfigIfAuthQuotaGateChanged = (previous: ReturnType<typeof getAuthQuotaGateState>) => {
+  const syncOpenClawConfigIfAuthQuotaGateChanged = (
+    previous: ReturnType<typeof getAuthQuotaGateState>,
+  ) => {
     if (hasAuthQuotaGateStateChanged(previous)) {
       // The auth quota gate is enforced in the main process. Let config sync
       // decide whether its rendered changes require a restart instead of
       // forcing one before the post-login server-model metadata sync.
-      syncOpenClawConfig({ reason: MEDIA_ENTITLEMENT_SYNC_REASON, restartGatewayIfRunning: false }).catch((error) => {
+      syncOpenClawConfig({
+        reason: MEDIA_ENTITLEMENT_SYNC_REASON,
+        restartGatewayIfRunning: false,
+      }).catch(error => {
         console.warn('[Auth] failed to sync OpenClaw config after quota gate changed:', error);
       });
       return true;
@@ -7190,11 +7616,12 @@ if (!gotTheLock) {
 
     const quotaGateSyncScheduled = syncOpenClawConfigIfAuthQuotaGateChanged(previousQuotaGateState);
     if (!quotaGateSyncScheduled) {
-      const syncReason = options.reason === AuthSessionChangeReason.EnterpriseMembershipRevoked
-        ? 'enterprise-membership-revoked-server-models-cleared'
-        : options.reason === AuthSessionChangeReason.RefreshRejected
-          ? 'auth-session-expired-server-models-cleared'
-          : 'auth-logout-server-models-cleared';
+      const syncReason =
+        options.reason === AuthSessionChangeReason.EnterpriseMembershipRevoked
+          ? 'enterprise-membership-revoked-server-models-cleared'
+          : options.reason === AuthSessionChangeReason.RefreshRejected
+            ? 'auth-session-expired-server-models-cleared'
+            : 'auth-logout-server-models-cleared';
       syncOpenClawConfig({
         reason: syncReason,
         restartGatewayIfRunning: false,
@@ -7239,6 +7666,7 @@ if (!gotTheLock) {
     try {
       console.log('[Auth] starting browser login with local callback server');
       localCallback = await startAuthLocalCallback({
+        allowedReturnToOrigins: [new URL(baseUrl).origin],
         onCode: code => {
           authCallbackRouter.handleAuthCode(code);
           focusMainWindow('local auth callback');
@@ -7296,12 +7724,13 @@ if (!gotTheLock) {
       refreshToken: startingTokens?.refreshToken ?? null,
     };
     activeAuthExchangeIntent = exchangeIntent;
-    const isExchangeIntentCurrent = (): boolean => isAuthExchangeIntentCurrent(
-      exchangeIntent,
-      activeAuthExchangeIntent?.intentId ?? null,
-      authAccountGeneration,
-      getAuthTokens(),
-    );
+    const isExchangeIntentCurrent = (): boolean =>
+      isAuthExchangeIntentCurrent(
+        exchangeIntent,
+        activeAuthExchangeIntent?.intentId ?? null,
+        authAccountGeneration,
+        getAuthTokens(),
+      );
     let committedExchangeGeneration: number | null = null;
 
     try {
@@ -7347,16 +7776,15 @@ if (!gotTheLock) {
       saveAuthUser(body.data.user);
       committedExchangeGeneration = exchangeAccountGeneration;
       const enterpriseContext = await syncEnterpriseAccountContextFromPayload(body.data);
-      const requiresEnterpriseContext = (
-        readAccountMode(body.data) === EnterpriseAccountMode.Enterprise
-        || body.data.quota.subscriptionStatus === AuthSubscriptionStatus.Enterprise
-      );
+      const requiresEnterpriseContext =
+        readAccountMode(body.data) === EnterpriseAccountMode.Enterprise ||
+        body.data.quota.subscriptionStatus === AuthSubscriptionStatus.Enterprise;
       if (requiresEnterpriseContext && !enterpriseContext) {
         throw new Error('Enterprise account context was unavailable after token exchange');
       }
       if (
-        authAccountGeneration !== exchangeAccountGeneration
-        || authExchangeIntentSequence !== exchangeIntent.intentId
+        authAccountGeneration !== exchangeAccountGeneration ||
+        authExchangeIntentSequence !== exchangeIntent.intentId
       ) {
         return { success: false, error: t('authAccountChanged') };
       }
@@ -7382,9 +7810,9 @@ if (!gotTheLock) {
       };
     } catch (error) {
       if (
-        committedExchangeGeneration !== null
-        && authAccountGeneration === committedExchangeGeneration
-        && authExchangeIntentSequence === exchangeIntent.intentId
+        committedExchangeGeneration !== null &&
+        authAccountGeneration === committedExchangeGeneration &&
+        authExchangeIntentSequence === exchangeIntent.intentId
       ) {
         authAccountGeneration += 1;
         if (startingTokens) {
@@ -7514,17 +7942,16 @@ if (!gotTheLock) {
       if (authAccountGeneration !== requestAccountGeneration) {
         return createUnavailableResponse();
       }
-      const requiresEnterpriseContext = (
-        readAccountMode(profileBody.data) === EnterpriseAccountMode.Enterprise
-        || quota?.subscriptionStatus === AuthSubscriptionStatus.Enterprise
-      );
+      const requiresEnterpriseContext =
+        readAccountMode(profileBody.data) === EnterpriseAccountMode.Enterprise ||
+        quota?.subscriptionStatus === AuthSubscriptionStatus.Enterprise;
       if (requiresEnterpriseContext && !enterpriseContext) {
         console.warn('[Auth] enterprise account context was unavailable during profile refresh');
         return createUnavailableResponse();
       }
       console.log(
-        `[Auth] profile refresh completed; quota=${quota ? 'present' : 'absent'}; `
-        + `enterpriseContext=${enterpriseContext ? 'present' : 'absent'}`,
+        `[Auth] profile refresh completed; quota=${quota ? 'present' : 'absent'}; ` +
+          `enterpriseContext=${enterpriseContext ? 'present' : 'absent'}`,
       );
       return {
         success: true,
@@ -7542,9 +7969,7 @@ if (!gotTheLock) {
         success: false,
         status,
         hasCredentials: status !== AuthSessionStatus.Unauthenticated && Boolean(getAuthTokens()),
-        cachedUser: status === AuthSessionStatus.TemporarilyUnavailable
-          ? getAuthUser()
-          : null,
+        cachedUser: status === AuthSessionStatus.TemporarilyUnavailable ? getAuthUser() : null,
       };
     }
   });
@@ -7593,8 +8018,8 @@ if (!gotTheLock) {
       console.log(`[Auth] requesting profile summary at ${profileSummaryUrl}`);
       const resp = await fetchWithAuth(profileSummaryUrl);
       if (
-        authAccountGeneration !== requestAccountGeneration
-        || !isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
+        authAccountGeneration !== requestAccountGeneration ||
+        !isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
       ) {
         return { success: false };
       }
@@ -7602,8 +8027,8 @@ if (!gotTheLock) {
       const responseAuthState = captureAuthStateSnapshot();
       const body = (await resp.json()) as { code: number; data: Record<string, unknown> };
       if (
-        !isCurrentAuthStateSnapshot(responseAuthState)
-        || !isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
+        !isCurrentAuthStateSnapshot(responseAuthState) ||
+        !isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())
       ) {
         return { success: false };
       }
@@ -7617,41 +8042,48 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle(AuthIpcChannel.ClaimCreditsFinalReward, async (_event, payload: { campaignCode?: string }) => {
-    try {
-      const campaignCode = payload?.campaignCode?.trim();
-      if (!campaignCode) return { success: false, error: 'Missing campaign code' };
-      const serverBaseUrl = getServerApiBaseUrl();
-      const url = appendKeyfromQuery(`${serverBaseUrl}/api/credits-reset-campaign/free-credits/claim`);
-      const resp = await fetchWithAuth(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ campaignCode }),
-      });
-      const body = (await resp.json()) as {
-        code: number;
-        message?: string;
-        data?: Record<string, unknown>;
-      };
-      if (!resp.ok || body.code !== 0 || !body.data) {
-        return { success: false, error: body.message || `Claim failed (${resp.status})` };
+  ipcMain.handle(
+    AuthIpcChannel.ClaimCreditsFinalReward,
+    async (_event, payload: { campaignCode?: string }) => {
+      try {
+        const campaignCode = payload?.campaignCode?.trim();
+        if (!campaignCode) return { success: false, error: 'Missing campaign code' };
+        const serverBaseUrl = getServerApiBaseUrl();
+        const url = appendKeyfromQuery(
+          `${serverBaseUrl}/api/credits-reset-campaign/free-credits/claim`,
+        );
+        const resp = await fetchWithAuth(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ campaignCode }),
+        });
+        const body = (await resp.json()) as {
+          code: number;
+          message?: string;
+          data?: Record<string, unknown>;
+        };
+        if (!resp.ok || body.code !== 0 || !body.data) {
+          return { success: false, error: body.message || `Claim failed (${resp.status})` };
+        }
+        return { success: true, data: body.data };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Claim failed',
+        };
       }
-      return { success: true, data: body.data };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Claim failed',
-      };
-    }
-  });
+    },
+  );
 
   ipcMain.handle(AuthIpcChannel.GetActiveClientBanner, async () => {
     try {
       const serverBaseUrl = getServerApiBaseUrl();
-      const url = appendKeyfromQuery(appendClientBannerVersion(
-        `${serverBaseUrl}/api/client-banners/active?placement=desktop_sidebar`,
-        app.getVersion(),
-      ));
+      const url = appendKeyfromQuery(
+        appendClientBannerVersion(
+          `${serverBaseUrl}/api/client-banners/active?placement=desktop_sidebar`,
+          app.getVersion(),
+        ),
+      );
       const resp = await net.fetch(url, { cache: 'no-store' });
       if (!resp.ok) return { success: false };
       const body = (await resp.json()) as { code: number; data: Record<string, unknown> | null };
@@ -7665,10 +8097,12 @@ if (!gotTheLock) {
   ipcMain.handle(AuthIpcChannel.GetActiveClientBanners, async () => {
     try {
       const serverBaseUrl = getServerApiBaseUrl();
-      const url = appendKeyfromQuery(appendClientBannerVersion(
-        `${serverBaseUrl}/api/client-banners/active-list?placement=desktop_sidebar`,
-        app.getVersion(),
-      ));
+      const url = appendKeyfromQuery(
+        appendClientBannerVersion(
+          `${serverBaseUrl}/api/client-banners/active-list?placement=desktop_sidebar`,
+          app.getVersion(),
+        ),
+      );
       const resp = await net.fetch(url, { cache: 'no-store' });
       if (!resp.ok) return { success: false };
       const body = (await resp.json()) as { code: number; data: Record<string, unknown>[] | null };
@@ -7698,10 +8132,12 @@ if (!gotTheLock) {
             banners?: Record<string, unknown>[];
           };
         };
-        if (snapshotBody.code === 0
-            && snapshotBody.data
-            && typeof snapshotBody.data.serverTime === 'string'
-            && Array.isArray(snapshotBody.data.banners)) {
+        if (
+          snapshotBody.code === 0 &&
+          snapshotBody.data &&
+          typeof snapshotBody.data.serverTime === 'string' &&
+          Array.isArray(snapshotBody.data.banners)
+        ) {
           return {
             success: true,
             data: {
@@ -7805,7 +8241,7 @@ if (!gotTheLock) {
       if (!resp.ok) {
         return { success: false, error: `HTTP ${resp.status}` };
       }
-      const body = await resp.json() as {
+      const body = (await resp.json()) as {
         code: number;
         message?: string;
         data?: {
@@ -7815,18 +8251,21 @@ if (!gotTheLock) {
         };
       };
       if (body.code !== 0) {
-        console.warn('[Auth:getPricingCatalog] server rejected pricing catalog request:', serializeForLog({
-          code: body.code,
-          message: body.message,
-        }));
+        console.warn(
+          '[Auth:getPricingCatalog] server rejected pricing catalog request:',
+          serializeForLog({
+            code: body.code,
+            message: body.message,
+          }),
+        );
         return { success: false, error: body.message || 'Failed to load pricing catalog.' };
       }
       const textModels = Array.isArray(body.data?.textModels) ? body.data.textModels : [];
       const imageModels = Array.isArray(body.data?.imageModels) ? body.data.imageModels : [];
       const videoModels = Array.isArray(body.data?.videoModels) ? body.data.videoModels : [];
       console.log(
-        '[Auth:getPricingCatalog] loaded public pricing catalog: '
-        + `${textModels.length} text, ${imageModels.length} image, ${videoModels.length} video models.`,
+        '[Auth:getPricingCatalog] loaded public pricing catalog: ' +
+          `${textModels.length} text, ${imageModels.length} image, ${videoModels.length} video models.`,
       );
       return { success: true, textModels, imageModels, videoModels };
     } catch (error) {
@@ -8234,9 +8673,8 @@ if (!gotTheLock) {
 
   ipcMain.handle(HtmlShareIpc.GetTrialPolicy, async () => {
     try {
-      return await getPublishingTrialPolicy(
-        getServerApiBaseUrl(),
-        (url, options) => fetch(url, options),
+      return await getPublishingTrialPolicy(getServerApiBaseUrl(), (url, options) =>
+        fetch(url, options),
       );
     } catch (error) {
       console.error('[HtmlShare] failed to load publishing trial policy:', error);
@@ -8286,11 +8724,7 @@ if (!gotTheLock) {
   ipcMain.handle(HtmlShareIpc.DeletePermanently, async (_event, shareId: unknown) => {
     try {
       const id = sanitizeHtmlShareString(shareId, 'shareId', 64);
-      return await deleteHtmlSharePermanently(
-        getServerApiBaseUrl(),
-        fetchWithAuth,
-        id,
-      );
+      return await deleteHtmlSharePermanently(getServerApiBaseUrl(), fetchWithAuth, id);
     } catch (error) {
       console.error('[HtmlShare] failed to permanently delete shared file:', error);
       return {
@@ -8355,9 +8789,10 @@ if (!gotTheLock) {
         defaultPath = undefined;
       }
       const dialogOptions = {
-        properties: options.kind === ShareDeploymentPersistenceBindingKind.File
-          ? ['openFile'] as 'openFile'[]
-          : ['openDirectory'] as 'openDirectory'[],
+        properties:
+          options.kind === ShareDeploymentPersistenceBindingKind.File
+            ? (['openFile'] as 'openFile'[])
+            : (['openDirectory'] as 'openDirectory'[]),
         defaultPath,
       };
       const result = ownerWindow
@@ -8427,36 +8862,26 @@ if (!gotTheLock) {
         const serverBaseUrl = getServerApiBaseUrl();
         const publicBaseUrl = getHtmlSharePublicBaseUrl();
         const result = isStaticDeployment
-          ? await uploadStaticDeployment(
-              serverBaseUrl,
-              publicBaseUrl,
-              scopedFetch,
-              {
-                ...options,
-                archivePath: packaged.archivePath,
-                sourceSha256: packaged.sourceSha256,
-                analysis,
-                archiveBytes: packaged.archiveBytes,
-                clientSourceKey,
-                deploymentKind: ShareDeploymentKind.StaticSite,
-                entryFile: packaged.entryFile ?? 'index.html',
-                spaFallback: packaged.spaFallback ?? true,
-              },
-            )
-          : await uploadNodeDeployment(
-              serverBaseUrl,
-              publicBaseUrl,
-              scopedFetch,
-              {
-                ...options,
-                archivePath: packaged.archivePath,
-                sourceSha256: packaged.sourceSha256,
-                analysis,
-                archiveBytes: packaged.archiveBytes,
-                clientSourceKey,
-                deploymentKind: ShareDeploymentKind.NodeService,
-              },
-            );
+          ? await uploadStaticDeployment(serverBaseUrl, publicBaseUrl, scopedFetch, {
+              ...options,
+              archivePath: packaged.archivePath,
+              sourceSha256: packaged.sourceSha256,
+              analysis,
+              archiveBytes: packaged.archiveBytes,
+              clientSourceKey,
+              deploymentKind: ShareDeploymentKind.StaticSite,
+              entryFile: packaged.entryFile ?? 'index.html',
+              spaFallback: packaged.spaFallback ?? true,
+            })
+          : await uploadNodeDeployment(serverBaseUrl, publicBaseUrl, scopedFetch, {
+              ...options,
+              archivePath: packaged.archivePath,
+              sourceSha256: packaged.sourceSha256,
+              analysis,
+              archiveBytes: packaged.archiveBytes,
+              clientSourceKey,
+              deploymentKind: ShareDeploymentKind.NodeService,
+            });
         let finalResult = result;
         if (result.success && result.deployment) {
           const accessSync = await reconcileShareDeploymentAccess(
@@ -8467,20 +8892,16 @@ if (!gotTheLock) {
               targetShareStatus: options.targetShareStatus ?? HtmlShareStatus.Live,
             },
             {
-              updateAccessMode: (shareId, accessMode) => updateHtmlShareAccessMode(
-                serverBaseUrl,
-                publicBaseUrl,
-                scopedFetch,
-                shareId,
-                accessMode,
-              ),
-              updateStatus: (shareId, status) => updateHtmlShareStatus(
-                serverBaseUrl,
-                publicBaseUrl,
-                scopedFetch,
-                shareId,
-                status,
-              ),
+              updateAccessMode: (shareId, accessMode) =>
+                updateHtmlShareAccessMode(
+                  serverBaseUrl,
+                  publicBaseUrl,
+                  scopedFetch,
+                  shareId,
+                  accessMode,
+                ),
+              updateStatus: (shareId, status) =>
+                updateHtmlShareStatus(serverBaseUrl, publicBaseUrl, scopedFetch, shareId, status),
             },
           );
           finalResult = {
@@ -8598,7 +9019,7 @@ if (!gotTheLock) {
       const serverBaseUrl = getServerApiBaseUrl();
       const endpoint = type === 'image' ? '/api/media/images/models' : '/api/media/videos/models';
       const resp = await fetchWithAuth(`${serverBaseUrl}${endpoint}`);
-      const body = await resp.json() as { code: number; data?: unknown[]; message?: string };
+      const body = (await resp.json()) as { code: number; data?: unknown[]; message?: string };
       if (!isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())) {
         return { success: false, error: t('authAccountChanged') };
       }
@@ -8643,10 +9064,9 @@ if (!gotTheLock) {
       const taskUrl = `${serverBaseUrl}/api/media/${mediaPath}/tasks/${taskId}`;
       console.debug(`[Media:getTaskStatus] requesting ${type} task ${taskId}`);
       const resp = await fetchWithAuth(taskUrl);
-      const body = await resp.json() as { code: number; data?: unknown; message?: string };
-      const responseTask = body.data && typeof body.data === 'object'
-        ? body.data as Record<string, unknown>
-        : null;
+      const body = (await resp.json()) as { code: number; data?: unknown; message?: string };
+      const responseTask =
+        body.data && typeof body.data === 'object' ? (body.data as Record<string, unknown>) : null;
       console.debug(
         `[Media:getTaskStatus] response HTTP ${resp.status}; code=${body.code}; status=${String(responseTask?.status ?? 'unknown')}`,
       );
@@ -8882,11 +9302,14 @@ if (!gotTheLock) {
       });
       const success = restoreResult?.status === DataMigrationRestoreStatus.Success;
       console.log(
-        `[DataMigration] restore finished with status ${restoreResult?.status ?? 'unknown'}; `
-        + `rollback archive ${restoreResult?.rollbackPath ?? 'was not created'}.`,
+        `[DataMigration] restore finished with status ${restoreResult?.status ?? 'unknown'}; ` +
+          `rollback archive ${restoreResult?.rollbackPath ?? 'was not created'}.`,
       );
       if (!success) {
-        console.error('[DataMigration] restore failed:', restoreResult?.error ?? 'Unknown restore error');
+        console.error(
+          '[DataMigration] restore failed:',
+          restoreResult?.error ?? 'Unknown restore error',
+        );
       }
       if (rendererReleased) {
         setTimeout(() => {
@@ -8898,11 +9321,14 @@ if (!gotTheLock) {
         success,
         scheduledRestart: rendererReleased,
         rollbackPath: restoreResult?.rollbackPath,
-        error: success ? undefined : restoreResult?.error || 'Failed to import LobsterAI data backup',
+        error: success
+          ? undefined
+          : restoreResult?.error || 'Failed to import LobsterAI data backup',
       };
     } catch (error) {
       isCleanupInProgress = false;
-      const message = error instanceof Error ? error.message : 'Failed to import LobsterAI data backup';
+      const message =
+        error instanceof Error ? error.message : 'Failed to import LobsterAI data backup';
       console.error('[DataMigration] restore scheduling failed:', error);
       if (rendererReleased) {
         dialog.showErrorBox(t('dataMigrationRestoreDialogTitle'), message);
@@ -8936,19 +9362,17 @@ if (!gotTheLock) {
     }
   });
 
-  const requestBrowserControl = async <T,>(
-    request: BrowserControlGatewayRequest,
-  ): Promise<T> => {
+  const requestBrowserControl = async <T>(request: BrowserControlGatewayRequest): Promise<T> => {
     getCoworkEngineRouter();
     if (!openClawRuntimeAdapter) {
       throw new Error(t('agentBrowserRuntimeUnavailable'));
     }
-    return await openClawRuntimeAdapter.requestBrowserControl(request) as T;
+    return (await openClawRuntimeAdapter.requestBrowserControl(request)) as T;
   };
 
-  const buildBrowserProfileQuery = (profile?: BrowserRuntimeProfile): Record<string, string> | undefined => (
-    profile ? { profile } : undefined
-  );
+  const buildBrowserProfileQuery = (
+    profile?: BrowserRuntimeProfile,
+  ): Record<string, string> | undefined => (profile ? { profile } : undefined);
 
   registerBrowserCredentialHandlers({
     ipcMain,
@@ -8956,13 +9380,15 @@ if (!gotTheLock) {
   });
 
   const runBrowserHostAction = async (
-    action: () => Promise<ReturnType<AgentBrowserHost['getState']>> | ReturnType<AgentBrowserHost['getState']>,
+    action: () =>
+      Promise<ReturnType<AgentBrowserHost['getState']>> | ReturnType<AgentBrowserHost['getState']>,
   ): Promise<AgentBrowserHostResponse> => {
     try {
       return { success: true, state: await action() };
     } catch (error) {
       console.error('[AgentBrowserHost] In-app browser action failed:', error);
-      const message = error instanceof Error ? error.message : 'LobsterAI in-app browser action failed.';
+      const message =
+        error instanceof Error ? error.message : 'LobsterAI in-app browser action failed.';
       return {
         success: false,
         state: {
@@ -8983,40 +9409,37 @@ if (!gotTheLock) {
   ipcMain.handle(
     BrowserIpc.SetHostView,
     (_event, request?: AgentBrowserHostSetViewRequest): Promise<AgentBrowserHostResponse> =>
-      runBrowserHostAction(() => getAgentBrowserHost().setView({
-        sessionId: request?.sessionId,
-        visible: request?.visible === true,
-        bounds: request?.bounds,
-      })),
+      runBrowserHostAction(() =>
+        getAgentBrowserHost().setView({
+          sessionId: request?.sessionId,
+          visible: request?.visible === true,
+          bounds: request?.bounds,
+        }),
+      ),
   );
 
   ipcMain.handle(
     BrowserIpc.NavigateHost,
     (_event, request?: AgentBrowserHostNavigateRequest): Promise<AgentBrowserHostResponse> =>
-      runBrowserHostAction(() => getAgentBrowserHost().navigate(
-        request?.url ?? '',
-        request?.sessionId,
-      )),
+      runBrowserHostAction(() =>
+        getAgentBrowserHost().navigate(request?.url ?? '', request?.sessionId),
+      ),
   );
 
-  ipcMain.handle(
-    BrowserIpc.GoBackHost,
-    (): Promise<AgentBrowserHostResponse> => runBrowserHostAction(() => getAgentBrowserHost().goBack()),
+  ipcMain.handle(BrowserIpc.GoBackHost, (): Promise<AgentBrowserHostResponse> =>
+    runBrowserHostAction(() => getAgentBrowserHost().goBack()),
   );
 
-  ipcMain.handle(
-    BrowserIpc.GoForwardHost,
-    (): Promise<AgentBrowserHostResponse> => runBrowserHostAction(() => getAgentBrowserHost().goForward()),
+  ipcMain.handle(BrowserIpc.GoForwardHost, (): Promise<AgentBrowserHostResponse> =>
+    runBrowserHostAction(() => getAgentBrowserHost().goForward()),
   );
 
-  ipcMain.handle(
-    BrowserIpc.ReloadHost,
-    (): Promise<AgentBrowserHostResponse> => runBrowserHostAction(() => getAgentBrowserHost().reload()),
+  ipcMain.handle(BrowserIpc.ReloadHost, (): Promise<AgentBrowserHostResponse> =>
+    runBrowserHostAction(() => getAgentBrowserHost().reload()),
   );
 
-  ipcMain.handle(
-    BrowserIpc.StopHost,
-    (): Promise<AgentBrowserHostResponse> => runBrowserHostAction(() => getAgentBrowserHost().stop()),
+  ipcMain.handle(BrowserIpc.StopHost, (): Promise<AgentBrowserHostResponse> =>
+    runBrowserHostAction(() => getAgentBrowserHost().stop()),
   );
 
   ipcMain.handle(
@@ -9028,10 +9451,9 @@ if (!gotTheLock) {
   ipcMain.handle(
     BrowserIpc.SelectHostPage,
     (_event, request?: AgentBrowserHostPageRequest): Promise<AgentBrowserHostResponse> =>
-      runBrowserHostAction(() => getAgentBrowserHost().selectPage(
-        request?.pageId ?? 0,
-        request?.sessionId,
-      )),
+      runBrowserHostAction(() =>
+        getAgentBrowserHost().selectPage(request?.pageId ?? 0, request?.sessionId),
+      ),
   );
 
   ipcMain.handle(
@@ -9062,16 +9484,21 @@ if (!gotTheLock) {
         onZoomAction: async action => {
           const host = getAgentBrowserHost();
           const currentState = host.getState();
-          const currentTab = currentState.tabs.find(tab => tab.pageId === currentState.selectedPageId);
+          const currentTab = currentState.tabs.find(
+            tab => tab.pageId === currentState.selectedPageId,
+          );
           if (!currentTab) throw new Error('No LobsterAI browser page is open.');
-          const nextFactor = action === AgentBrowserHostMenuAction.ZoomOut
-            ? currentTab.zoomFactor - AgentBrowserZoom.Step
-            : action === AgentBrowserHostMenuAction.ZoomIn
-              ? currentTab.zoomFactor + AgentBrowserZoom.Step
-              : AgentBrowserZoom.Default;
+          const nextFactor =
+            action === AgentBrowserHostMenuAction.ZoomOut
+              ? currentTab.zoomFactor - AgentBrowserZoom.Step
+              : action === AgentBrowserHostMenuAction.ZoomIn
+                ? currentTab.zoomFactor + AgentBrowserZoom.Step
+                : AgentBrowserZoom.Default;
           const nextState = host.setZoomFactor(nextFactor, request?.sessionId);
-          return nextState.tabs.find(tab => tab.pageId === nextState.selectedPageId)?.zoomFactor
-            ?? AgentBrowserZoom.Default;
+          return (
+            nextState.tabs.find(tab => tab.pageId === nextState.selectedPageId)?.zoomFactor ??
+            AgentBrowserZoom.Default
+          );
         },
       });
     },
@@ -9093,10 +9520,9 @@ if (!gotTheLock) {
   ipcMain.handle(
     BrowserIpc.SetHostZoom,
     (_event, request?: AgentBrowserHostZoomRequest): Promise<AgentBrowserHostResponse> =>
-      runBrowserHostAction(() => getAgentBrowserHost().setZoomFactor(
-        request?.factor ?? Number.NaN,
-        request?.sessionId,
-      )),
+      runBrowserHostAction(() =>
+        getAgentBrowserHost().setZoomFactor(request?.factor ?? Number.NaN, request?.sessionId),
+      ),
   );
 
   ipcMain.handle(
@@ -9114,12 +9540,17 @@ if (!gotTheLock) {
   ipcMain.handle(
     BrowserIpc.DismissCredentialLoginStatus,
     (_event, request?: AgentBrowserHostRequest): Promise<AgentBrowserHostResponse> =>
-      runBrowserHostAction(() => getAgentBrowserHost().dismissCredentialLoginStatus(request?.sessionId)),
+      runBrowserHostAction(() =>
+        getAgentBrowserHost().dismissCredentialLoginStatus(request?.sessionId),
+      ),
   );
 
   ipcMain.handle(
     BrowserIpc.ResolveCredentialSavePrompt,
-    (_event, request?: AgentBrowserCredentialSavePromptRequest): Promise<AgentBrowserHostResponse> =>
+    (
+      _event,
+      request?: AgentBrowserCredentialSavePromptRequest,
+    ): Promise<AgentBrowserHostResponse> =>
       runBrowserHostAction(() => {
         if (!request) {
           throw new Error('A browser credential save decision is required.');
@@ -9131,21 +9562,24 @@ if (!gotTheLock) {
       }),
   );
 
-  ipcMain.handle(BrowserIpc.GetStatus, async (_event, options?: { profile?: BrowserRuntimeProfile }) => {
-    try {
-      const status = await requestBrowserControl<Record<string, unknown>>({
-        method: BrowserControlRequestMethod.Get,
-        path: '/',
-        query: buildBrowserProfileQuery(options?.profile),
-      });
-      return { success: true, status };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to get browser status',
-      };
-    }
-  });
+  ipcMain.handle(
+    BrowserIpc.GetStatus,
+    async (_event, options?: { profile?: BrowserRuntimeProfile }) => {
+      try {
+        const status = await requestBrowserControl<Record<string, unknown>>({
+          method: BrowserControlRequestMethod.Get,
+          path: '/',
+          query: buildBrowserProfileQuery(options?.profile),
+        });
+        return { success: true, status };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to get browser status',
+        };
+      }
+    },
+  );
 
   ipcMain.handle(BrowserIpc.ListProfiles, async () => {
     try {
@@ -9162,27 +9596,35 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle(BrowserIpc.ResetProfile, async (_event, options?: { profile?: BrowserRuntimeProfile }) => {
-    try {
-      const profile = options?.profile || BrowserRuntimeProfile.Managed;
-      const result = await requestBrowserControl<Record<string, unknown>>({
-        method: BrowserControlRequestMethod.Post,
-        path: '/reset-profile',
-        query: buildBrowserProfileQuery(profile),
-        timeoutMs: 20000,
-      });
-      return { success: true, result };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to reset browser profile',
-      };
-    }
-  });
+  ipcMain.handle(
+    BrowserIpc.ResetProfile,
+    async (_event, options?: { profile?: BrowserRuntimeProfile }) => {
+      try {
+        const profile = options?.profile || BrowserRuntimeProfile.Managed;
+        const result = await requestBrowserControl<Record<string, unknown>>({
+          method: BrowserControlRequestMethod.Post,
+          path: '/reset-profile',
+          query: buildBrowserProfileQuery(profile),
+          timeoutMs: 20000,
+        });
+        return { success: true, result };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to reset browser profile',
+        };
+      }
+    },
+  );
 
   ipcMain.handle(BrowserIpc.Test, async (_event, options?: { profile?: BrowserRuntimeProfile }) => {
     const steps: BrowserDiagnosticResultStep[] = [];
-    const addStep = (step: BrowserDiagnosticStep, status: BrowserDiagnosticStatus, message: string, details?: string) => {
+    const addStep = (
+      step: BrowserDiagnosticStep,
+      status: BrowserDiagnosticStatus,
+      message: string,
+      details?: string,
+    ) => {
       steps.push({
         step,
         status,
@@ -9195,20 +9637,43 @@ if (!gotTheLock) {
     try {
       const engineStatus = getOpenClawEngineManager().getStatus();
       if (engineStatus.phase !== 'running') {
-        addStep(BrowserDiagnosticStep.GatewayStatus, BrowserDiagnosticStatus.Error, 'browserDiagnosticGatewayNotRunning', engineStatus.message);
-        return { success: false, steps, error: engineStatus.message || 'OpenClaw gateway is not running.' };
+        addStep(
+          BrowserDiagnosticStep.GatewayStatus,
+          BrowserDiagnosticStatus.Error,
+          'browserDiagnosticGatewayNotRunning',
+          engineStatus.message,
+        );
+        return {
+          success: false,
+          steps,
+          error: engineStatus.message || 'OpenClaw gateway is not running.',
+        };
       }
-      addStep(BrowserDiagnosticStep.GatewayStatus, BrowserDiagnosticStatus.Success, 'browserDiagnosticGatewayReady');
+      addStep(
+        BrowserDiagnosticStep.GatewayStatus,
+        BrowserDiagnosticStatus.Success,
+        'browserDiagnosticGatewayReady',
+      );
 
       try {
         const profiles = await requestBrowserControl<{ profiles?: unknown[] }>({
           method: BrowserControlRequestMethod.Get,
           path: '/profiles',
         });
-        addStep(BrowserDiagnosticStep.Profiles, BrowserDiagnosticStatus.Success, 'browserDiagnosticProfilesReady', `${profiles.profiles?.length ?? 0}`);
+        addStep(
+          BrowserDiagnosticStep.Profiles,
+          BrowserDiagnosticStatus.Success,
+          'browserDiagnosticProfilesReady',
+          `${profiles.profiles?.length ?? 0}`,
+        );
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        addStep(BrowserDiagnosticStep.Profiles, BrowserDiagnosticStatus.Error, 'browserDiagnosticProfilesFailed', message);
+        addStep(
+          BrowserDiagnosticStep.Profiles,
+          BrowserDiagnosticStatus.Error,
+          'browserDiagnosticProfilesFailed',
+          message,
+        );
         return { success: false, steps, error: message };
       }
 
@@ -9218,10 +9683,19 @@ if (!gotTheLock) {
           path: '/',
           query: buildBrowserProfileQuery(profile),
         });
-        addStep(BrowserDiagnosticStep.BrowserStatus, BrowserDiagnosticStatus.Success, 'browserDiagnosticStatusReady');
+        addStep(
+          BrowserDiagnosticStep.BrowserStatus,
+          BrowserDiagnosticStatus.Success,
+          'browserDiagnosticStatusReady',
+        );
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        addStep(BrowserDiagnosticStep.BrowserStatus, BrowserDiagnosticStatus.Warning, 'browserDiagnosticStatusWarning', message);
+        addStep(
+          BrowserDiagnosticStep.BrowserStatus,
+          BrowserDiagnosticStatus.Warning,
+          'browserDiagnosticStatusWarning',
+          message,
+        );
       }
 
       try {
@@ -9231,10 +9705,19 @@ if (!gotTheLock) {
           query: buildBrowserProfileQuery(profile),
           timeoutMs: 20000,
         });
-        addStep(BrowserDiagnosticStep.BrowserStart, BrowserDiagnosticStatus.Success, 'browserDiagnosticStartReady');
+        addStep(
+          BrowserDiagnosticStep.BrowserStart,
+          BrowserDiagnosticStatus.Success,
+          'browserDiagnosticStartReady',
+        );
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        addStep(BrowserDiagnosticStep.BrowserStart, BrowserDiagnosticStatus.Error, 'browserDiagnosticStartFailed', message);
+        addStep(
+          BrowserDiagnosticStep.BrowserStart,
+          BrowserDiagnosticStatus.Error,
+          'browserDiagnosticStartFailed',
+          message,
+        );
         return { success: false, steps, error: message };
       }
 
@@ -9246,10 +9729,19 @@ if (!gotTheLock) {
           body: { url: 'https://example.com' },
           timeoutMs: 20000,
         });
-        addStep(BrowserDiagnosticStep.OpenTestPage, BrowserDiagnosticStatus.Success, 'browserDiagnosticOpenPageReady');
+        addStep(
+          BrowserDiagnosticStep.OpenTestPage,
+          BrowserDiagnosticStatus.Success,
+          'browserDiagnosticOpenPageReady',
+        );
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        addStep(BrowserDiagnosticStep.OpenTestPage, BrowserDiagnosticStatus.Error, 'browserDiagnosticOpenPageFailed', message);
+        addStep(
+          BrowserDiagnosticStep.OpenTestPage,
+          BrowserDiagnosticStatus.Error,
+          'browserDiagnosticOpenPageFailed',
+          message,
+        );
         return { success: false, steps, error: message };
       }
 
@@ -9257,7 +9749,12 @@ if (!gotTheLock) {
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Browser diagnostic failed';
       if (steps.length === 0) {
-        addStep(BrowserDiagnosticStep.GatewayStatus, BrowserDiagnosticStatus.Error, 'browserDiagnosticGatewayFailed', message);
+        addStep(
+          BrowserDiagnosticStep.GatewayStatus,
+          BrowserDiagnosticStatus.Error,
+          'browserDiagnosticGatewayFailed',
+          message,
+        );
       }
       return { success: false, steps, error: message };
     }
@@ -9268,7 +9765,9 @@ if (!gotTheLock) {
   registerDshHandlers({
     getStore: () => getStore(),
     getProviders: () => {
-      const appConfig = getStore().get<{ providers?: Record<string, ProviderConfig> }>('app_config');
+      const appConfig = getStore().get<{ providers?: Record<string, ProviderConfig> }>(
+        'app_config',
+      );
       const providers = { ...(appConfig?.providers ?? {}) };
       // The billed built-in provider authenticates through the token proxy;
       // syncing its raw key/baseUrl into dsh would produce a dead route.
@@ -9307,7 +9806,6 @@ if (!gotTheLock) {
     },
     getWorkbenchTitle: () => t('dshWorkbenchTitle'),
   });
-
 
   // Cowork IPC handlers
   ipcMain.handle(
@@ -9358,14 +9856,16 @@ if (!gotTheLock) {
         if (modelRunGate.allowed === false) {
           return { success: false, error: modelRunGate.error };
         }
-        const engineStatus = await ensureOpenClawRunningForCowork();
+        const engineStatus = await ensureCoworkEngineReady(
+          resolveCoworkAgentEngine(),
+          ensureOpenClawRunningForCowork,
+        );
         if (engineStatus.phase !== 'running') {
           return getEngineNotReadyResponse(engineStatus);
         }
-        if (!isMediaAccountScopeSnapshotCurrent(
-          requestAccountScope,
-          getCurrentMediaAccountScope(),
-        )) {
+        if (
+          !isMediaAccountScopeSnapshotCurrent(requestAccountScope, getCurrentMediaAccountScope())
+        ) {
           return {
             success: false,
             error: t('authAccountChanged'),
@@ -9389,7 +9889,9 @@ if (!gotTheLock) {
             error: 'Please select a task folder before submitting.',
           };
         }
-        const imageAttachmentValidation = validateCoworkImageAttachmentsForRuntime(options.imageAttachments);
+        const imageAttachmentValidation = validateCoworkImageAttachmentsForRuntime(
+          options.imageAttachments,
+        );
         if (imageAttachmentValidation.ok === false) {
           return {
             success: false,
@@ -9400,25 +9902,23 @@ if (!gotTheLock) {
         // Strip NUL before this handler persists the message itself; the
         // runtime adapter sanitizes again at the outbound boundary.
         const prompt = stripNullChars(options.prompt);
-        const fallbackTitle = buildSessionTitleFromInput(
-          prompt,
-          t('coworkDefaultSessionTitle'),
-        );
+        const fallbackTitle = buildSessionTitleFromInput(prompt, t('coworkDefaultSessionTitle'));
         const title = options.title?.trim() || fallbackTitle;
         const taskWorkingDirectory = resolveTaskWorkingDirectory(selectedTaskDirectory);
         const runtimeSkillIds = options.runtimeSkillIds ?? options.activeSkillIds;
-        const selectedTextSnippets = normalizeSelectedTextSnippetsForIpc(options.selectedTextSnippets);
+        const selectedTextSnippets = normalizeSelectedTextSnippetsForIpc(
+          options.selectedTextSnippets,
+        );
         const browserAnnotations = normalizeBrowserAnnotationBatches(options.browserAnnotations);
-        const thinkingLevel = options.thinkingLevel === undefined
-          ? ''
-          : parseModelThinkingLevel(options.thinkingLevel);
+        const thinkingLevel =
+          options.thinkingLevel === undefined ? '' : parseModelThinkingLevel(options.thinkingLevel);
         if (options.thinkingLevel !== undefined && !thinkingLevel) {
           return { success: false, error: 'Unsupported session thinking level.' };
         }
         if (selectedTextSnippets.length > 0) {
           console.log(
-            `[CoworkSelectedText] accepted ${selectedTextSnippets.length} excerpts with `
-            + `${selectedTextSnippets.reduce((total, snippet) => total + snippet.text.length, 0)} characters for a new session`,
+            `[CoworkSelectedText] accepted ${selectedTextSnippets.length} excerpts with ` +
+              `${selectedTextSnippets.reduce((total, snippet) => total + snippet.text.length, 0)} characters for a new session`,
           );
         }
 
@@ -9454,9 +9954,9 @@ if (!gotTheLock) {
           mediaTurnAccountScopeBySession.delete(session.id);
         }
         if (
-          requestAccountScope
-          && normalizedMediaSelection
-          && normalizedMediaSelection.mode !== 'none'
+          requestAccountScope &&
+          normalizedMediaSelection &&
+          normalizedMediaSelection.mode !== 'none'
         ) {
           mediaSelectionBySession.set(
             session.id,
@@ -9482,7 +9982,9 @@ if (!gotTheLock) {
             })),
           });
         }
-        const imageAttachmentPreviews = buildCoworkImageAttachmentPreviews(options.imageAttachments);
+        const imageAttachmentPreviews = buildCoworkImageAttachmentPreviews(
+          options.imageAttachments,
+        );
         const messageMetadata = buildCoworkUserSelectionMetadata({
           prompt,
           skillIds: options.activeSkillIds,
@@ -9603,14 +10105,16 @@ if (!gotTheLock) {
         if (modelRunGate.allowed === false) {
           return { success: false, error: modelRunGate.error };
         }
-        const engineStatus = await ensureOpenClawRunningForCowork();
+        const engineStatus = await ensureCoworkEngineReady(
+          resolveCoworkAgentEngine(),
+          ensureOpenClawRunningForCowork,
+        );
         if (engineStatus.phase !== 'running') {
           return getEngineNotReadyResponse(engineStatus);
         }
-        if (!isMediaAccountScopeSnapshotCurrent(
-          requestAccountScope,
-          getCurrentMediaAccountScope(),
-        )) {
+        if (
+          !isMediaAccountScopeSnapshotCurrent(requestAccountScope, getCurrentMediaAccountScope())
+        ) {
           return {
             success: false,
             error: t('authAccountChanged'),
@@ -9623,8 +10127,8 @@ if (!gotTheLock) {
         const config = coworkStoreInstance.getConfig();
         const hasLegacyPersistedPlanMode = containsPlanModePrompt(existingSession?.systemPrompt);
         const continuationSystemPrompt = mergeCoworkSystemPrompt(
-          options.systemPrompt
-            ?? (hasLegacyPersistedPlanMode ? config.systemPrompt : existingSession?.systemPrompt),
+          options.systemPrompt ??
+            (hasLegacyPersistedPlanMode ? config.systemPrompt : existingSession?.systemPrompt),
         );
         if (hasLegacyPersistedPlanMode) {
           coworkStoreInstance.updateSession(options.sessionId, {
@@ -9634,15 +10138,19 @@ if (!gotTheLock) {
             `[Cowork] removed a legacy persisted plan mode prompt from session ${options.sessionId}.`,
           );
         }
-        const selectedTextSnippets = normalizeSelectedTextSnippetsForIpc(options.selectedTextSnippets);
+        const selectedTextSnippets = normalizeSelectedTextSnippetsForIpc(
+          options.selectedTextSnippets,
+        );
         const browserAnnotations = normalizeBrowserAnnotationBatches(options.browserAnnotations);
         if (selectedTextSnippets.length > 0) {
           console.log(
-            `[CoworkSelectedText] accepted ${selectedTextSnippets.length} excerpts with `
-            + `${selectedTextSnippets.reduce((total, snippet) => total + snippet.text.length, 0)} characters for session ${options.sessionId}`,
+            `[CoworkSelectedText] accepted ${selectedTextSnippets.length} excerpts with ` +
+              `${selectedTextSnippets.reduce((total, snippet) => total + snippet.text.length, 0)} characters for session ${options.sessionId}`,
           );
         }
-        const imageAttachmentValidation = validateCoworkImageAttachmentsForRuntime(options.imageAttachments);
+        const imageAttachmentValidation = validateCoworkImageAttachmentsForRuntime(
+          options.imageAttachments,
+        );
         if (imageAttachmentValidation.ok === false) {
           return {
             success: false,
@@ -9663,9 +10171,9 @@ if (!gotTheLock) {
           mediaTurnAccountScopeBySession.delete(options.sessionId);
         }
         if (
-          requestAccountScope
-          && normalizedMediaSelection
-          && normalizedMediaSelection.mode !== 'none'
+          requestAccountScope &&
+          normalizedMediaSelection &&
+          normalizedMediaSelection.mode !== 'none'
         ) {
           mediaSelectionBySession.set(
             options.sessionId,
@@ -9746,309 +10254,329 @@ if (!gotTheLock) {
     },
   );
 
-  ipcMain.handle(CoworkIpcChannel.SubmitBtw, async (
-    _event,
-    options: CoworkBtwSubmitRequest,
-  ): Promise<CoworkBtwSubmitResponse> => {
-    const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
-    const question = typeof options?.question === 'string'
-      ? normalizeCoworkBtwQuestion(options.question)
-      : '';
-    const runId = typeof options?.runId === 'string' ? options.runId.trim() : '';
-    if (!sessionId || !question || !runId) {
-      return {
-        success: false,
-        runId,
-        error: t('coworkBtwRequestRequired'),
-      };
-    }
-    if (
-      sessionId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS
-      || runId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS
-    ) {
-      return {
-        success: false,
-        runId: runId.slice(0, COWORK_BTW_IDENTIFIER_MAX_CHARS),
-        error: t('coworkBtwInvalidIdentifier'),
-      };
-    }
-    if (/[\r\n]/.test(question)) {
-      return {
-        success: false,
-        runId,
-        error: t('coworkBtwSingleLine'),
-      };
-    }
-    try {
-      console.debug(
-        '[CoworkBtw] side-question IPC received.',
-        `Session ${sessionId}.`,
-        `Run ${runId}.`,
-        `Question chars ${question.length}.`,
-      );
-      const engineStatus = await ensureOpenClawRunningForCowork();
-      if (engineStatus.phase !== 'running') {
-        return {
-          ...getEngineNotReadyResponse(engineStatus),
-          runId,
-        };
-      }
-      const runtime = getCoworkEngineRouter();
-      if (!runtime.submitBtw) {
+  ipcMain.handle(
+    CoworkIpcChannel.SubmitBtw,
+    async (_event, options: CoworkBtwSubmitRequest): Promise<CoworkBtwSubmitResponse> => {
+      const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
+      const question =
+        typeof options?.question === 'string' ? normalizeCoworkBtwQuestion(options.question) : '';
+      const runId = typeof options?.runId === 'string' ? options.runId.trim() : '';
+      if (!sessionId || !question || !runId) {
         return {
           success: false,
           runId,
-          error: t('coworkBtwUnavailable'),
+          error: t('coworkBtwRequestRequired'),
         };
       }
-      const result = await runtime.submitBtw(sessionId, question, runId);
-      console.debug(
-        '[CoworkBtw] side-question IPC completed.',
-        `Session ${sessionId}.`,
-        `Run ${runId}.`,
-        `Success ${result.success ? 'yes' : 'no'}.`,
-      );
-      return result;
-    } catch (error) {
-      console.error(
-        '[CoworkBtw] side-question IPC failed.',
-        `Session ${sessionId}.`,
-        `Run ${runId}.`,
-        error,
-      );
-      return {
-        success: false,
-        runId,
-        error: error instanceof Error ? error.message : t('coworkBtwSubmitFailed'),
-      };
-    }
-  });
+      if (
+        sessionId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS ||
+        runId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS
+      ) {
+        return {
+          success: false,
+          runId: runId.slice(0, COWORK_BTW_IDENTIFIER_MAX_CHARS),
+          error: t('coworkBtwInvalidIdentifier'),
+        };
+      }
+      if (/[\r\n]/.test(question)) {
+        return {
+          success: false,
+          runId,
+          error: t('coworkBtwSingleLine'),
+        };
+      }
+      try {
+        console.debug(
+          '[CoworkBtw] side-question IPC received.',
+          `Session ${sessionId}.`,
+          `Run ${runId}.`,
+          `Question chars ${question.length}.`,
+        );
+        const engineStatus = await ensureCoworkEngineReady(
+          resolveCoworkAgentEngine(),
+          ensureOpenClawRunningForCowork,
+        );
+        if (engineStatus.phase !== 'running') {
+          return {
+            ...getEngineNotReadyResponse(engineStatus),
+            runId,
+          };
+        }
+        const runtime = getCoworkEngineRouter();
+        if (!runtime.submitBtw) {
+          return {
+            success: false,
+            runId,
+            error: t('coworkBtwUnavailable'),
+          };
+        }
+        const result = await runtime.submitBtw(sessionId, question, runId);
+        console.debug(
+          '[CoworkBtw] side-question IPC completed.',
+          `Session ${sessionId}.`,
+          `Run ${runId}.`,
+          `Success ${result.success ? 'yes' : 'no'}.`,
+        );
+        return result;
+      } catch (error) {
+        console.error(
+          '[CoworkBtw] side-question IPC failed.',
+          `Session ${sessionId}.`,
+          `Run ${runId}.`,
+          error,
+        );
+        return {
+          success: false,
+          runId,
+          error: error instanceof Error ? error.message : t('coworkBtwSubmitFailed'),
+        };
+      }
+    },
+  );
 
-  ipcMain.handle(CoworkIpcChannel.AbortBtw, async (
-    _event,
-    options: CoworkBtwAbortRequest,
-  ): Promise<CoworkBtwAbortResponse> => {
-    const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
-    const runId = typeof options?.runId === 'string' ? options.runId.trim() : '';
-    if (
-      !sessionId
-      || !runId
-      || sessionId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS
-      || runId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS
-    ) {
-      return {
-        success: false,
-        aborted: false,
-        runId: runId.slice(0, COWORK_BTW_IDENTIFIER_MAX_CHARS),
-        error: t('coworkBtwInvalidIdentifier'),
-      };
-    }
+  ipcMain.handle(
+    CoworkIpcChannel.AbortBtw,
+    async (_event, options: CoworkBtwAbortRequest): Promise<CoworkBtwAbortResponse> => {
+      const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
+      const runId = typeof options?.runId === 'string' ? options.runId.trim() : '';
+      if (
+        !sessionId ||
+        !runId ||
+        sessionId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS ||
+        runId.length > COWORK_BTW_IDENTIFIER_MAX_CHARS
+      ) {
+        return {
+          success: false,
+          aborted: false,
+          runId: runId.slice(0, COWORK_BTW_IDENTIFIER_MAX_CHARS),
+          error: t('coworkBtwInvalidIdentifier'),
+        };
+      }
 
-    try {
-      console.debug(
-        '[CoworkBtw] side-question stop IPC received.',
-        `Session ${sessionId}.`,
-        `Run ${runId}.`,
-      );
-      const runtime = getCoworkEngineRouter();
-      if (!runtime.abortBtw) {
+      try {
+        console.debug(
+          '[CoworkBtw] side-question stop IPC received.',
+          `Session ${sessionId}.`,
+          `Run ${runId}.`,
+        );
+        const runtime = getCoworkEngineRouter();
+        if (!runtime.abortBtw) {
+          return {
+            success: false,
+            aborted: false,
+            runId,
+            error: t('coworkBtwUnavailable'),
+          };
+        }
+        const result = await runtime.abortBtw(sessionId, runId);
+        console.debug(
+          '[CoworkBtw] side-question stop IPC completed.',
+          `Session ${sessionId}.`,
+          `Run ${runId}.`,
+          `Aborted ${result.aborted ? 'yes' : 'no'}.`,
+        );
+        return result;
+      } catch (error) {
+        console.error(
+          '[CoworkBtw] side-question stop IPC failed.',
+          `Session ${sessionId}.`,
+          `Run ${runId}.`,
+          error,
+        );
         return {
           success: false,
           aborted: false,
           runId,
-          error: t('coworkBtwUnavailable'),
+          error: t('coworkBtwStopFailed'),
         };
       }
-      const result = await runtime.abortBtw(sessionId, runId);
-      console.debug(
-        '[CoworkBtw] side-question stop IPC completed.',
-        `Session ${sessionId}.`,
-        `Run ${runId}.`,
-        `Aborted ${result.aborted ? 'yes' : 'no'}.`,
-      );
-      return result;
-    } catch (error) {
-      console.error(
-        '[CoworkBtw] side-question stop IPC failed.',
-        `Session ${sessionId}.`,
-        `Run ${runId}.`,
-        error,
-      );
-      return {
-        success: false,
-        aborted: false,
-        runId,
-        error: t('coworkBtwStopFailed'),
-      };
-    }
-  });
+    },
+  );
 
-  ipcMain.handle(CoworkIpcChannel.SubmitSteer, async (
-    _event,
-    options: { sessionId: string; text: string; clientSteerId: string },
-  ) => {
-    const clientSteerId = typeof options?.clientSteerId === 'string' && options.clientSteerId.trim()
-      ? options.clientSteerId.trim()
-      : `steer-${Date.now()}`;
-    try {
-      const requestAccountScope = getCurrentMediaAccountScope();
-      const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
-      const text = typeof options?.text === 'string' ? options.text.trim() : '';
-      if (!sessionId || !text) {
+  ipcMain.handle(
+    CoworkIpcChannel.SubmitSteer,
+    async (_event, options: { sessionId: string; text: string; clientSteerId: string }) => {
+      const clientSteerId =
+        typeof options?.clientSteerId === 'string' && options.clientSteerId.trim()
+          ? options.clientSteerId.trim()
+          : `steer-${Date.now()}`;
+      try {
+        const requestAccountScope = getCurrentMediaAccountScope();
+        const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
+        const text = typeof options?.text === 'string' ? options.text.trim() : '';
+        if (!sessionId || !text) {
+          return {
+            success: false,
+            status: CoworkSteerStatus.Rejected,
+            clientSteerId,
+            reason: CoworkSteerRejectReason.EmptyInput,
+            error: 'Session id and steer input are required.',
+          };
+        }
+        const requestTurnAccountScope = resolveMediaTurnAccountScopeForSession(sessionId);
+        if (!isMediaAccountScopeSnapshotCurrent(requestAccountScope, requestTurnAccountScope)) {
+          return {
+            success: false,
+            status: CoworkSteerStatus.Rejected,
+            clientSteerId,
+            reason: CoworkSteerRejectReason.RuntimeRejected,
+            error: t('mediaTaskAccountMismatch'),
+          };
+        }
+        console.debug(
+          '[CoworkSteer] steer IPC received.',
+          `Session ${sessionId}.`,
+          `Client steer ${clientSteerId}.`,
+          `Chars ${text.length}.`,
+        );
+
+        const engineStatus = await ensureCoworkEngineReady(
+          resolveCoworkAgentEngine(),
+          ensureOpenClawRunningForCowork,
+        );
+        if (engineStatus.phase !== 'running') {
+          return {
+            ...getEngineNotReadyResponse(engineStatus),
+            status: CoworkSteerStatus.Rejected,
+            clientSteerId,
+            reason: CoworkSteerRejectReason.RuntimeRejected,
+          };
+        }
+        if (
+          !isMediaAccountScopeSnapshotCurrent(requestAccountScope, getCurrentMediaAccountScope()) ||
+          !isMediaAccountScopeSnapshotCurrent(
+            requestTurnAccountScope,
+            resolveMediaTurnAccountScopeForSession(sessionId),
+          )
+        ) {
+          return {
+            success: false,
+            status: CoworkSteerStatus.Rejected,
+            clientSteerId,
+            reason: CoworkSteerRejectReason.RuntimeRejected,
+            error: t('authAccountChanged'),
+          };
+        }
+
+        const runtime = getCoworkEngineRouter();
+        if (!runtime.submitSteer) {
+          return {
+            success: false,
+            status: CoworkSteerStatus.Rejected,
+            clientSteerId,
+            reason: CoworkSteerRejectReason.RuntimeUnsupported,
+            error: 'Steer is not supported by the current runtime.',
+          };
+        }
+
+        const result = await runtime.submitSteer(sessionId, text, clientSteerId);
+        if (
+          !isMediaAccountScopeSnapshotCurrent(requestAccountScope, getCurrentMediaAccountScope())
+        ) {
+          return {
+            success: false,
+            status: CoworkSteerStatus.Rejected,
+            clientSteerId,
+            reason: CoworkSteerRejectReason.RuntimeRejected,
+            error: t('authAccountChanged'),
+          };
+        }
+        console.debug(
+          '[CoworkSteer] steer IPC completed.',
+          `Session ${sessionId}.`,
+          `Client steer ${clientSteerId}.`,
+          `Status ${result.status}.`,
+          `Reason ${result.reason ?? 'none'}.`,
+        );
+        return result;
+      } catch (error) {
+        console.error('[CoworkSteer] steer IPC failed:', error);
         return {
           success: false,
           status: CoworkSteerStatus.Rejected,
           clientSteerId,
-          reason: CoworkSteerRejectReason.EmptyInput,
-          error: 'Session id and steer input are required.',
+          reason: CoworkSteerRejectReason.Unknown,
+          error: error instanceof Error ? error.message : 'Failed to submit steer input',
         };
       }
-      const requestTurnAccountScope = resolveMediaTurnAccountScopeForSession(sessionId);
-      if (!isMediaAccountScopeSnapshotCurrent(
-        requestAccountScope,
-        requestTurnAccountScope,
-      )) {
-        return {
-          success: false,
-          status: CoworkSteerStatus.Rejected,
-          clientSteerId,
-          reason: CoworkSteerRejectReason.RuntimeRejected,
-          error: t('mediaTaskAccountMismatch'),
-        };
-      }
-      console.debug(
-        '[CoworkSteer] steer IPC received.',
-        `Session ${sessionId}.`,
-        `Client steer ${clientSteerId}.`,
-        `Chars ${text.length}.`,
-      );
+    },
+  );
 
-      const engineStatus = await ensureOpenClawRunningForCowork();
-      if (engineStatus.phase !== 'running') {
-        return {
-          ...getEngineNotReadyResponse(engineStatus),
-          status: CoworkSteerStatus.Rejected,
-          clientSteerId,
-          reason: CoworkSteerRejectReason.RuntimeRejected,
-        };
-      }
-      if (
-        !isMediaAccountScopeSnapshotCurrent(
-          requestAccountScope,
-          getCurrentMediaAccountScope(),
-        )
-        || !isMediaAccountScopeSnapshotCurrent(
-          requestTurnAccountScope,
-          resolveMediaTurnAccountScopeForSession(sessionId),
-        )
-      ) {
+  ipcMain.handle(
+    CoworkIpcChannel.GoalCommand,
+    async (_event, options: { sessionId: string; command: string }) => {
+      try {
+        const engineStatus = await ensureCoworkEngineReady(
+          resolveCoworkAgentEngine(),
+          ensureOpenClawRunningForCowork,
+        );
+        if (engineStatus.phase !== 'running') {
+          return getEngineNotReadyResponse(engineStatus);
+        }
+        const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
+        const command = typeof options?.command === 'string' ? options.command.trim() : '';
+        if (!sessionId || !command) {
+          return {
+            success: false,
+            error: 'Session id and goal command are required.',
+          };
+        }
+        const runtime = getCoworkEngineRouter();
+        if (!runtime.runGoalCommand) {
+          return {
+            success: false,
+            error: 'Goal commands are not supported by the current runtime.',
+          };
+        }
+        const action = command.split(/\s+/, 2)[1] ?? 'status';
+        console.debug(
+          '[CoworkGoal] goal command IPC received.',
+          `Session ${sessionId}.`,
+          `Action ${action}.`,
+        );
+        const goal = await runtime.runGoalCommand(sessionId, command);
+        return { success: true, goal };
+      } catch (error) {
+        console.error('[CoworkGoal] goal command IPC failed:', error);
         return {
           success: false,
-          status: CoworkSteerStatus.Rejected,
-          clientSteerId,
-          reason: CoworkSteerRejectReason.RuntimeRejected,
-          error: t('authAccountChanged'),
+          error: error instanceof Error ? error.message : 'Failed to run goal command',
         };
       }
+    },
+  );
 
-      const runtime = getCoworkEngineRouter();
-      if (!runtime.submitSteer) {
-        return {
-          success: false,
-          status: CoworkSteerStatus.Rejected,
-          clientSteerId,
-          reason: CoworkSteerRejectReason.RuntimeUnsupported,
-          error: 'Steer is not supported by the current runtime.',
-        };
-      }
-
-      const result = await runtime.submitSteer(sessionId, text, clientSteerId);
-      if (!isMediaAccountScopeSnapshotCurrent(
-        requestAccountScope,
-        getCurrentMediaAccountScope(),
-      )) {
-        return {
-          success: false,
-          status: CoworkSteerStatus.Rejected,
-          clientSteerId,
-          reason: CoworkSteerRejectReason.RuntimeRejected,
-          error: t('authAccountChanged'),
-        };
-      }
-      console.debug(
-        '[CoworkSteer] steer IPC completed.',
-        `Session ${sessionId}.`,
-        `Client steer ${clientSteerId}.`,
-        `Status ${result.status}.`,
-        `Reason ${result.reason ?? 'none'}.`,
-      );
-      return result;
-    } catch (error) {
-      console.error('[CoworkSteer] steer IPC failed:', error);
-      return {
-        success: false,
-        status: CoworkSteerStatus.Rejected,
-        clientSteerId,
-        reason: CoworkSteerRejectReason.Unknown,
-        error: error instanceof Error ? error.message : 'Failed to submit steer input',
-      };
-    }
-  });
-
-  ipcMain.handle(CoworkIpcChannel.GoalCommand, async (
-    _event,
-    options: { sessionId: string; command: string },
-  ) => {
-    try {
-      const engineStatus = await ensureOpenClawRunningForCowork();
-      if (engineStatus.phase !== 'running') {
-        return getEngineNotReadyResponse(engineStatus);
-      }
-      const sessionId = typeof options?.sessionId === 'string' ? options.sessionId.trim() : '';
-      const command = typeof options?.command === 'string' ? options.command.trim() : '';
-      if (!sessionId || !command) {
-        return {
-          success: false,
-          error: 'Session id and goal command are required.',
-        };
-      }
-      const runtime = getCoworkEngineRouter();
-      if (!runtime.runGoalCommand) {
-        return {
-          success: false,
-          error: 'Goal commands are not supported by the current runtime.',
-        };
-      }
-      const action = command.split(/\s+/, 2)[1] ?? 'status';
-      console.debug(
-        '[CoworkGoal] goal command IPC received.',
-        `Session ${sessionId}.`,
-        `Action ${action}.`,
-      );
-      const goal = await runtime.runGoalCommand(sessionId, command);
-      return { success: true, goal };
-    } catch (error) {
-      console.error('[CoworkGoal] goal command IPC failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to run goal command',
-      };
-    }
-  });
-
-  const reviewSources = new WorkspaceReviewSourceStore(sessionId => getCoworkStore().getSession(sessionId, 0)?.cwd);
-  const scopedReviews = new ScopedReviewStore(sessionId => getCoworkStore().getSession(sessionId, 0)?.cwd);
+  const reviewSources = new WorkspaceReviewSourceStore(
+    sessionId => getCoworkStore().getSession(sessionId, 0)?.cwd,
+  );
+  const scopedReviews = new ScopedReviewStore(
+    sessionId => getCoworkStore().getSession(sessionId, 0)?.cwd,
+  );
   ipcMain.handle(ReviewIpc.Read, async (_event, input: ReviewScopeRequest) => {
-    if (!input || typeof input.sessionId !== 'string' || !Object.values(ReviewScope).includes(input.scope)) return null;
+    if (
+      !input ||
+      typeof input.sessionId !== 'string' ||
+      !Object.values(ReviewScope).includes(input.scope)
+    )
+      return null;
     const session = getCoworkStore().getSession(input.sessionId, 0);
     if (!session) return null;
     if (input.scope === ReviewScope.Repository) {
-      return buildWorkspaceChangesArtifact(input.sessionId, t('coworkWorkspaceChangesTitle'), await readEnvironmentSnapshot(session.cwd));
+      return buildWorkspaceChangesArtifact(
+        input.sessionId,
+        t('coworkWorkspaceChangesTitle'),
+        await readEnvironmentSnapshot(session.cwd),
+      );
     }
     return scopedReviews.create(input);
   });
   ipcMain.handle(ReviewIpc.Source, (_event, input: ReviewSourceRequest) => {
-    if (typeof input?.artifactId !== 'string' || typeof input.sessionId !== 'string' || !getCoworkStore().getSession(input.sessionId, 0)) return null;
+    if (
+      typeof input?.artifactId !== 'string' ||
+      typeof input.sessionId !== 'string' ||
+      !getCoworkStore().getSession(input.sessionId, 0)
+    )
+      return null;
     if (isScopedReview(input.artifactId)) return scopedReviews.readSource(input);
     return reviewSources.read(input);
   });
@@ -10116,12 +10644,17 @@ if (!gotTheLock) {
           const existingSession = coworkStoreInstance.getSession(existingSessionId);
           if (existingSession) {
             if (existingSession.title !== title) {
-              coworkStoreInstance.updateSession(existingSessionId, { title }, { touchUpdatedAt: false });
+              coworkStoreInstance.updateSession(
+                existingSessionId,
+                { title },
+                { touchUpdatedAt: false },
+              );
             }
-            const normalizedExistingSession = existingSession.title === title
-              ? existingSession
-              : { ...existingSession, title };
-            console.debug(`[Onboarding] reused seeded new user welcome task session=${existingSessionId}`);
+            const normalizedExistingSession =
+              existingSession.title === title ? existingSession : { ...existingSession, title };
+            console.debug(
+              `[Onboarding] reused seeded new user welcome task session=${existingSessionId}`,
+            );
             return { success: true, session: normalizedExistingSession, created: false };
           }
           console.warn(
@@ -10166,7 +10699,9 @@ if (!gotTheLock) {
 
   ipcMain.handle(CoworkIpcChannel.OpenSessionFromNotificationReady, async event => {
     if (!mainWindow || mainWindow.isDestroyed() || event.sender.id !== mainWindow.webContents.id) {
-      console.warn('[DesktopNotification] ignored notification open readiness from an unknown renderer');
+      console.warn(
+        '[DesktopNotification] ignored notification open readiness from an unknown renderer',
+      );
       return { success: false, error: 'Unknown renderer' };
     }
 
@@ -10307,7 +10842,9 @@ if (!gotTheLock) {
           return { success: false, error: 'Session not found' };
         }
         if (sourceSession.status === 'running' || runtime.isSessionActive(sessionId)) {
-          console.warn('[CoworkFork] fork request was rejected because the session is still running');
+          console.warn(
+            '[CoworkFork] fork request was rejected because the session is still running',
+          );
           return { success: false, error: 'Please stop the current task before forking it.' };
         }
 
@@ -10335,7 +10872,9 @@ if (!gotTheLock) {
               truncated: compactionSummary.truncated === true,
             },
           });
-          console.log(`[CoworkFork] attached a compaction summary bridge from source session ${sessionId}`);
+          console.log(
+            `[CoworkFork] attached a compaction summary bridge from source session ${sessionId}`,
+          );
         }
 
         console.log(`[CoworkFork] creating a local conversation fork from session ${sessionId}`);
@@ -10394,7 +10933,10 @@ if (!gotTheLock) {
 
   ipcMain.handle(
     'cowork:session:list',
-    async (_event, options?: { limit?: number; offset?: number; agentId?: string; searchQuery?: string }) => {
+    async (
+      _event,
+      options?: { limit?: number; offset?: number; agentId?: string; searchQuery?: string },
+    ) => {
       try {
         const limit = options?.limit ?? COWORK_SESSION_PAGE_SIZE;
         const offset = options?.offset ?? 0;
@@ -10426,11 +10968,14 @@ if (!gotTheLock) {
 
   ipcMain.handle(
     'cowork:session:getMessages',
-    async (_event, options: {
-      sessionId: string;
-      limit?: number;
-      offset?: number;
-    }) => {
+    async (
+      _event,
+      options: {
+        sessionId: string;
+        limit?: number;
+        offset?: number;
+      },
+    ) => {
       try {
         const { sessionId, limit = COWORK_MESSAGE_PAGE_SIZE, offset = 0 } = options;
         const store = getCoworkStore();
@@ -10451,13 +10996,16 @@ if (!gotTheLock) {
 
   ipcMain.handle(
     CoworkIpcChannel.GetSessionSearchMessages,
-    async (_event, options: {
-      sessionId: string;
-      limit?: number;
-      offset?: number;
-      cursor?: CoworkSearchMessageCursor;
-      knownTotal?: number;
-    }) => {
+    async (
+      _event,
+      options: {
+        sessionId: string;
+        limit?: number;
+        offset?: number;
+        cursor?: CoworkSearchMessageCursor;
+        knownTotal?: number;
+      },
+    ) => {
       try {
         const requestedLimit = options?.limit ?? COWORK_SEARCH_MESSAGE_PAGE_SIZE;
         const limit = Number.isFinite(requestedLimit)
@@ -10475,16 +11023,17 @@ if (!gotTheLock) {
           options.knownTotal,
         );
         console.debug(
-          `[CoworkIPC] loaded lightweight search page for session ${options.sessionId}; `
-          + `returned ${page.messages.length} searchable messages while advancing `
-          + `from offset ${page.offset} to ${page.nextOffset} of ${page.total}.`,
+          `[CoworkIPC] loaded lightweight search page for session ${options.sessionId}; ` +
+            `returned ${page.messages.length} searchable messages while advancing ` +
+            `from offset ${page.offset} to ${page.nextOffset} of ${page.total}.`,
         );
         return { success: true, ...page };
       } catch (error) {
         console.error('[CoworkIPC] failed to load lightweight conversation search page:', error);
         return {
           success: false,
-          error: error instanceof Error ? error.message : 'Failed to get conversation search messages',
+          error:
+            error instanceof Error ? error.message : 'Failed to get conversation search messages',
         };
       }
     },
@@ -10546,7 +11095,10 @@ if (!gotTheLock) {
 
   const resolveExistingAgentWorkspacePath = (agentId?: string): string => {
     const normalizedAgentId = agentId?.trim() || AgentId.Main;
-    if (normalizedAgentId !== AgentId.Main && getAgentManager().getAgent(normalizedAgentId) === null) {
+    if (
+      normalizedAgentId !== AgentId.Main &&
+      getAgentManager().getAgent(normalizedAgentId) === null
+    ) {
       throw new Error(`Agent ${normalizedAgentId} not found`);
     }
     return resolveAgentWorkspacePath(normalizedAgentId);
@@ -10728,8 +11280,10 @@ if (!gotTheLock) {
         return { success: false, message: t('mediaTaskAccountMismatch') };
       }
       const serverBaseUrl = getServerApiBaseUrl();
-      const resp = await fetchWithAuth(`${serverBaseUrl}/api/media/videos/tasks/${taskId}/cancel`, { method: 'POST' });
-      const body = await resp.json() as { code: number; message?: string };
+      const resp = await fetchWithAuth(`${serverBaseUrl}/api/media/videos/tasks/${taskId}/cancel`, {
+        method: 'POST',
+      });
+      const body = (await resp.json()) as { code: number; message?: string };
       if (!isMediaAccountScopeCurrent(requestAccountScope, getCurrentMediaAccountScope())) {
         return { success: false, message: t('authAccountChanged') };
       }
@@ -10749,36 +11303,46 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle(CoworkIpcChannel.GetPendingQuestions, () => getCoworkEngineRouter().getPendingQuestions());
+  ipcMain.handle(CoworkIpcChannel.GetPendingQuestions, () =>
+    getCoworkEngineRouter().getPendingQuestions(),
+  );
 
-  ipcMain.handle(CoworkIpcChannel.PermissionRespond, async (_event, options: {
-    requestId: string;
-    result: PermissionResult;
-  }) => {
-    try {
-      if (options.requestId?.startsWith(OpenClawQuestion.RequestIdPrefix)) {
-        await getCoworkEngineRouter().respondToPermission(options.requestId, options.result);
-        return { success: true };
-      }
-      // Dual-dispatch pattern: permission responses arrive through one IPC channel
-      // but may target either of two independent subsystems.
-      //
-      // - resolveAskUser() handles AskUserQuestion plugin requests routed through
-      //   the McpBridgeServer HTTP callback. It is a no-op when the requestId does
-      //   not match a pending bridge request (i.e. for normal SDK permission requests).
-      //
-      // - respondToPermission() handles standard Claude Agent SDK permission requests
-      //   managed by the CoworkEngineRouter. It is a no-op when the requestId does
-      //   not match a pending SDK permission (i.e. for bridge plugin requests).
-      //
-      // Both calls are safe to invoke unconditionally; exactly one will match.
+  ipcMain.handle(
+    CoworkIpcChannel.PermissionRespond,
+    async (
+      _event,
+      options: {
+        requestId: string;
+        result: PermissionResult;
+      },
+    ) => {
+      try {
+        if (options.requestId?.startsWith(OpenClawQuestion.RequestIdPrefix)) {
+          await getCoworkEngineRouter().respondToPermission(options.requestId, options.result);
+          return { success: true };
+        }
+        // Dual-dispatch pattern: permission responses arrive through one IPC channel
+        // but may target either of two independent subsystems.
+        //
+        // - resolveAskUser() handles AskUserQuestion plugin requests routed through
+        //   the McpBridgeServer HTTP callback. It is a no-op when the requestId does
+        //   not match a pending bridge request (i.e. for normal SDK permission requests).
+        //
+        // - respondToPermission() handles standard Claude Agent SDK permission requests
+        //   managed by the CoworkEngineRouter. It is a no-op when the requestId does
+        //   not match a pending SDK permission (i.e. for bridge plugin requests).
+        //
+        // Both calls are safe to invoke unconditionally; exactly one will match.
 
         // AskUserQuestion plugin responses go to the bridge server, not the runtime
         if (options.requestId) {
           const result = options.result;
-          const updatedInput = result.behavior === 'allow' && result.updatedInput && typeof result.updatedInput === 'object'
-            ? (result.updatedInput as Record<string, unknown>)
-            : undefined;
+          const updatedInput =
+            result.behavior === 'allow' &&
+            result.updatedInput &&
+            typeof result.updatedInput === 'object'
+              ? (result.updatedInput as Record<string, unknown>)
+              : undefined;
           const askUserResponse: AskUserResponse = {
             behavior: result.behavior === 'allow' ? 'allow' : 'deny',
             answers: updatedInput?.answers as Record<string, string> | undefined,
@@ -10834,7 +11398,9 @@ if (!gotTheLock) {
     async (_event, options?: { cwds?: string[] }) => {
       try {
         const selectedCwds = Array.isArray(options?.cwds)
-          ? options.cwds.filter((cwd): cwd is string => typeof cwd === 'string' && cwd.trim() !== '')
+          ? options.cwds.filter(
+              (cwd): cwd is string => typeof cwd === 'string' && cwd.trim() !== '',
+            )
           : undefined;
         const summary = await getCoworkTempJanitor().clean(selectedCwds);
         return { success: true, ...summary };
@@ -10904,11 +11470,11 @@ if (!gotTheLock) {
           sessionUpdates.modelOverride =
             patchResult && typeof patchResult.modelOverride === 'string'
               ? patchResult.modelOverride
-              : patch.model ?? '';
+              : (patch.model ?? '');
         }
         if (patch.thinkingLevel !== undefined) {
           sessionUpdates.thinkingLevel = patch.thinkingLevel
-            ? parseModelThinkingLevel(patch.thinkingLevel) ?? ''
+            ? (parseModelThinkingLevel(patch.thinkingLevel) ?? '')
             : '';
         }
         getCoworkStore().updateSession(sessionId, sessionUpdates, { touchUpdatedAt: false });
@@ -11154,43 +11720,40 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle(CoworkIpcChannel.BootstrapRead, async (
-    _event,
-    filename: string,
-    options?: { agentId?: string },
-  ) => {
-    try {
-      const workspace = resolveExistingAgentWorkspacePath(options?.agentId);
-      const content = readBootstrapFile(workspace, filename);
-      return { success: true, content };
-    } catch (error) {
-      return {
-        success: false,
-        content: '',
-        error: error instanceof Error ? error.message : 'Failed to read bootstrap file',
-      };
-    }
-  });
-  ipcMain.handle(CoworkIpcChannel.BootstrapWrite, async (
-    _event,
-    filename: string,
-    content: string,
-    options?: { agentId?: string },
-  ) => {
-    try {
-      const workspace = resolveExistingAgentWorkspacePath(options?.agentId);
-      writeBootstrapFile(workspace, filename, content);
-      syncOpenClawConfig({ reason: 'bootstrap-updated' }).catch(err => {
-        console.error('[OpenClaw] config sync after bootstrap-updated failed:', err);
-      });
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to write bootstrap file',
-      };
-    }
-  });
+  ipcMain.handle(
+    CoworkIpcChannel.BootstrapRead,
+    async (_event, filename: string, options?: { agentId?: string }) => {
+      try {
+        const workspace = resolveExistingAgentWorkspacePath(options?.agentId);
+        const content = readBootstrapFile(workspace, filename);
+        return { success: true, content };
+      } catch (error) {
+        return {
+          success: false,
+          content: '',
+          error: error instanceof Error ? error.message : 'Failed to read bootstrap file',
+        };
+      }
+    },
+  );
+  ipcMain.handle(
+    CoworkIpcChannel.BootstrapWrite,
+    async (_event, filename: string, content: string, options?: { agentId?: string }) => {
+      try {
+        const workspace = resolveExistingAgentWorkspacePath(options?.agentId);
+        writeBootstrapFile(workspace, filename, content);
+        syncOpenClawConfig({ reason: 'bootstrap-updated' }).catch(err => {
+          console.error('[OpenClaw] config sync after bootstrap-updated failed:', err);
+        });
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to write bootstrap file',
+        };
+      }
+    },
+  );
 
   const VALID_EMBEDDING_PROVIDERS = [
     'local',
@@ -11240,143 +11803,158 @@ if (!gotTheLock) {
     };
   }
 
-  ipcMain.handle(CoworkIpcChannel.ConfigSet, async (_event, config: {
-    workingDirectory?: string;
-    executionMode?: 'auto' | 'local' | 'sandbox';
-    agentEngine?: CoworkAgentEngine;
-    memoryEnabled?: boolean;
-    memoryImplicitUpdateEnabled?: boolean;
-    memoryLlmJudgeEnabled?: boolean;
-    memoryGuardLevel?: 'strict' | 'standard' | 'relaxed';
-    memoryUserMemoriesMaxItems?: number;
-    skipMissedJobs?: boolean;
-    openClawHeartbeatEnabled?: boolean;
-    openClawSkillReviewEnabled?: boolean;
-    openClawMemoryFlushEnabled?: boolean;
-    embeddingEnabled?: boolean;
-    embeddingProvider?: string;
-    embeddingModel?: string;
-    embeddingLocalModelPath?: string;
-    embeddingVectorWeight?: number;
-    embeddingRemoteBaseUrl?: string;
-    embeddingRemoteApiKey?: string;
-  }) => {
-    try {
-      const normalizedExecutionMode =
-        config.executionMode && String(config.executionMode) === 'container'
-          ? 'local'
-          : config.executionMode;
-      const normalizedAgentEngine = config.agentEngine === 'openclaw'
-        ? 'openclaw'
-        : undefined;
-      const normalizedMemoryEnabled = typeof config.memoryEnabled === 'boolean'
-        ? config.memoryEnabled
-        : undefined;
-      const normalizedMemoryImplicitUpdateEnabled = typeof config.memoryImplicitUpdateEnabled === 'boolean'
-        ? config.memoryImplicitUpdateEnabled
-        : undefined;
-      const normalizedMemoryLlmJudgeEnabled = typeof config.memoryLlmJudgeEnabled === 'boolean'
-        ? config.memoryLlmJudgeEnabled
-        : undefined;
-      const normalizedMemoryGuardLevel = config.memoryGuardLevel === 'strict'
-        || config.memoryGuardLevel === 'standard'
-        || config.memoryGuardLevel === 'relaxed'
-        ? config.memoryGuardLevel
-        : undefined;
-      const normalizedMemoryUserMemoriesMaxItems =
-        typeof config.memoryUserMemoriesMaxItems === 'number' && Number.isFinite(config.memoryUserMemoriesMaxItems)
-          ? Math.max(
-            MIN_MEMORY_USER_MEMORIES_MAX_ITEMS,
-            Math.min(MAX_MEMORY_USER_MEMORIES_MAX_ITEMS, Math.floor(config.memoryUserMemoriesMaxItems)),
-          )
-          : undefined;
-      const normalizedSkipMissedJobs = typeof config.skipMissedJobs === 'boolean'
-        ? config.skipMissedJobs
-        : undefined;
-      const normalizedOpenClawHeartbeatEnabled = typeof config.openClawHeartbeatEnabled === 'boolean'
-        ? config.openClawHeartbeatEnabled
-        : undefined;
-      const normalizedOpenClawSkillReviewEnabled = typeof config.openClawSkillReviewEnabled === 'boolean'
-        ? config.openClawSkillReviewEnabled
-        : undefined;
-      const normalizedOpenClawMemoryFlushEnabled = typeof config.openClawMemoryFlushEnabled === 'boolean'
-        ? config.openClawMemoryFlushEnabled
-        : undefined;
-      const normalizedEmbedding = normalizeEmbeddingConfig(config);
-      const normalizedConfig: Parameters<CoworkStore['setConfig']>[0] = {
-        ...config,
-        executionMode: normalizedExecutionMode,
-        agentEngine: normalizedAgentEngine,
-        memoryEnabled: normalizedMemoryEnabled,
-        memoryImplicitUpdateEnabled: normalizedMemoryImplicitUpdateEnabled,
-        memoryLlmJudgeEnabled: normalizedMemoryLlmJudgeEnabled,
-        memoryGuardLevel: normalizedMemoryGuardLevel,
-        memoryUserMemoriesMaxItems: normalizedMemoryUserMemoriesMaxItems,
-        skipMissedJobs: normalizedSkipMissedJobs,
-        openClawHeartbeatEnabled: normalizedOpenClawHeartbeatEnabled,
-        openClawSkillReviewEnabled: normalizedOpenClawSkillReviewEnabled,
-        openClawMemoryFlushEnabled: normalizedOpenClawMemoryFlushEnabled,
-        ...normalizedEmbedding,
-      };
-      const previousConfig = getCoworkStore().getConfig();
-      const previousWorkingDir = previousConfig.workingDirectory;
-      getCoworkStore().setConfig(normalizedConfig);
-      if (normalizedConfig.workingDirectory !== undefined && normalizedConfig.workingDirectory !== previousWorkingDir) {
-        getSkillManager().handleWorkingDirectoryChange();
-        // Main agent workspace is decoupled from workingDirectory — no MEMORY.md
-        // or IDENTITY.md sync needed here. The workspace is always at
-        // {STATE_DIR}/workspace-main/ regardless of the user's working directory.
-      }
-
-      const nextConfig = getCoworkStore().getConfig();
-      const impactDecision = classifyCoworkConfigChange(previousConfig, nextConfig);
-      if (
-        normalizedConfig.openClawHeartbeatEnabled !== undefined
-        && previousConfig.openClawHeartbeatEnabled !== nextConfig.openClawHeartbeatEnabled
-      ) {
-        console.log(
-          `[Cowork] OpenClaw heartbeat setting changed: enabled=${nextConfig.openClawHeartbeatEnabled}, previous=${previousConfig.openClawHeartbeatEnabled}, impact=${impactDecision.impact}`,
-        );
-      }
-      if (
-        normalizedConfig.openClawSkillReviewEnabled !== undefined
-        && previousConfig.openClawSkillReviewEnabled !== nextConfig.openClawSkillReviewEnabled
-      ) {
-        console.log(
-          `[Cowork] OpenClaw skill review setting changed: enabled=${nextConfig.openClawSkillReviewEnabled}, previous=${previousConfig.openClawSkillReviewEnabled}, impact=${impactDecision.impact}`,
-        );
-      }
-      if (
-        normalizedConfig.openClawMemoryFlushEnabled !== undefined
-        && previousConfig.openClawMemoryFlushEnabled !== nextConfig.openClawMemoryFlushEnabled
-      ) {
-        console.log(
-          `[Cowork] OpenClaw memory flush setting changed: enabled=${nextConfig.openClawMemoryFlushEnabled}, previous=${previousConfig.openClawMemoryFlushEnabled}, impact=${impactDecision.impact}`,
-        );
-      }
-      if (impactDecision.impact !== OpenClawConfigImpact.None) {
-        const syncResult = await syncOpenClawConfig({
-          reason: 'cowork-config-change',
-          restartGatewayIfRunning: impactDecision.impact === OpenClawConfigImpact.Restart,
-        });
-        if (!syncResult.success && nextConfig.agentEngine === 'openclaw') {
-          return {
-            success: false,
-            code: ENGINE_NOT_READY_CODE,
-            error: syncResult.error || 'OpenClaw config sync failed.',
-            engineStatus: syncResult.status || getOpenClawEngineManager().getStatus(),
-          };
+  ipcMain.handle(
+    CoworkIpcChannel.ConfigSet,
+    async (
+      _event,
+      config: {
+        workingDirectory?: string;
+        executionMode?: 'auto' | 'local' | 'sandbox';
+        agentEngine?: CoworkAgentEngine;
+        memoryEnabled?: boolean;
+        memoryImplicitUpdateEnabled?: boolean;
+        memoryLlmJudgeEnabled?: boolean;
+        memoryGuardLevel?: 'strict' | 'standard' | 'relaxed';
+        memoryUserMemoriesMaxItems?: number;
+        skipMissedJobs?: boolean;
+        openClawHeartbeatEnabled?: boolean;
+        openClawSkillReviewEnabled?: boolean;
+        openClawMemoryFlushEnabled?: boolean;
+        embeddingEnabled?: boolean;
+        embeddingProvider?: string;
+        embeddingModel?: string;
+        embeddingLocalModelPath?: string;
+        embeddingVectorWeight?: number;
+        embeddingRemoteBaseUrl?: string;
+        embeddingRemoteApiKey?: string;
+      },
+    ) => {
+      try {
+        const normalizedExecutionMode =
+          config.executionMode && String(config.executionMode) === 'container'
+            ? 'local'
+            : config.executionMode;
+        const normalizedAgentEngine = config.agentEngine === 'openclaw' ? 'openclaw' : undefined;
+        const normalizedMemoryEnabled =
+          typeof config.memoryEnabled === 'boolean' ? config.memoryEnabled : undefined;
+        const normalizedMemoryImplicitUpdateEnabled =
+          typeof config.memoryImplicitUpdateEnabled === 'boolean'
+            ? config.memoryImplicitUpdateEnabled
+            : undefined;
+        const normalizedMemoryLlmJudgeEnabled =
+          typeof config.memoryLlmJudgeEnabled === 'boolean'
+            ? config.memoryLlmJudgeEnabled
+            : undefined;
+        const normalizedMemoryGuardLevel =
+          config.memoryGuardLevel === 'strict' ||
+          config.memoryGuardLevel === 'standard' ||
+          config.memoryGuardLevel === 'relaxed'
+            ? config.memoryGuardLevel
+            : undefined;
+        const normalizedMemoryUserMemoriesMaxItems =
+          typeof config.memoryUserMemoriesMaxItems === 'number' &&
+          Number.isFinite(config.memoryUserMemoriesMaxItems)
+            ? Math.max(
+                MIN_MEMORY_USER_MEMORIES_MAX_ITEMS,
+                Math.min(
+                  MAX_MEMORY_USER_MEMORIES_MAX_ITEMS,
+                  Math.floor(config.memoryUserMemoriesMaxItems),
+                ),
+              )
+            : undefined;
+        const normalizedSkipMissedJobs =
+          typeof config.skipMissedJobs === 'boolean' ? config.skipMissedJobs : undefined;
+        const normalizedOpenClawHeartbeatEnabled =
+          typeof config.openClawHeartbeatEnabled === 'boolean'
+            ? config.openClawHeartbeatEnabled
+            : undefined;
+        const normalizedOpenClawSkillReviewEnabled =
+          typeof config.openClawSkillReviewEnabled === 'boolean'
+            ? config.openClawSkillReviewEnabled
+            : undefined;
+        const normalizedOpenClawMemoryFlushEnabled =
+          typeof config.openClawMemoryFlushEnabled === 'boolean'
+            ? config.openClawMemoryFlushEnabled
+            : undefined;
+        const normalizedEmbedding = normalizeEmbeddingConfig(config);
+        const normalizedConfig: Parameters<CoworkStore['setConfig']>[0] = {
+          ...config,
+          executionMode: normalizedExecutionMode,
+          agentEngine: normalizedAgentEngine,
+          memoryEnabled: normalizedMemoryEnabled,
+          memoryImplicitUpdateEnabled: normalizedMemoryImplicitUpdateEnabled,
+          memoryLlmJudgeEnabled: normalizedMemoryLlmJudgeEnabled,
+          memoryGuardLevel: normalizedMemoryGuardLevel,
+          memoryUserMemoriesMaxItems: normalizedMemoryUserMemoriesMaxItems,
+          skipMissedJobs: normalizedSkipMissedJobs,
+          openClawHeartbeatEnabled: normalizedOpenClawHeartbeatEnabled,
+          openClawSkillReviewEnabled: normalizedOpenClawSkillReviewEnabled,
+          openClawMemoryFlushEnabled: normalizedOpenClawMemoryFlushEnabled,
+          ...normalizedEmbedding,
+        };
+        const previousConfig = getCoworkStore().getConfig();
+        const previousWorkingDir = previousConfig.workingDirectory;
+        getCoworkStore().setConfig(normalizedConfig);
+        if (
+          normalizedConfig.workingDirectory !== undefined &&
+          normalizedConfig.workingDirectory !== previousWorkingDir
+        ) {
+          getSkillManager().handleWorkingDirectoryChange();
+          // Main agent workspace is decoupled from workingDirectory — no MEMORY.md
+          // or IDENTITY.md sync needed here. The workspace is always at
+          // {STATE_DIR}/workspace-main/ regardless of the user's working directory.
         }
-      }
 
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set config',
-      };
-    }
-  });
+        const nextConfig = getCoworkStore().getConfig();
+        const impactDecision = classifyCoworkConfigChange(previousConfig, nextConfig);
+        if (
+          normalizedConfig.openClawHeartbeatEnabled !== undefined &&
+          previousConfig.openClawHeartbeatEnabled !== nextConfig.openClawHeartbeatEnabled
+        ) {
+          console.log(
+            `[Cowork] OpenClaw heartbeat setting changed: enabled=${nextConfig.openClawHeartbeatEnabled}, previous=${previousConfig.openClawHeartbeatEnabled}, impact=${impactDecision.impact}`,
+          );
+        }
+        if (
+          normalizedConfig.openClawSkillReviewEnabled !== undefined &&
+          previousConfig.openClawSkillReviewEnabled !== nextConfig.openClawSkillReviewEnabled
+        ) {
+          console.log(
+            `[Cowork] OpenClaw skill review setting changed: enabled=${nextConfig.openClawSkillReviewEnabled}, previous=${previousConfig.openClawSkillReviewEnabled}, impact=${impactDecision.impact}`,
+          );
+        }
+        if (
+          normalizedConfig.openClawMemoryFlushEnabled !== undefined &&
+          previousConfig.openClawMemoryFlushEnabled !== nextConfig.openClawMemoryFlushEnabled
+        ) {
+          console.log(
+            `[Cowork] OpenClaw memory flush setting changed: enabled=${nextConfig.openClawMemoryFlushEnabled}, previous=${previousConfig.openClawMemoryFlushEnabled}, impact=${impactDecision.impact}`,
+          );
+        }
+        if (impactDecision.impact !== OpenClawConfigImpact.None) {
+          const syncResult = await syncOpenClawConfig({
+            reason: 'cowork-config-change',
+            restartGatewayIfRunning: impactDecision.impact === OpenClawConfigImpact.Restart,
+          });
+          if (!syncResult.success && nextConfig.agentEngine === 'openclaw') {
+            return {
+              success: false,
+              code: ENGINE_NOT_READY_CODE,
+              error: syncResult.error || 'OpenClaw config sync failed.',
+              engineStatus: syncResult.status || getOpenClawEngineManager().getStatus(),
+            };
+          }
+        }
+
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set config',
+        };
+      }
+    },
+  );
 
   // ==================== Plugin Management IPC Handlers ====================
 
@@ -11481,7 +12059,8 @@ if (!gotTheLock) {
 
   const ensureLastSyncedImOpenClawConfigFingerprint = (fallbackFingerprint?: string) => {
     if (lastSyncedImOpenClawConfigFingerprint === null) {
-      lastSyncedImOpenClawConfigFingerprint = fallbackFingerprint ?? getCurrentImOpenClawConfigFingerprint();
+      lastSyncedImOpenClawConfigFingerprint =
+        fallbackFingerprint ?? getCurrentImOpenClawConfigFingerprint();
     }
     return lastSyncedImOpenClawConfigFingerprint;
   };
@@ -11494,9 +12073,11 @@ if (!gotTheLock) {
       const syncResult = await syncOpenClawConfig({
         reason: 'im-config-change',
         restartGatewayIfRunning: true,
-        ...(forceRestart ? {} : {
-          imConfigRestartFingerprint: getCurrentImOpenClawConfigFingerprint(),
-        }),
+        ...(forceRestart
+          ? {}
+          : {
+              imConfigRestartFingerprint: getCurrentImOpenClawConfigFingerprint(),
+            }),
       });
       if (!syncResult.success) {
         throw new Error(syncResult.error || 'OpenClaw config sync failed.');
@@ -11547,7 +12128,9 @@ if (!gotTheLock) {
     }, IM_CONFIG_SYNC_DEBOUNCE_MS);
   };
 
-  const runImConfigSyncNow = async (options: IMConfigSyncOptions = {}): Promise<IMConfigSyncResult> => {
+  const runImConfigSyncNow = async (
+    options: IMConfigSyncOptions = {},
+  ): Promise<IMConfigSyncResult> => {
     if (options.restartGatewayIfRunning) {
       imConfigSyncForceRestart = true;
     }
@@ -11585,36 +12168,39 @@ if (!gotTheLock) {
     }
   };
 
-  const mutateImOpenClawConfig = (
-    mutate: () => void,
-    options: IMConfigSetOptions = {},
-  ) => {
+  const mutateImOpenClawConfig = (mutate: () => void, options: IMConfigSetOptions = {}) => {
     const previousFingerprint = getCurrentImOpenClawConfigFingerprint();
     mutate();
     const nextFingerprint = getCurrentImOpenClawConfigFingerprint();
     recordImOpenClawConfigMutation(previousFingerprint, nextFingerprint, options);
   };
 
-  ipcMain.handle('im:config:set', async (_event, config: Partial<IMGatewayConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(() => {
-        getIMGatewayManager().setConfig(config, {
-          syncGateway: false,
-          restartGatewayIfRunning: false,
-        });
-      }, {
-        syncGateway: options?.syncGateway,
-        restartGatewayIfRunning: options?.restartGatewayIfRunning,
-        markRestartOnSave: options?.markRestartOnSave,
-      });
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set IM config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:config:set',
+    async (_event, config: Partial<IMGatewayConfig>, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => {
+            getIMGatewayManager().setConfig(config, {
+              syncGateway: false,
+              restartGatewayIfRunning: false,
+            });
+          },
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set IM config',
+        };
+      }
+    },
+  );
 
   // Explicitly apply IM settings to OpenClaw.
   // Called from the global Settings Save button after IM fields have been
@@ -11767,43 +12353,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:popo:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deletePopoInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete POPO instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:popo:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deletePopoInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete POPO instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:popo:instance:config:set', async (_event, instanceId: string, config: Record<string, unknown>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setPopoInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set POPO instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:popo:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Record<string, unknown>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setPopoInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set POPO instance config',
+        };
+      }
+    },
+  );
 
   ipcMain.handle('im:status:get', async () => {
     try {
@@ -11981,43 +12578,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:dingtalk:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteDingTalkInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete DingTalk instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:dingtalk:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteDingTalkInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete DingTalk instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:dingtalk:instance:config:set', async (_event, instanceId: string, config: Partial<DingTalkInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setDingTalkInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set DingTalk instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:dingtalk:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<DingTalkInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setDingTalkInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set DingTalk instance config',
+        };
+      }
+    },
+  );
 
   // NIM Multi-Instance handlers
   ipcMain.handle('im:nim:instance:add', async (_event, name: string) => {
@@ -12039,43 +12647,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:nim:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteNimInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete NIM instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:nim:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteNimInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete NIM instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:nim:instance:config:set', async (_event, instanceId: string, config: Partial<NimInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setNimInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set NIM instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:nim:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<NimInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setNimInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set NIM instance config',
+        };
+      }
+    },
+  );
 
   // QQ Multi-Instance handlers
   ipcMain.handle('im:qq:instance:add', async (_event, name: string) => {
@@ -12097,43 +12716,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:qq:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteQQInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete QQ instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:qq:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteQQInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete QQ instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:qq:instance:config:set', async (_event, instanceId: string, config: Partial<QQInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setQQInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set QQ instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:qq:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<QQInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setQQInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set QQ instance config',
+        };
+      }
+    },
+  );
 
   // Feishu Multi-Instance handlers
   ipcMain.handle('im:feishu:instance:add', async (_event, name: string) => {
@@ -12155,43 +12785,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:feishu:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteFeishuInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete Feishu instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:feishu:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteFeishuInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete Feishu instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:feishu:instance:config:set', async (_event, instanceId: string, config: Partial<FeishuInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setFeishuInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set Feishu instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:feishu:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<FeishuInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setFeishuInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set Feishu instance config',
+        };
+      }
+    },
+  );
 
   // Email Multi-Instance handlers
   ipcMain.handle('im:email:instance:add', async (_event, name: string) => {
@@ -12235,81 +12876,103 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:email:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteEmailInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete email instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:email:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteEmailInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete email instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:wecom:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteWecomInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete WeCom instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:wecom:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteWecomInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete WeCom instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:email:instance:config:set', async (_event, instanceId: string, config: Partial<EmailMultiInstanceConfig['instances'][number]>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setEmailInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set email instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:email:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<EmailMultiInstanceConfig['instances'][number]>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setEmailInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set email instance config',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:wecom:instance:config:set', async (_event, instanceId: string, config: Partial<WecomInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setWecomInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set WeCom instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:wecom:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<WecomInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setWecomInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set WeCom instance config',
+        };
+      }
+    },
+  );
 
   // Telegram Multi-Instance handlers
   ipcMain.handle('im:telegram:instance:add', async (_event, name: string) => {
@@ -12331,43 +12994,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:telegram:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteTelegramInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete Telegram instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:telegram:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteTelegramInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete Telegram instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:telegram:instance:config:set', async (_event, instanceId: string, config: Partial<TelegramInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setTelegramInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set Telegram instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:telegram:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<TelegramInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setTelegramInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set Telegram instance config',
+        };
+      }
+    },
+  );
 
   // Discord Multi-Instance handlers
   ipcMain.handle('im:discord:instance:add', async (_event, name: string) => {
@@ -12389,43 +13063,54 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.handle('im:discord:instance:delete', async (_event, instanceId: string, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().deleteDiscordInstance(instanceId),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete Discord instance',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:discord:instance:delete',
+    async (_event, instanceId: string, options?: IMConfigSetOptions) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().deleteDiscordInstance(instanceId),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to delete Discord instance',
+        };
+      }
+    },
+  );
 
-  ipcMain.handle('im:discord:instance:config:set', async (_event, instanceId: string, config: Partial<DiscordInstanceConfig>, options?: IMConfigSetOptions) => {
-    try {
-      mutateImOpenClawConfig(
-        () => getIMGatewayManager().getIMStore().setDiscordInstanceConfig(instanceId, config),
-        {
-          syncGateway: options?.syncGateway,
-          restartGatewayIfRunning: options?.restartGatewayIfRunning,
-          markRestartOnSave: options?.markRestartOnSave,
-        },
-      );
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to set Discord instance config',
-      };
-    }
-  });
+  ipcMain.handle(
+    'im:discord:instance:config:set',
+    async (
+      _event,
+      instanceId: string,
+      config: Partial<DiscordInstanceConfig>,
+      options?: IMConfigSetOptions,
+    ) => {
+      try {
+        mutateImOpenClawConfig(
+          () => getIMGatewayManager().getIMStore().setDiscordInstanceConfig(instanceId, config),
+          {
+            syncGateway: options?.syncGateway,
+            restartGatewayIfRunning: options?.restartGatewayIfRunning,
+            markRestartOnSave: options?.markRestartOnSave,
+          },
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to set Discord instance config',
+        };
+      }
+    },
+  );
 
   // Feishu bot install helpers
   ipcMain.handle('feishu:install:qrcode', async (_event, { isLark }: { isLark: boolean }) => {
@@ -12610,7 +13295,7 @@ if (!gotTheLock) {
   // user code to the renderer via 'xai-oauth:device-code'. The credential is
   // written into the OpenClaw auth-profiles store, where the runtime's xai
   // plugin injects and auto-refreshes the Bearer token.
-  ipcMain.handle('xai-oauth:start', async (event) => {
+  ipcMain.handle('xai-oauth:start', async event => {
     const xaiAuth = await import('./libs/xaiAuth');
     try {
       let result;
@@ -12618,7 +13303,7 @@ if (!gotTheLock) {
         result = await xaiAuth.startXaiOAuthLogin();
       } catch (err) {
         if (!(err instanceof xaiAuth.XaiCallbackPortBusyError)) throw err;
-        result = await xaiAuth.startXaiDeviceCodeLogin((info) => {
+        result = await xaiAuth.startXaiDeviceCodeLogin(info => {
           if (!event.sender.isDestroyed()) {
             event.sender.send('xai-oauth:device-code', info);
           }
@@ -12886,7 +13571,17 @@ if (!gotTheLock) {
 
   ipcMain.handle(
     DialogIpc.StatFile,
-    async (_event, filePath?: string): Promise<{ success: boolean; isFile?: boolean; isDirectory?: boolean; size?: number; mtimeMs?: number; error?: string }> => {
+    async (
+      _event,
+      filePath?: string,
+    ): Promise<{
+      success: boolean;
+      isFile?: boolean;
+      isDirectory?: boolean;
+      size?: number;
+      mtimeMs?: number;
+      error?: string;
+    }> => {
       try {
         if (typeof filePath !== 'string' || !filePath.trim()) {
           return { success: false, error: 'Missing file path' };
@@ -12905,13 +13600,23 @@ if (!gotTheLock) {
           error: error instanceof Error ? error.message : 'Failed to stat file',
         };
       }
-    }
+    },
   );
 
   const MAX_READ_TEXT_FILE_BYTES = 2 * 1024 * 1024;
   ipcMain.handle(
     DialogIpc.ReadTextFile,
-    async (_event, filePath?: string): Promise<{ success: boolean; content?: string; size?: number; readBytes?: number; truncated?: boolean; error?: string }> => {
+    async (
+      _event,
+      filePath?: string,
+    ): Promise<{
+      success: boolean;
+      content?: string;
+      size?: number;
+      readBytes?: number;
+      truncated?: boolean;
+      error?: string;
+    }> => {
       try {
         if (typeof filePath !== 'string' || !filePath.trim()) {
           return { success: false, error: 'Missing file path' };
@@ -12945,7 +13650,7 @@ if (!gotTheLock) {
           error: error instanceof Error ? error.message : 'Failed to read file',
         };
       }
-    }
+    },
   );
 
   ipcMain.handle(
@@ -13016,16 +13721,17 @@ if (!gotTheLock) {
               'Thumbnail is empty',
             );
           }
-          const rendererConfirmedIntentionalBlank = (
-            rendererFailure.metrics?.sourceHasVisualContent === false
-            && rendererFailure.metrics?.domHasVisualContent === false
-          );
-          if (shouldRejectNativeLibraryThumbnail({
-            extension,
-            platform: process.platform,
-            rendererConfirmedIntentionalBlank,
-            getBitmap: () => image.toBitmap(),
-          })) {
+          const rendererConfirmedIntentionalBlank =
+            rendererFailure.metrics?.sourceHasVisualContent === false &&
+            rendererFailure.metrics?.domHasVisualContent === false;
+          if (
+            shouldRejectNativeLibraryThumbnail({
+              extension,
+              platform: process.platform,
+              rendererConfirmedIntentionalBlank,
+              getBitmap: () => image.toBitmap(),
+            })
+          ) {
             throw new LibraryThumbnailError(
               LibraryThumbnailFailureCode.NativeThumbnailBlank,
               'Native thumbnail is visually blank',
@@ -13069,11 +13775,11 @@ if (!gotTheLock) {
     ): Promise<LibraryThumbnailGenerateResponse> => {
       try {
         if (
-          !request
-          || typeof request.filePath !== 'string'
-          || !request.filePath.trim()
-          || typeof request.requestId !== 'string'
-          || !request.requestId.trim()
+          !request ||
+          typeof request.filePath !== 'string' ||
+          !request.filePath.trim() ||
+          typeof request.requestId !== 'string' ||
+          !request.requestId.trim()
         ) {
           return {
             success: false,
@@ -13104,9 +13810,10 @@ if (!gotTheLock) {
     DialogIpc.CancelThumbnail,
     (_event, requestId?: string): { success: boolean; canceled: boolean } => ({
       success: true,
-      canceled: typeof requestId === 'string' && requestId.trim().length > 0
-        ? libraryThumbnailService.cancel(requestId)
-        : false,
+      canceled:
+        typeof requestId === 'string' && requestId.trim().length > 0
+          ? libraryThumbnailService.cancel(requestId)
+          : false,
     }),
   );
 
@@ -13133,7 +13840,10 @@ if (!gotTheLock) {
         error: fallbackError,
         reason: ShellOpenFailureReason.OpenFailed,
       } as const;
-      console.warn(`[Shell] failed to ${operation} because the system could not open the existing path:`, normalizedPath);
+      console.warn(
+        `[Shell] failed to ${operation} because the system could not open the existing path:`,
+        normalizedPath,
+      );
       return status;
     } catch (error) {
       const status = {
@@ -13141,7 +13851,11 @@ if (!gotTheLock) {
         error: fallbackError,
         reason: getFileAccessFailureReason(error),
       } as const;
-      console.warn(`[Shell] failed to ${operation} because the path is not accessible:`, normalizedPath, error);
+      console.warn(
+        `[Shell] failed to ${operation} because the path is not accessible:`,
+        normalizedPath,
+        error,
+      );
       return status;
     }
   };
@@ -13171,7 +13885,11 @@ if (!gotTheLock) {
       try {
         await fs.promises.stat(normalizedPath);
       } catch (error) {
-        console.warn('[Shell] failed to reveal local path because the path is not accessible:', normalizedPath, error);
+        console.warn(
+          '[Shell] failed to reveal local path because the path is not accessible:',
+          normalizedPath,
+          error,
+        );
         return {
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error',
@@ -13181,7 +13899,11 @@ if (!gotTheLock) {
       shell.showItemInFolder(normalizedPath);
       return { success: true };
     } catch (error) {
-      console.warn('[Shell] failed to reveal local path because the system request failed:', filePath, error);
+      console.warn(
+        '[Shell] failed to reveal local path because the system request failed:',
+        filePath,
+        error,
+      );
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -13771,7 +14493,7 @@ if (!gotTheLock) {
 
   // 设置 Content Security Policy
   const sanitizeResponseHeaders = (
-    headers: Record<string, string[]> | undefined
+    headers: Record<string, string[]> | undefined,
   ): Record<string, string[]> => {
     if (!headers) return {};
     const result: Record<string, string[]> = {};
@@ -13992,9 +14714,8 @@ if (!gotTheLock) {
 
     const scheduleLoadWatchdog = () => {
       clearLoadWatchdog();
-      const delay = LOAD_WATCHDOG_DELAYS_MS[
-        Math.min(loadRecoveryAttempts, LOAD_WATCHDOG_DELAYS_MS.length - 1)
-      ];
+      const delay =
+        LOAD_WATCHDOG_DELAYS_MS[Math.min(loadRecoveryAttempts, LOAD_WATCHDOG_DELAYS_MS.length - 1)];
       loadWatchdogTimer = setTimeout(() => {
         loadWatchdogTimer = null;
         if (!mainWindow || mainWindow.isDestroyed()) return;
@@ -14037,9 +14758,8 @@ if (!gotTheLock) {
       ? createDevelopmentMainWindowLoadRecovery({
           isTargetAvailable: () => !isQuitting && !createdMainWindow.isDestroyed(),
           loadDevelopmentUrl: () => createdMainWindow.loadURL(DEV_SERVER_URL),
-          loadErrorPage: () => createdMainWindow.loadFile(
-            path.join(__dirname, '../resources/error.html'),
-          ),
+          loadErrorPage: () =>
+            createdMainWindow.loadFile(path.join(__dirname, '../resources/error.html')),
         })
       : null;
 
@@ -14048,11 +14768,7 @@ if (!gotTheLock) {
       clearLoadWatchdog();
       loadRecoveryAttempts = 0;
       markFirstFrameRendered('did-finish-load');
-      if (
-        shouldOpenDevTools
-        && !hasOpenedDevelopmentTools
-        && !createdMainWindow.isDestroyed()
-      ) {
+      if (shouldOpenDevTools && !hasOpenedDevelopmentTools && !createdMainWindow.isDestroyed()) {
         hasOpenedDevelopmentTools = true;
         createdMainWindow.webContents.openDevTools({ mode: 'detach', activate: false });
       }
@@ -14066,10 +14782,12 @@ if (!gotTheLock) {
     });
 
     // 处理窗口关闭
-    mainWindow.on('close', (e) => {
+    mainWindow.on('close', e => {
       windowStatePersist.cleanup();
       windowStatePersist.persist();
-      console.log(`[Main] main window close event, isQuitting=${isQuitting}, isDev=${isDev}, platform=${process.platform}, fullscreen=${mainWindow?.isFullScreen() ?? false}, visible=${mainWindow?.isVisible() ?? false}`);
+      console.log(
+        `[Main] main window close event, isQuitting=${isQuitting}, isDev=${isDev}, platform=${process.platform}, fullscreen=${mainWindow?.isFullScreen() ?? false}, visible=${mainWindow?.isVisible() ?? false}`,
+      );
 
       // In development, close should actually quit so `npm run electron:dev`
       // restarts from a clean process. In production we keep tray behavior.
@@ -14176,7 +14894,7 @@ if (!gotTheLock) {
       const initLang = getStore().get<{ language?: string }>('app_config')?.language;
       setLanguage(initLang === 'en' ? 'en' : 'zh');
       // 窗口就绪后创建系统托盘
-      createTray(() => isQuitting ? null : mainWindow);
+      createTray(() => (isQuitting ? null : mainWindow));
 
       // Start cron polling after the window is ready.
       (async () => {
@@ -14223,12 +14941,13 @@ if (!gotTheLock) {
   let isCleanupFinished = false;
   let isCleanupInProgress = false;
 
-  const escapeDataMigrationHtml = (value: string): string => value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  const escapeDataMigrationHtml = (value: string): string =>
+    value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
 
   const showDataMigrationRestoreProgressWindow = async (): Promise<void> => {
     if (dataMigrationRestoreWindow && !dataMigrationRestoreWindow.isDestroyed()) {
@@ -14355,34 +15074,45 @@ if (!gotTheLock) {
   };
 
   const releaseRendererWindowsForDataMigrationRestore = async (): Promise<void> => {
-    const windows = BrowserWindow.getAllWindows()
-      .filter(win => !win.isDestroyed() && win !== dataMigrationRestoreWindow);
+    const windows = BrowserWindow.getAllWindows().filter(
+      win => !win.isDestroyed() && win !== dataMigrationRestoreWindow,
+    );
     if (windows.length === 0) {
       return;
     }
 
     console.log(`[DataMigration] closing ${windows.length} renderer window(s) before restore.`);
-    await Promise.all(windows.map(win => new Promise<void>(resolve => {
-      let resolved = false;
-      let timeout: ReturnType<typeof setTimeout> | null = null;
-      const finish = () => {
-        if (resolved) return;
-        resolved = true;
-        if (timeout) clearTimeout(timeout);
-        resolve();
-      };
-      timeout = setTimeout(finish, 3_000);
-      win.once('closed', finish);
-      try {
-        win.destroy();
-      } catch (error) {
-        console.warn('[DataMigration] failed to destroy renderer window before restore:', error);
-        finish();
-      }
-    })));
+    await Promise.all(
+      windows.map(
+        win =>
+          new Promise<void>(resolve => {
+            let resolved = false;
+            let timeout: ReturnType<typeof setTimeout> | null = null;
+            const finish = () => {
+              if (resolved) return;
+              resolved = true;
+              if (timeout) clearTimeout(timeout);
+              resolve();
+            };
+            timeout = setTimeout(finish, 3_000);
+            win.once('closed', finish);
+            try {
+              win.destroy();
+            } catch (error) {
+              console.warn(
+                '[DataMigration] failed to destroy renderer window before restore:',
+                error,
+              );
+              finish();
+            }
+          }),
+      ),
+    );
 
     // Give Chromium a short window to release LevelDB handles such as Local Storage on Windows.
-    await new Promise(resolve => { setTimeout(resolve, 500); });
+    await new Promise(resolve => {
+      setTimeout(resolve, 500);
+    });
   };
 
   // Read by the quit watchdog to report which cleanup step was in flight when
@@ -14410,7 +15140,10 @@ if (!gotTheLock) {
     if (browserHost) {
       currentAppCleanupStep = 'agent-browser-storage';
       await browserHost.dispose().catch(error => {
-        console.error('[AgentBrowserHost] Failed to flush persistent browser storage on quit:', error);
+        console.error(
+          '[AgentBrowserHost] Failed to flush persistent browser storage on quit:',
+          error,
+        );
       });
     }
 
@@ -14504,7 +15237,9 @@ if (!gotTheLock) {
   // killing the process outright is safe; electron-log writes synchronously.
   const exitAppProcess = (code: number) => {
     if (isMac && appQuitConfirmationGate.isPromptOpen()) {
-      console.warn(`[Main] quit confirmation prompt still open, killing process instead of app.exit(${code})`);
+      console.warn(
+        `[Main] quit confirmation prompt still open, killing process instead of app.exit(${code})`,
+      );
       process.kill(process.pid, 'SIGKILL');
       return;
     }
@@ -14559,7 +15294,10 @@ if (!gotTheLock) {
         confirmed => confirmed,
         error => {
           if (hasUnsafeMarkdownEdits()) {
-            console.error('[Main] quit confirmation prompt failed, retaining unsaved Markdown edits:', error);
+            console.error(
+              '[Main] quit confirmation prompt failed, retaining unsaved Markdown edits:',
+              error,
+            );
             return false;
           }
           // Honor the quit rather than trap the user in a process that cannot
@@ -14955,21 +15693,23 @@ if (!gotTheLock) {
       console.error('[OpenClaw] Startup config sync failed:', startupSync.error);
     }
     profiler.measure('syncOpenClawConfig');
-    void ensureOpenClawRunningForCowork()
-      .then(() => {
-        // Start cron polling once the gateway is confirmed running.
-        try {
-          getCronJobService().startPolling();
-        } catch (err) {
-          console.warn('[Main] CronJobService not available after OpenClaw startup:', err);
-        }
-        void migrateScheduledTaskAnnounceJobs(scheduledTaskHandlerDeps).catch(err => {
-          console.warn('[Main] Scheduled task IM announce job migration failed:', err);
+    if (resolveCoworkAgentEngine() === 'openclaw') {
+      void ensureOpenClawRunningForCowork()
+        .then(() => {
+          // Start cron polling once the gateway is confirmed running.
+          try {
+            getCronJobService().startPolling();
+          } catch (err) {
+            console.warn('[Main] CronJobService not available after OpenClaw startup:', err);
+          }
+          void migrateScheduledTaskAnnounceJobs(scheduledTaskHandlerDeps).catch(err => {
+            console.warn('[Main] Scheduled task IM announce job migration failed:', err);
+          });
+        })
+        .catch(error => {
+          console.error('[OpenClaw] Failed to auto-start gateway on app startup:', error);
         });
-      })
-      .catch(error => {
-        console.error('[OpenClaw] Failed to auto-start gateway on app startup:', error);
-      });
+    }
 
     // ── Step 1: Show window ASAP ──────────────────────────────────────
     // CSP + createWindow moved before skill initialisation so the user
@@ -15145,7 +15885,7 @@ if (!gotTheLock) {
       if (currentLanguage !== lastLanguage) {
         lastLanguage = currentLanguage;
         setLanguage(currentLanguage === 'en' ? 'en' : 'zh');
-        updateTrayMenu(() => isQuitting ? null : mainWindow);
+        updateTrayMenu(() => (isQuitting ? null : mainWindow));
       }
 
       const previousUseSystemProxy = oldConfig
@@ -15161,9 +15901,12 @@ if (!gotTheLock) {
             void syncOpenClawConfig({
               reason: 'system-proxy-changed',
               restartGatewayIfRunning: true,
-            }).then((result) => {
+            }).then(result => {
               if (!result.success) {
-                console.error('[OpenClaw] Failed to sync config after system proxy change:', result.error);
+                console.error(
+                  '[OpenClaw] Failed to sync config after system proxy change:',
+                  result.error,
+                );
               }
             });
           }

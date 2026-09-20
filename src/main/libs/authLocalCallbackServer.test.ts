@@ -8,28 +8,25 @@ import {
 
 describe('appendLoginParams', () => {
   test('appends params inside hash route query for portal URLs', () => {
-    const result = appendLoginParams(
-      'https://lobsterai.youdao.com/portal#/login',
-      {
-        source: 'electron',
-        redirect_uri: 'http://127.0.0.1:43210/auth/callback',
-        state: 'test-state',
-      },
-    );
+    const result = appendLoginParams('https://lobster.example.com/portal#/login', {
+      source: 'electron',
+      redirect_uri: 'http://127.0.0.1:43210/auth/callback',
+      state: 'test-state',
+    });
 
     expect(result).toBe(
-      'https://lobsterai.youdao.com/portal#/login?source=electron&redirect_uri=http%3A%2F%2F127.0.0.1%3A43210%2Fauth%2Fcallback&state=test-state',
+      'https://lobster.example.com/portal#/login?source=electron&redirect_uri=http%3A%2F%2F127.0.0.1%3A43210%2Fauth%2Fcallback&state=test-state',
     );
   });
 
   test('preserves existing hash route params', () => {
     const result = appendLoginParams(
-      'https://lobsterai.youdao.com/portal#/login?invitationCode=ABC123',
+      'https://lobster.example.com/portal#/login?invitationCode=ABC123',
       { source: 'electron' },
     );
 
     expect(result).toBe(
-      'https://lobsterai.youdao.com/portal#/login?invitationCode=ABC123&source=electron',
+      'https://lobster.example.com/portal#/login?invitationCode=ABC123&source=electron',
     );
   });
 
@@ -46,11 +43,11 @@ describe('appendCallbackReturnTo', () => {
   test('adds portal return URL to the local callback redirect URI', () => {
     const result = appendCallbackReturnTo(
       'http://127.0.0.1:43210/auth/callback',
-      'https://lobsterai.youdao.com/portal#/login?source=electron&electronLogin=success',
+      'https://lobster.example.com/portal#/login?source=electron&electronLogin=success',
     );
 
     expect(result).toBe(
-      'http://127.0.0.1:43210/auth/callback?return_to=https%3A%2F%2Flobsterai.youdao.com%2Fportal%23%2Flogin%3Fsource%3Delectron%26electronLogin%3Dsuccess',
+      'http://127.0.0.1:43210/auth/callback?return_to=https%3A%2F%2Flobster.example.com%2Fportal%23%2Flogin%3Fsource%3Delectron%26electronLogin%3Dsuccess',
     );
   });
 });
@@ -115,13 +112,17 @@ describe('startAuthLocalCallback', () => {
   });
 
   test('returns a success page that redirects back to the portal when return_to is safe', async () => {
-    const callback = await startAuthLocalCallback({ onCode: () => {} });
     const returnTo = encodeURIComponent(
-      'https://lobsterai.youdao.com/portal#/login?source=electron&electronLogin=success',
+      'https://lobster.example.com/portal#/login?source=electron&electronLogin=success',
     );
 
+    const configuredCallback = await startAuthLocalCallback({
+      onCode: () => {},
+      allowedReturnToOrigins: ['https://lobster.example.com'],
+    });
+
     const response = await fetch(
-      `${callback.redirectUri}?return_to=${returnTo}&code=abc123&state=${callback.state}`,
+      `${configuredCallback.redirectUri}?return_to=${returnTo}&code=abc123&state=${configuredCallback.state}`,
     );
     const body = await response.text();
 
@@ -144,6 +145,23 @@ describe('startAuthLocalCallback', () => {
     expect(response.status).toBe(200);
     expect(body).toContain('window.location.replace');
     expect(body).toContain('127.0.0.1:5180');
+  });
+
+  test('allows the configured self-hosted portal origin', async () => {
+    const callback = await startAuthLocalCallback({
+      onCode: () => {},
+      allowedReturnToOrigins: ['https://lobster.example.com'],
+    });
+    const returnTo = encodeURIComponent('https://lobster.example.com/portal?electronLogin=success');
+
+    const response = await fetch(
+      `${callback.redirectUri}?return_to=${returnTo}&code=abc123&state=${callback.state}`,
+    );
+    const body = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(body).toContain('window.location.replace');
+    expect(body).toContain('lobster.example.com');
   });
 
   test('does not redirect to unsafe return_to URLs', async () => {
