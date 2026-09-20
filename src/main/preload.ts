@@ -671,7 +671,7 @@ contextBridge.exposeInMainWorld('electron', {
     setConfig: (config: {
       workingDirectory?: string;
       executionMode?: 'auto' | 'local' | 'sandbox';
-      agentEngine?: 'openclaw';
+      agentEngine?: 'openclaw' | 'codex';
       memoryEnabled?: boolean;
       memoryImplicitUpdateEnabled?: boolean;
       memoryLlmJudgeEnabled?: boolean;

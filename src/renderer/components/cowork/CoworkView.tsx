@@ -156,6 +156,7 @@ const CoworkView: React.FC<CoworkViewProps> = ({
     void refreshEnterpriseAccountContext();
   }, [enterpriseAccountId, hasEnterpriseAccount, isHomeView]);
   const config = useSelector(selectCoworkConfig);
+  const isOpenClawActive = config.agentEngine === 'openclaw';
 
   const activeSkillIds = useSelector((state: RootState) => state.skill.activeSkillIds);
   const skills = useSelector((state: RootState) => state.skill.skills);
@@ -343,7 +344,7 @@ const CoworkView: React.FC<CoworkViewProps> = ({
       }));
       return false;
     }
-    if (openClawStatus && !isOpenClawReadyForSession(openClawStatus)) {
+    if (isOpenClawActive && openClawStatus && !isOpenClawReadyForSession(openClawStatus)) {
       window.dispatchEvent(new CustomEvent('app:showToast', { detail: i18nService.t('coworkErrorEngineNotReady') }));
       return false;
     }
@@ -578,7 +579,7 @@ const CoworkView: React.FC<CoworkViewProps> = ({
     if (!currentSession) return false;
     // Prevent duplicate submissions
     if (isContinuingRef.current) return false;
-    if (openClawStatus && !isOpenClawReadyForSession(openClawStatus)) {
+    if (isOpenClawActive && openClawStatus && !isOpenClawReadyForSession(openClawStatus)) {
       window.dispatchEvent(new CustomEvent('app:showToast', { detail: i18nService.t('coworkErrorEngineNotReady') }));
       return false;
     }
@@ -798,9 +799,9 @@ const CoworkView: React.FC<CoworkViewProps> = ({
     );
   }
 
-  const shouldShowEngineStatus = Boolean(openClawStatus && openClawStatus.phase !== 'running');
-  const isEngineError = openClawStatus?.phase === 'error';
-  const isEngineReady = isOpenClawReadyForSession(openClawStatus);
+  const shouldShowEngineStatus = isOpenClawActive && Boolean(openClawStatus && openClawStatus.phase !== 'running');
+  const isEngineError = isOpenClawActive && openClawStatus?.phase === 'error';
+  const isEngineReady = !isOpenClawActive || isOpenClawReadyForSession(openClawStatus);
 
   const homeHeader = (
     <div className="draggable relative z-10 flex h-12 items-center justify-between px-4 shrink-0">

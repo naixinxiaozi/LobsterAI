@@ -1737,7 +1737,7 @@ const Settings: React.FC<SettingsProps> = ({
 
   const coworkConfig = useSelector(selectCoworkConfig);
 
-  const [coworkAgentEngine, setCoworkAgentEngine] = useState<CoworkAgentEngine>(coworkConfig.agentEngine || 'openclaw');
+  const [coworkAgentEngine, setCoworkAgentEngine] = useState<CoworkAgentEngine>(coworkConfig.agentEngine || 'codex');
   const [coworkMemoryEnabled, setCoworkMemoryEnabled] = useState<boolean>(coworkConfig.memoryEnabled ?? true);
   const [coworkMemoryLlmJudgeEnabled, setCoworkMemoryLlmJudgeEnabled] = useState<boolean>(coworkConfig.memoryLlmJudgeEnabled ?? false);
   const [skipMissedJobs, setSkipMissedJobs] = useState<boolean>(coworkConfig.skipMissedJobs ?? true);
@@ -1789,7 +1789,7 @@ const Settings: React.FC<SettingsProps> = ({
   const [showOpenClawDataRestoreConfirm, setShowOpenClawDataRestoreConfirm] = useState<boolean>(false);
 
   useEffect(() => {
-    setCoworkAgentEngine(coworkConfig.agentEngine || 'openclaw');
+    setCoworkAgentEngine(coworkConfig.agentEngine || 'codex');
     setCoworkMemoryEnabled(coworkConfig.memoryEnabled ?? true);
     setCoworkMemoryLlmJudgeEnabled(coworkConfig.memoryLlmJudgeEnabled ?? false);
     setSkipMissedJobs(coworkConfig.skipMissedJobs ?? true);
@@ -3399,7 +3399,7 @@ const Settings: React.FC<SettingsProps> = ({
       const previousOpenClawHeartbeatEnabled = coworkConfig.openClawHeartbeatEnabled ?? false;
       const previousOpenClawSkillReviewEnabled = coworkConfig.openClawSkillReviewEnabled ?? false;
       const previousOpenClawMemoryFlushEnabled = coworkConfig.openClawMemoryFlushEnabled ?? false;
-      const previousAgentEngine = coworkConfig.agentEngine || 'openclaw';
+    const previousAgentEngine = coworkConfig.agentEngine || 'codex';
       const previousOpenClawSessionKeepAlive = coworkConfig.openClawSessionPolicy?.keepAlive
         || OpenClawSessionKeepAliveValues.ThirtyDays;
       const previousMemorySettings = {

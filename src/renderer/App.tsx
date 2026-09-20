@@ -288,6 +288,7 @@ const App: React.FC = () => {
   const currentSessionId = useSelector(selectCurrentSessionId);
   const pendingPermission = useSelector(selectFirstCurrentSessionPendingPermission);
   const pendingPermissions = useSelector(selectPendingPermissions);
+  const activeCoworkEngine = useSelector((state: RootState) => state.cowork.config.agentEngine);
   const authUser = useSelector((state: RootState) => state.auth.user);
   const isEnterpriseAccount = useSelector(selectIsEnterpriseAccount);
   const isWindows = window.electron.platform === 'win32';
@@ -2211,6 +2212,7 @@ const App: React.FC = () => {
       </div>
 
       <EngineFailureOverlay
+        activeEngine={activeCoworkEngine}
         onRequestAppSettings={handleShowSettings}
         suspended={showSettings || showUpdateModal || showUpdateInstallConfirm || isPermissionModalOpen}
       />

@@ -23,7 +23,9 @@ describe('EngineFailureOverlay', () => {
       canRetry: true,
     };
 
-    const html = renderToStaticMarkup(React.createElement(EngineFailureOverlay));
+    const html = renderToStaticMarkup(
+      React.createElement(EngineFailureOverlay, { activeEngine: 'openclaw' }),
+    );
 
     expect(html).toContain('role="dialog"');
     expect(html).toContain(snapshot.status.message);
@@ -38,7 +40,9 @@ describe('EngineFailureOverlay', () => {
       canRetry: false,
     };
 
-    expect(renderToStaticMarkup(React.createElement(EngineFailureOverlay))).toBe('');
+    expect(renderToStaticMarkup(
+      React.createElement(EngineFailureOverlay, { activeEngine: 'openclaw' }),
+    )).toBe('');
   });
 
   test('guides reinstall instead of config repair when runtime workers are missing', () => {
@@ -48,9 +52,24 @@ describe('EngineFailureOverlay', () => {
       errorCode: OpenClawEngineErrorCode.RuntimeFilesMissing,
       canRetry: false,
     };
-    const html = renderToStaticMarkup(React.createElement(EngineFailureOverlay));
+    const html = renderToStaticMarkup(
+      React.createElement(EngineFailureOverlay, { activeEngine: 'openclaw' }),
+    );
     expect(html).toContain('coworkOpenClawRuntimeDamagedRepairHint');
     expect(html).not.toContain('coworkOpenClawQuickRepair');
     expect(html).not.toContain('coworkOpenClawRestartGateway');
+  });
+
+  test('does not block the Codex engine when OpenClaw is unavailable', () => {
+    snapshot.status = {
+      phase: OpenClawEnginePhase.Error,
+      version: null,
+      message: 'Bundled OpenClaw runtime is missing.',
+      canRetry: true,
+    };
+
+    expect(renderToStaticMarkup(
+      React.createElement(EngineFailureOverlay, { activeEngine: 'codex' }),
+    )).toBe('');
   });
 });

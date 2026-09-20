@@ -21,7 +21,7 @@ import type {
 import type { SkinWorkflowKind } from '../../../shared/skin/constants';
 import type { CoworkMessage, CoworkSessionStatus } from '../../coworkStore';
 
-export type CoworkAgentEngine = 'openclaw';
+export type CoworkAgentEngine = 'openclaw' | 'codex';
 
 export type PermissionResult =
   | {

@@ -277,7 +277,7 @@ interface CoworkConfig {
   workingDirectory: string;
   systemPrompt: string;
   executionMode: 'auto' | 'local' | 'sandbox';
-  agentEngine: 'openclaw';
+  agentEngine: 'openclaw' | 'codex';
   memoryEnabled: boolean;
   memoryImplicitUpdateEnabled: boolean;
   memoryLlmJudgeEnabled: boolean;

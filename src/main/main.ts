@@ -297,6 +297,7 @@ import { LibraryLocalStore } from './library/libraryLocalStore';
 import { AgentBrowserHost } from './libs/agentBrowserHost';
 import { showAgentBrowserHostMenu } from './libs/agentBrowserHostMenu';
 import {
+  CodexRuntimeAdapter,
   type CoworkAgentEngine,
   CoworkEngineRouter,
   OpenClawRuntimeAdapter,
@@ -340,6 +341,7 @@ import {
   updateServerModelMetadata,
 } from './libs/claudeSettings';
 import { appendClientBannerVersion } from './libs/clientBannerRequest';
+import { CodexAppServerManager } from './libs/codexAppServerManager';
 import {
   clearCopilotTokenState,
   initCopilotTokenManager,
@@ -440,6 +442,7 @@ import {
   MainWindowLoadErrorCode,
 } from './libs/mainWindowLoadRecovery';
 import { inferImageMimeTypeFromDataUrl, type PersistedGeneratedImageAsset, persistGeneratedImageAssets, type PersistGeneratedImageAssetsResult, persistGeneratedVideoAssets, type RemoteGeneratedMediaAsset } from './libs/mediaAssetPersistence';
+import { getCodexHomeDir } from './libs/openaiCodexAuth';
 import {
   migrateAgentModelRefs,
   parsePrimaryModelRef,
@@ -2144,6 +2147,8 @@ process.on('exit', code => {
 let store: SqliteStore | null = null;
 let coworkStore: CoworkStore | null = null;
 let openClawRuntimeAdapter: OpenClawRuntimeAdapter | null = null;
+let codexAppServerManager: CodexAppServerManager | null = null;
+let codexRuntimeAdapter: CodexRuntimeAdapter | null = null;
 let coworkEngineRouter: CoworkEngineRouter | null = null;
 let agentBrowserHost: AgentBrowserHost | null = null;
 let browserCredentialService: BrowserCredentialService | null = null;
@@ -2530,7 +2535,20 @@ const shouldRefreshServerQuotaForSession = (sessionId: string): boolean => {
 };
 
 const resolveCoworkAgentEngine = (): CoworkAgentEngine => {
-  return 'openclaw';
+  return 'codex';
+};
+
+const getCodexAppServerManager = (): CodexAppServerManager => {
+  if (!codexAppServerManager) {
+    const configured = resolveCurrentApiConfig().config;
+    codexAppServerManager = new CodexAppServerManager({
+      codexHome: getCodexHomeDir(),
+      apiKey: process.env.LOBSTERAI_DEEPSEEK_API_KEY?.trim() || configured?.apiKey?.trim() || '',
+      envFilePath: path.join(app.getAppPath(), '.env'),
+      model: configured?.model || undefined,
+    });
+  }
+  return codexAppServerManager;
 };
 
 const getOpenClawConfigSync = (): OpenClawConfigSync => {
@@ -3771,9 +3789,22 @@ const getCoworkEngineRouter = () => {
         console.warn('[Main] Failed to set up channel session sync:', error);
       }
     }
+    if (!codexRuntimeAdapter) {
+      const codexManager = getCodexAppServerManager();
+      codexRuntimeAdapter = new CodexRuntimeAdapter({
+        client: codexManager.startSync(),
+        getSkillInstructions: () => getSkillManager().buildAutoRoutingPrompt(),
+        getPersistedThreadId: sessionId => getCoworkStore().getSession(sessionId, 0)?.claudeSessionId ?? null,
+        saveThreadId: (sessionId, threadId) => getCoworkStore().updateSession(sessionId, { claudeSessionId: threadId }),
+      });
+      void codexManager.reloadMcpServers(getMcpRuntime().getResolvedServersCache()).catch(error => {
+        console.warn('[Codex] failed to project MCP configuration:', error);
+      });
+    }
     coworkEngineRouter = new CoworkEngineRouter({
       getCurrentEngine: resolveCoworkAgentEngine,
       openclawRuntime: openClawRuntimeAdapter,
+      codexRuntime: codexRuntimeAdapter,
     });
   }
   return coworkEngineRouter;

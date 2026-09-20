@@ -6,15 +6,17 @@ import { coworkService } from '../../services/cowork';
 import { i18nService } from '../../services/i18n';
 import { LogReporterAction, reportYdAnalyzer } from '../../services/logReporter';
 import { resolveOpenClawRepairError } from '../../services/openclawRepair';
-import type { OpenClawEngineStatus } from '../../types/cowork';
+import type { CoworkAgentEngine, OpenClawEngineStatus } from '../../types/cowork';
 import type { SettingsOpenOptions } from '../Settings';
 
 interface EngineFailureOverlayProps {
+  activeEngine?: CoworkAgentEngine;
   onRequestAppSettings?: (options?: SettingsOpenOptions) => void;
   suspended?: boolean;
 }
 
 const EngineFailureOverlay: React.FC<EngineFailureOverlayProps> = ({
+  activeEngine = 'codex',
   onRequestAppSettings,
   suspended = false,
 }) => {
@@ -93,7 +95,7 @@ const EngineFailureOverlay: React.FC<EngineFailureOverlayProps> = ({
     }
   };
 
-  if (suspended || !status || (status.phase !== OpenClawEnginePhase.Error && !isRepairingGateway)) {
+  if (activeEngine !== 'openclaw' || suspended || !status || (status.phase !== OpenClawEnginePhase.Error && !isRepairingGateway)) {
     return null;
   }
 

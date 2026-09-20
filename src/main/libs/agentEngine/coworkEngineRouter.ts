@@ -29,11 +29,12 @@ import { ENGINE_SWITCHED_CODE } from './types';
 type RouterDeps = {
   getCurrentEngine: () => CoworkAgentEngine;
   openclawRuntime: CoworkRuntime;
+  codexRuntime?: CoworkRuntime;
 };
 
 export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
   private readonly getCurrentEngine: () => CoworkAgentEngine;
-  private readonly runtime: CoworkRuntime;
+  private readonly runtimes: Record<CoworkAgentEngine, CoworkRuntime>;
   private readonly sessionEngine = new Map<string, CoworkAgentEngine>();
   private readonly requestEngine = new Map<string, CoworkAgentEngine>();
   private readonly requestSession = new Map<string, string>();
@@ -42,10 +43,16 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
   constructor(deps: RouterDeps) {
     super();
     this.getCurrentEngine = deps.getCurrentEngine;
-    this.runtime = deps.openclawRuntime;
+    this.runtimes = {
+      openclaw: deps.openclawRuntime,
+      codex: deps.codexRuntime ?? deps.openclawRuntime,
+    };
     this.currentEngine = this.safeResolveEngine();
 
     this.bindRuntimeEvents('openclaw', deps.openclawRuntime);
+    if (deps.codexRuntime) {
+      this.bindRuntimeEvents('codex', deps.codexRuntime);
+    }
   }
 
   override on<U extends keyof CoworkRuntimeEvents>(
@@ -64,9 +71,10 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
 
   async startSession(sessionId: string, prompt: string, options: CoworkStartOptions = {}): Promise<void> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimes[engine];
     this.sessionEngine.set(sessionId, engine);
     try {
-      await this.runtime.startSession(sessionId, prompt, options);
+      await runtime.startSession(sessionId, prompt, options);
     } catch (error) {
       this.sessionEngine.delete(sessionId);
       this.clearRequestEngineBySession(sessionId);
@@ -76,9 +84,10 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
 
   async continueSession(sessionId: string, prompt: string, options: CoworkContinueOptions = {}): Promise<void> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimes[engine];
     this.sessionEngine.set(sessionId, engine);
     try {
-      await this.runtime.continueSession(sessionId, prompt, options);
+      await runtime.continueSession(sessionId, prompt, options);
     } catch (error) {
       this.sessionEngine.delete(sessionId);
       this.clearRequestEngineBySession(sessionId);
@@ -88,80 +97,90 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
 
   async submitSteer(sessionId: string, text: string, clientSteerId: string): Promise<CoworkSteerResponse> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimeForSession(sessionId, engine);
     this.sessionEngine.set(sessionId, engine);
-    if (!this.runtime.submitSteer) {
+    if (!runtime.submitSteer) {
       throw new Error(`Steer is not supported by engine: ${engine}`);
     }
-    return this.runtime.submitSteer(sessionId, text, clientSteerId);
+    return runtime.submitSteer(sessionId, text, clientSteerId);
   }
 
   async submitBtw(sessionId: string, question: string, runId: string): Promise<CoworkBtwSubmitResponse> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimeForSession(sessionId, engine);
     this.sessionEngine.set(sessionId, engine);
-    if (!this.runtime.submitBtw) {
+    if (!runtime.submitBtw) {
       throw new Error(`BTW side questions are not supported by engine: ${engine}`);
     }
-    return this.runtime.submitBtw(sessionId, question, runId);
+    return runtime.submitBtw(sessionId, question, runId);
   }
 
   async abortBtw(sessionId: string, runId: string): Promise<CoworkBtwAbortResponse> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimeForSession(sessionId, engine);
     this.sessionEngine.set(sessionId, engine);
-    if (!this.runtime.abortBtw) {
+    if (!runtime.abortBtw) {
       throw new Error(`Stopping BTW side questions is not supported by engine: ${engine}`);
     }
-    return this.runtime.abortBtw(sessionId, runId);
+    return runtime.abortBtw(sessionId, runId);
   }
 
   async runGoalCommand(sessionId: string, command: string): Promise<CoworkGoal | null> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimeForSession(sessionId, engine);
     this.sessionEngine.set(sessionId, engine);
-    if (!this.runtime.runGoalCommand) {
+    if (!runtime.runGoalCommand) {
       throw new Error(`Goal commands are not supported by engine: ${engine}`);
     }
-    return this.runtime.runGoalCommand(sessionId, command);
+    return runtime.runGoalCommand(sessionId, command);
   }
 
   async patchSession(sessionId: string, patch: OpenClawSessionPatch): Promise<CoworkSessionPatchResult | void> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimeForSession(sessionId, engine);
     this.sessionEngine.set(sessionId, engine);
-    if (!this.runtime.patchSession) {
+    if (!runtime.patchSession) {
       throw new Error(`Session patch is not supported by engine: ${engine}`);
     }
-    return this.runtime.patchSession(sessionId, patch);
+    return runtime.patchSession(sessionId, patch);
   }
 
   async getContextUsage(sessionId: string): Promise<CoworkContextUsage | null> {
-    if (!this.runtime.getContextUsage) {
+    const runtime = this.runtimeForSession(sessionId, this.safeResolveEngine());
+    if (!runtime.getContextUsage) {
       return null;
     }
-    return this.runtime.getContextUsage(sessionId);
+    return runtime.getContextUsage(sessionId);
   }
 
   async compactContext(sessionId: string): Promise<{ compacted: boolean; reason?: string; usage?: CoworkContextUsage | null }> {
     const engine = this.safeResolveEngine();
+    const runtime = this.runtimeForSession(sessionId, engine);
     this.sessionEngine.set(sessionId, engine);
-    if (!this.runtime.compactContext) {
+    if (!runtime.compactContext) {
       throw new Error(`Context compaction is not supported by engine: ${engine}`);
     }
-    return this.runtime.compactContext(sessionId);
+    return runtime.compactContext(sessionId);
   }
 
   async getForkCompactionSummary(sessionId: string, beforeCreatedAt?: number): Promise<CoworkForkCompactionSummary | null> {
-    if (!this.runtime.getForkCompactionSummary) {
+    const runtime = this.runtimeForSession(sessionId, this.safeResolveEngine());
+    if (!runtime.getForkCompactionSummary) {
       return null;
     }
-    return this.runtime.getForkCompactionSummary(sessionId, beforeCreatedAt);
+    return runtime.getForkCompactionSummary(sessionId, beforeCreatedAt);
   }
 
   stopSession(sessionId: string): void {
-    this.runtime.stopSession(sessionId);
+    this.runtimeForSession(sessionId, this.safeResolveEngine()).stopSession(sessionId);
     this.sessionEngine.delete(sessionId);
     this.clearRequestEngineBySession(sessionId);
   }
 
   stopAllSessions(): void {
-    this.runtime.stopAllSessions();
+    for (const runtime of new Set(Object.values(this.runtimes))) {
+      runtime.stopAllSessions();
+    }
     this.sessionEngine.clear();
     this.requestEngine.clear();
     this.requestSession.clear();
@@ -170,11 +189,11 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
   respondToPermission(requestId: string, result: PermissionResult): void | Promise<void> {
     if (requestId.startsWith(OpenClawQuestion.RequestIdPrefix)) {
       // Native answers must be acknowledged before the renderer dismisses the question.
-      return this.runtime.respondToPermission(requestId, result);
+      return this.runtimeForRequest(requestId).respondToPermission(requestId, result);
     }
     const engine = this.requestEngine.get(requestId);
     if (engine) {
-      this.runtime.respondToPermission(requestId, result);
+      this.runtimeForRequest(requestId).respondToPermission(requestId, result);
       if (result.behavior === 'allow' || result.behavior === 'deny') {
         this.requestEngine.delete(requestId);
         this.requestSession.delete(requestId);
@@ -182,50 +201,52 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
       return;
     }
 
-    this.runtime.respondToPermission(requestId, result);
+    this.runtimeForRequest(requestId).respondToPermission(requestId, result);
   }
 
   isSessionActive(sessionId: string): boolean {
-    return this.runtime.isSessionActive(sessionId);
+    return this.runtimeForSession(sessionId, this.safeResolveEngine()).isSessionActive(sessionId);
   }
 
   getPendingQuestions() {
-    return this.runtime.getPendingQuestions?.() ?? [];
+    return Object.values(this.runtimes).flatMap(runtime => runtime.getPendingQuestions?.() ?? []);
   }
 
   getActiveSessionIds(): string[] {
     return Array.from(this.sessionEngine.keys())
-      .filter((sessionId) => this.runtime.isSessionActive(sessionId));
+      .filter((sessionId) => this.runtimeForSession(sessionId, this.currentEngine).isSessionActive(sessionId));
   }
 
   getSessionConfirmationMode(sessionId: string): 'modal' | 'text' | null {
-    return this.runtime.getSessionConfirmationMode(sessionId);
+    return this.runtimeForSession(sessionId, this.safeResolveEngine()).getSessionConfirmationMode(sessionId);
   }
 
   async deleteSubagentSession(parentSessionId: string, runId: string): Promise<boolean> {
-    if (!this.runtime.deleteSubagentSession) {
+    const runtime = this.runtimeForSession(parentSessionId, this.safeResolveEngine());
+    if (!runtime.deleteSubagentSession) {
       return false;
     }
-    return this.runtime.deleteSubagentSession(parentSessionId, runId);
+    return runtime.deleteSubagentSession(parentSessionId, runId);
   }
 
   async listBackgroundJobs(sessionId: string): Promise<CoworkBackgroundJob[]> {
-    return (await this.runtime.listBackgroundJobs?.(sessionId)) ?? [];
+    return (await this.runtimeForSession(sessionId, this.safeResolveEngine()).listBackgroundJobs?.(sessionId)) ?? [];
   }
 
   async killBackgroundJob(sessionId: string, jobId: string): Promise<BackgroundJobKillResult> {
-    return (await this.runtime.killBackgroundJob?.(sessionId, jobId))
+    return (await this.runtimeForSession(sessionId, this.safeResolveEngine()).killBackgroundJob?.(sessionId, jobId))
       ?? { outcome: BackgroundJobKillOutcome.Unsupported };
   }
 
   async clearSettledBackgroundJobs(sessionId: string): Promise<CoworkBackgroundJob[]> {
-    return (await this.runtime.clearSettledBackgroundJobs?.(sessionId)) ?? [];
+    return (await this.runtimeForSession(sessionId, this.safeResolveEngine()).clearSettledBackgroundJobs?.(sessionId)) ?? [];
   }
 
   onSessionDeleted(sessionId: string): void {
+    const runtime = this.runtimeForSession(sessionId, this.safeResolveEngine());
     this.sessionEngine.delete(sessionId);
     this.clearRequestEngineBySession(sessionId);
-    this.runtime.onSessionDeleted?.(sessionId);
+    runtime.onSessionDeleted?.(sessionId);
   }
 
   handleEngineConfigChanged(nextEngine: CoworkAgentEngine): void {
@@ -235,7 +256,7 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
 
     this.currentEngine = nextEngine;
     const activeSessionIds = Array.from(this.sessionEngine.keys())
-      .filter((sessionId) => this.runtime.isSessionActive(sessionId));
+      .filter((sessionId) => this.runtimeForSession(sessionId, this.sessionEngine.get(sessionId) ?? this.currentEngine).isSessionActive(sessionId));
     this.stopAllSessions();
 
     activeSessionIds.forEach((sessionId) => {
@@ -321,5 +342,13 @@ export class CoworkEngineRouter extends EventEmitter implements CoworkRuntime {
   private safeResolveEngine(): CoworkAgentEngine {
     this.currentEngine = this.getCurrentEngine();
     return this.currentEngine;
+  }
+
+  private runtimeForSession(sessionId: string, fallback: CoworkAgentEngine): CoworkRuntime {
+    return this.runtimes[this.sessionEngine.get(sessionId) ?? fallback];
+  }
+
+  private runtimeForRequest(requestId: string): CoworkRuntime {
+    return this.runtimes[this.requestEngine.get(requestId) ?? this.safeResolveEngine()];
   }
 }
