@@ -564,7 +564,6 @@ import {
   startOpenClawTokenProxy,
   stopOpenClawTokenProxy,
 } from './libs/openclawTokenProxy';
-import { migrateMainAgentWorkspace } from './libs/openclawWorkspaceMigration';
 import { ensurePythonRuntimeReady } from './libs/pythonRuntime';
 import { isAnalyticsEndpointUrl, sanitizeUrlForLog, serializeForLog } from './libs/sanitizeForLog';
 import { packageNodeServiceDeployment } from './libs/shareDeployment/nodeServiceDeploymentPackager';
@@ -638,7 +637,6 @@ import {
   loadOpenClawSessionPolicyConfig,
   saveOpenClawSessionPolicyConfig,
 } from './openclawSessionPolicy/store';
-import { registerVoiceInputPermissionHandler } from './permissions/voiceInputPermission';
 import { patchEnabledNspClawguard } from './plugins/nspClawguardCompatibility';
 import { isHiddenUserPluginId } from './plugins/pluginManager';
 import { ProjectStore } from './projects/projectStore';
@@ -15685,65 +15683,11 @@ if (!gotTheLock) {
       );
     }
 
-    // One-time migration: move main agent workspace files from the user's
-    // working directory to the fixed {STATE_DIR}/workspace-main/ path.
-    try {
-      const engineManager = getOpenClawEngineManager();
-      migrateMainAgentWorkspace(
-        engineManager.getStateDir(),
-        getCoworkStore().getConfig().workingDirectory,
-        getStore(),
-      );
-    } catch (err) {
-      console.warn('[OpenClaw] main agent workspace migration failed (non-fatal):', err);
-    }
-
-    // An interrupted Windows installer can leave an empty resources/cfmind
-    // directory plus win-resources.tar. Recover it before config sync because
-    // legacy plugins.installs migration needs the bundled OpenClaw CLI.
-    profiler.mark('prepareOpenClawRuntime');
-    await getOpenClawEngineManager().prepareRuntimeForStartupConfigSync();
-    profiler.measure('prepareOpenClawRuntime');
-
-    profiler.mark('syncOpenClawConfig');
-    const startupSync = await syncOpenClawConfig({
-      reason: 'startup',
-      restartGatewayIfRunning: false,
-    });
-    if (!startupSync.success) {
-      console.error('[OpenClaw] Startup config sync failed:', startupSync.error);
-    }
-    profiler.measure('syncOpenClawConfig');
-    if (resolveCoworkAgentEngine() === 'openclaw') {
-      void ensureOpenClawRunningForCowork()
-        .then(() => {
-          // Start cron polling once the gateway is confirmed running.
-          try {
-            getCronJobService().startPolling();
-          } catch (err) {
-            console.warn('[Main] CronJobService not available after OpenClaw startup:', err);
-          }
-          void migrateScheduledTaskAnnounceJobs(scheduledTaskHandlerDeps).catch(err => {
-            console.warn('[Main] Scheduled task IM announce job migration failed:', err);
-          });
-        })
-        .catch(error => {
-          console.error('[OpenClaw] Failed to auto-start gateway on app startup:', error);
-        });
-    }
-
     // ── Step 1: Show window ASAP ──────────────────────────────────────
     // CSP + createWindow moved before skill initialisation so the user
     // sees the loading UI within ~1-2 s instead of waiting for the full
     // skill bootstrap (~6-8 s previously).
     setContentSecurityPolicy();
-    registerVoiceInputPermissionHandler({
-      session: session.defaultSession,
-      getMainWindow: () => mainWindow,
-      isDev,
-      startUrl: process.env.ELECTRON_START_URL,
-    });
-
     profiler.mark('createWindow');
     console.log('[Main] initApp: creating window');
     createWindow();
