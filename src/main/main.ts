@@ -307,6 +307,7 @@ import { registerMcpHandlers } from './ipcHandlers/mcp';
 import { registerNimQrLoginHandlers } from './ipcHandlers/nimQrLogin';
 import { registerPermissionIpcHandlers } from './ipcHandlers/permissions/handlers';
 import { registerPluginHandlers } from './ipcHandlers/plugins';
+import { registerProjectHandlers } from './ipcHandlers/projects';
 import {
   getCronJobService,
   initCronJobServiceManager,
@@ -640,6 +641,7 @@ import {
 import { registerVoiceInputPermissionHandler } from './permissions/voiceInputPermission';
 import { patchEnabledNspClawguard } from './plugins/nspClawguardCompatibility';
 import { isHiddenUserPluginId } from './plugins/pluginManager';
+import { ProjectStore } from './projects/projectStore';
 import type { SkillChangeBatch } from './skills/skillChangeDiagnostics';
 import { SkillManager } from './skills/skillManager';
 import { getSkillServiceManager } from './skills/skillServices';
@@ -2216,6 +2218,7 @@ process.on('exit', code => {
 
 let store: SqliteStore | null = null;
 let coworkStore: CoworkStore | null = null;
+let projectStore: ProjectStore | null = null;
 let openClawRuntimeAdapter: OpenClawRuntimeAdapter | null = null;
 let codexAppServerManager: CodexAppServerManager | null = null;
 let codexRuntimeAdapter: CodexRuntimeAdapter | null = null;
@@ -2551,6 +2554,13 @@ const getCoworkStore = () => {
     }
   }
   return coworkStore;
+};
+
+const getProjectStore = () => {
+  if (!projectStore) {
+    projectStore = new ProjectStore(getStore().getDatabase());
+  }
+  return projectStore;
 };
 
 let agentManager: AgentManager | null = null;
@@ -3978,11 +3988,10 @@ const getCoworkEngineRouter = () => {
       codexRuntimeAdapter = new CodexRuntimeAdapter({
         client: codexManager.startSync(),
         store: getCoworkStore(),
-        getSkillInstructions: () => getSkillManager().buildAutoRoutingPrompt(),
         getPersistedThreadId: sessionId =>
-          getCoworkStore().getSession(sessionId, 0)?.claudeSessionId ?? null,
+          getCoworkStore().getSession(sessionId, 0)?.codexThreadId ?? null,
         saveThreadId: (sessionId, threadId) =>
-          getCoworkStore().updateSession(sessionId, { claudeSessionId: threadId }),
+          getCoworkStore().updateSession(sessionId, { codexThreadId: threadId }),
       });
       void codexManager.reloadMcpServers(getMcpRuntime().getResolvedServersCache()).catch(error => {
         console.warn('[Codex] failed to project MCP configuration:', error);
@@ -4070,6 +4079,10 @@ const getMcpRuntime = (): McpRuntime => {
     mcpRuntime = new McpRuntime({
       getStore,
       syncOpenClawConfig,
+      reloadCodexMcpServers: async servers => {
+        if (!codexRuntimeAdapter) return;
+        await getCodexAppServerManager().reloadMcpServers(servers);
+      },
       onAskUserRequested: (sessionId, request) => {
         getDesktopNotificationManager().handlePermissionRequest(sessionId, request);
       },
@@ -9809,6 +9822,7 @@ if (!gotTheLock) {
       _event,
       options: {
         prompt: string;
+        projectId?: string | null;
         cwd?: string;
         systemPrompt?: string;
         title?: string;
@@ -9869,11 +9883,17 @@ if (!gotTheLock) {
 
         const coworkStoreInstance = getCoworkStore();
         const config = coworkStoreInstance.getConfig();
-        const systemPrompt = mergeCoworkSystemPrompt(options.systemPrompt ?? config.systemPrompt);
+        const projectId = options.projectId?.trim() || null;
+        const project = projectId ? getProjectStore().getProject(projectId) : null;
+        if (projectId && !project) {
+          return { success: false, error: 'Project not found.' };
+        }
+        const requestedSystemPrompt = options.systemPrompt ?? config.systemPrompt;
+        const systemPrompt = mergeCoworkSystemPrompt(requestedSystemPrompt);
         const persistedSystemPrompt = containsPlanModePrompt(systemPrompt)
           ? mergeCoworkSystemPrompt(config.systemPrompt)
           : systemPrompt;
-        const selectedTaskDirectory = resolveSessionWorkingDirectory({
+        const selectedTaskDirectory = project?.rootPath ?? resolveSessionWorkingDirectory({
           cwd: options.cwd,
           agentId: options.agentId,
         });
@@ -9925,7 +9945,7 @@ if (!gotTheLock) {
           runtimeSkillIds || [],
           options.agentId || 'main',
           options.modelOverride || '',
-          { thinkingLevel: thinkingLevel || '' },
+          { projectId, thinkingLevel: thinkingLevel || '' },
         );
 
         if (options.modelOverride) {
@@ -10014,6 +10034,11 @@ if (!gotTheLock) {
             kitReferences: options.kitReferences,
             resolvedKitCapabilities: options.resolvedKitCapabilities,
             workspaceRoot: taskWorkingDirectory,
+            project: project
+              ? { id: project.id, name: project.name, rootPath: project.rootPath }
+              : null,
+            projectMemory: project?.memory ?? '',
+            skillPaths: getSkillManager().getEnabledCodexSkillPaths(runtimeSkillIds ?? []),
             confirmationMode: 'modal',
             imageAttachments: options.imageAttachments,
             agentId: options.agentId,
@@ -11109,6 +11134,7 @@ if (!gotTheLock) {
     resolveDefaultAgentModelRef,
     syncOpenClawConfig,
   });
+  registerProjectHandlers({ getProjectStore });
 
   ipcMain.handle(
     'cowork:session:exportResultImage',

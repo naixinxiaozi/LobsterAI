@@ -48,6 +48,8 @@ function setupDb(): void {
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       claude_session_id TEXT,
+      project_id TEXT,
+      codex_thread_id TEXT,
       scheduled_task_id TEXT,
       status TEXT NOT NULL DEFAULT 'idle',
       pinned INTEGER NOT NULL DEFAULT 0,
@@ -225,6 +227,28 @@ function insertMessage(
 
 beforeEach(() => {
   setupDb();
+});
+
+test('persists project ownership and the Codex thread id for a conversation', () => {
+  const session = store.createSession(
+    'Project conversation',
+    'E:/accounts',
+    '',
+    'local',
+    [],
+    'main',
+    '',
+    { projectId: 'project-1' },
+  );
+
+  expect(session.projectId).toBe('project-1');
+  expect(session.codexThreadId).toBeNull();
+
+  store.updateSession(session.id, { codexThreadId: 'thread-1' });
+  expect(store.getSession(session.id)).toMatchObject({
+    projectId: 'project-1',
+    codexThreadId: 'thread-1',
+  });
 });
 
 test('getSession returns all messages when one has corrupt metadata', () => {

@@ -121,6 +121,9 @@ export type CoworkStartOptions = {
   systemPrompt?: string;
   autoApprove?: boolean;
   workspaceRoot?: string;
+  project?: { id: string; name: string; rootPath: string } | null;
+  projectMemory?: string;
+  skillPaths?: string[];
   confirmationMode?: 'modal' | 'text';
   imageAttachments?: CoworkImageAttachment[];
   agentId?: string;

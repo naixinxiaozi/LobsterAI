@@ -9,6 +9,9 @@ export interface CodexHomeConfigOptions {
   webSearch?: CodexWebSearchMode;
 }
 
+export const renderCodexWebSearchConfig = (mode: CodexWebSearchMode): string =>
+  `web_search = "${mode}"\n`;
+
 export const buildCodexHomeConfig = ({
   webSearch = CodexWebSearchMode.Cached,
-}: CodexHomeConfigOptions = {}): string => `web_search = "${webSearch}"\n`;
+}: CodexHomeConfigOptions = {}): string => renderCodexWebSearchConfig(webSearch);

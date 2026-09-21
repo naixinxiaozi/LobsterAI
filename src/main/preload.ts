@@ -103,6 +103,14 @@ import { OpenClawEngineIpc } from '../shared/openclawEngine/constants';
 import { PermissionIpcChannel } from '../shared/permissions/constants';
 import type { Platform } from '../shared/platform';
 import {
+  type CreateProjectInput,
+  type ProjectCreateResult,
+  ProjectIpcChannel,
+  type ProjectListResult,
+  type ProjectSelectRootResult,
+  type ProjectUpdateMemoryResult,
+} from '../shared/projects/constants';
+import {
   type ShareDeploymentAnalyzeProjectInput,
   type ShareDeploymentCreateNodeInput,
   type ShareDeploymentDetectCandidatesInput,
@@ -519,10 +527,20 @@ contextBridge.exposeInMainWorld('electron', {
       return result?.success ? result.agent : null;
     },
   },
+  projects: {
+    list: (): Promise<ProjectListResult> => ipcRenderer.invoke(ProjectIpcChannel.List),
+    create: (input: CreateProjectInput): Promise<ProjectCreateResult> =>
+      ipcRenderer.invoke(ProjectIpcChannel.Create, input),
+    updateMemory: (projectId: string, content: string): Promise<ProjectUpdateMemoryResult> =>
+      ipcRenderer.invoke(ProjectIpcChannel.UpdateMemory, { projectId, content }),
+    selectRoot: (): Promise<ProjectSelectRootResult> =>
+      ipcRenderer.invoke(ProjectIpcChannel.SelectRoot),
+  },
   cowork: {
     // Session management
     startSession: (options: {
       prompt: string;
+      projectId?: string | null;
       cwd?: string;
       systemPrompt?: string;
       title?: string;

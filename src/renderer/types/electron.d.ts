@@ -135,6 +135,13 @@ import type {
 } from '../../shared/openclawEngine/constants';
 import type { OpenClawRepairStage } from '../../shared/openclawEngine/repair';
 import type {
+  CreateProjectInput,
+  ProjectCreateResult,
+  ProjectListResult,
+  ProjectSelectRootResult,
+  ProjectUpdateMemoryResult,
+} from '../../shared/projects/constants';
+import type {
   PublishingQuota,
   PublishingQuotaErrorData,
   PublishingSubscriptionRecoveryMode,
@@ -209,6 +216,8 @@ interface CoworkSession {
   id: string;
   title: string;
   claudeSessionId: string | null;
+  projectId?: string | null;
+  codexThreadId?: string | null;
   scheduledTaskId: string | null;
   status: 'idle' | 'running' | 'completed' | 'error';
   pinned: boolean;
@@ -244,6 +253,8 @@ interface CoworkMessage {
 interface CoworkSessionSummary {
   id: string;
   title: string;
+  projectId?: string | null;
+  codexThreadId?: string | null;
   scheduledTaskId: string | null;
   status: 'idle' | 'running' | 'completed' | 'error';
   pinned: boolean;
@@ -838,6 +849,12 @@ interface IElectronAPI {
     presetTemplates: () => Promise<PresetAgent[]>;
     addPreset: (presetId: string) => Promise<Agent>;
   };
+  projects: {
+    list: () => Promise<ProjectListResult>;
+    create: (input: CreateProjectInput) => Promise<ProjectCreateResult>;
+    updateMemory: (projectId: string, content: string) => Promise<ProjectUpdateMemoryResult>;
+    selectRoot: () => Promise<ProjectSelectRootResult>;
+  };
   api: {
     fetch: (options: {
       url: string;
@@ -967,6 +984,7 @@ interface IElectronAPI {
   cowork: {
     startSession: (options: {
       prompt: string;
+      projectId?: string | null;
       cwd?: string;
       systemPrompt?: string;
       title?: string;

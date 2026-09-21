@@ -599,6 +599,7 @@ const translations: Record<LanguageType, Record<string, string>> = {
     // 侧边栏
     conversations: '对话',
     noConversations: '暂无对话',
+    coworkToolReadOnly: '只读',
     createNewChat: '新建对话',
     deleteConversation: '删除对话',
     renameConversation: '重命名',
@@ -618,6 +619,8 @@ const translations: Record<LanguageType, Record<string, string>> = {
     searchHintSelect: '选择',
     searchHintOpen: '打开',
     projects: '项目',
+    projectsAndConversations: '项目与对话',
+    temporaryConversations: '临时对话',
     yourChats: '你的聊天',
     createProject: '新项目',
     projectNamePlaceholder: '项目名称',
@@ -4619,6 +4622,7 @@ const translations: Record<LanguageType, Record<string, string>> = {
     // Sidebar
     conversations: 'Conversations',
     noConversations: 'No conversations',
+    coworkToolReadOnly: 'Read-only',
     createNewChat: 'New Chat',
     deleteConversation: 'Delete Conversation',
     renameConversation: 'Rename',
@@ -4639,6 +4643,8 @@ const translations: Record<LanguageType, Record<string, string>> = {
     searchHintSelect: 'Select',
     searchHintOpen: 'Open',
     projects: 'Projects',
+    projectsAndConversations: 'Projects and conversations',
+    temporaryConversations: 'Temporary conversations',
     yourChats: 'Your Chats',
     createProject: 'New Project',
     projectNamePlaceholder: 'Project name',

@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 
 import { describe, expect, test, vi } from 'vitest';
 
-import { CodexRuntimeAdapter } from './codexRuntimeAdapter';
+import { buildCodexTurnContext, CodexRuntimeAdapter } from './codexRuntimeAdapter';
 
 class FakeCodexClient extends EventEmitter {
   request = vi.fn()
@@ -62,6 +62,43 @@ const startAdapter = async () => {
 };
 
 describe('CodexRuntimeAdapter', () => {
+  test('builds turn context from only the selected project memory and skills', async () => {
+    const context = buildCodexTurnContext({
+      project: { id: 'p1', name: 'Finance', rootPath: 'E:/finance' },
+      memory: 'Use the approved workbook.',
+      skillPaths: ['C:/skills/spreadsheets/SKILL.md'],
+    });
+
+    expect(context).toContain('Use the approved workbook.');
+    expect(context).toContain('C:/skills/spreadsheets/SKILL.md');
+    expect(context).not.toContain('other-project-memory');
+  });
+
+  test('passes isolated project context to the Codex turn', async () => {
+    const store = createMessageStore();
+    const client = {
+      request: vi.fn()
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ thread: { id: 'thread-1' } })
+        .mockResolvedValueOnce({ turn: { id: 'turn-1' } }),
+      on: vi.fn(),
+      respond: vi.fn(),
+    };
+    const adapter = new CodexRuntimeAdapter({ client: client as never, store });
+
+    await adapter.startSession('session-1', 'Draft the report', {
+      workspaceRoot: 'E:/finance',
+      project: { id: 'p1', name: 'Finance', rootPath: 'E:/finance' },
+      projectMemory: 'Use the approved workbook.',
+      skillPaths: ['C:/skills/spreadsheets/SKILL.md'],
+    });
+
+    expect(client.request).toHaveBeenNthCalledWith(3, 'turn/start', expect.objectContaining({
+      systemPrompt: expect.stringContaining('Use the approved workbook.'),
+    }));
+    expect(JSON.stringify(client.request.mock.calls[2])).not.toContain('other-project-memory');
+  });
+
   test('initializes, starts a thread, and starts a turn for a new Cowork session', async () => {
     const store = createMessageStore();
     const client = {
@@ -490,5 +527,53 @@ describe('CodexRuntimeAdapter', () => {
 
     expect(resolved).toHaveBeenCalledWith('session-1', 'codex:9');
     expect(errors).toHaveBeenCalledWith('session-1', 'Codex app-server disconnected');
+  });
+
+  test('routes Codex MCP elicitation through the standard permission UI', async () => {
+    const { adapter, client } = await startAdapter();
+    const permissions = vi.fn();
+    adapter.on('permissionRequest', permissions);
+
+    client.emit('serverRequest', {
+      id: 10,
+      method: 'mcpServer/elicitation/request',
+      params: {
+        threadId: 'thread-1',
+        serverName: 'computer-use',
+        message: 'Allow Computer Use to control Notepad?',
+      },
+    });
+
+    expect(permissions).toHaveBeenCalledWith('session-1', expect.objectContaining({
+      requestId: 'codex:10',
+      toolName: 'mcpServer/elicitation/request',
+    }));
+  });
+
+  test('renders a completed web search as a read-only tool item', async () => {
+    const { adapter, client } = await startAdapter();
+    const messages = vi.fn();
+    adapter.on('message', messages);
+    const item = {
+      type: 'webSearch',
+      id: 'search-1',
+      query: 'latest policy',
+      status: 'completed',
+      result: [],
+    };
+
+    client.emit('notification', {
+      method: 'item/started',
+      params: { threadId: 'thread-1', item },
+    });
+    client.emit('notification', {
+      method: 'item/completed',
+      params: { threadId: 'thread-1', item },
+    });
+
+    expect(messages).toHaveBeenCalledWith('session-1', expect.objectContaining({
+      type: 'tool_use',
+      metadata: expect.objectContaining({ toolName: 'WebSearch', readOnly: true }),
+    }));
   });
 });

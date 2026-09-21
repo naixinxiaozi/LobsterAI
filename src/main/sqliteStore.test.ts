@@ -16,6 +16,7 @@ vi.mock('electron', () => ({
 
 import { DB_FILENAME } from './appConstants';
 import { CoworkStore } from './coworkStore';
+import { CodexWorkspaceMigration } from './projects/projectStore';
 import { SqliteStore } from './sqliteStore';
 
 let tempDirs: string[] = [];
@@ -33,7 +34,10 @@ const createTempUserDataPath = (): string => {
   return dir;
 };
 
-const createLegacyDatabase = (userDataPath: string): void => {
+const createLegacyDatabase = (
+  userDataPath: string,
+  options: { codexMigrationComplete?: boolean } = { codexMigrationComplete: true },
+): void => {
   const db = new Database(path.join(userDataPath, DB_FILENAME));
   const now = Date.now();
 
@@ -70,6 +74,10 @@ const createLegacyDatabase = (userDataPath: string): void => {
 
   db.prepare('INSERT INTO cowork_config (key, value, updated_at) VALUES (?, ?, ?)')
     .run('workingDirectory', '/repo/legacy', now);
+  if (options.codexMigrationComplete !== false) {
+    db.prepare('INSERT INTO kv (key, value, updated_at) VALUES (?, ?, ?)')
+      .run(CodexWorkspaceMigration.Key, '1', now);
+  }
   db.prepare(
     `INSERT INTO agents (
       id, name, description, system_prompt, identity, model, icon, skill_ids,
@@ -85,6 +93,29 @@ const createLegacyDatabase = (userDataPath: string): void => {
 
   db.close();
 };
+
+test('backs up and clears legacy workspace records during the Codex migration', async () => {
+  const userDataPath = createTempUserDataPath();
+  createLegacyDatabase(userDataPath, { codexMigrationComplete: false });
+
+  const store = await SqliteStore.create(userDataPath);
+  const db = store.getDatabase();
+  expect(db.prepare("SELECT id FROM agents WHERE id <> 'main'").all()).toEqual([]);
+  expect(db.prepare('SELECT COUNT(*) AS count FROM cowork_config').get()).toEqual({ count: 0 });
+  expect(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'projects'").get())
+    .toEqual({ name: 'projects' });
+
+  const backupPath = path.join(
+    userDataPath,
+    'backups',
+    'migrations',
+    'before-codex-v1.sqlite',
+  );
+  const backup = new Database(backupPath, { readonly: true });
+  expect(backup.prepare("SELECT id FROM agents WHERE id = 'docs'").get()).toEqual({ id: 'docs' });
+  backup.close();
+  store.close();
+});
 
 test('backfills agent working directories from legacy cowork config only once', async () => {
   const userDataPath = createTempUserDataPath();

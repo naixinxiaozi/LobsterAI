@@ -123,6 +123,7 @@ const ToolCallGroup: React.FC<{
   const isSessionStreaming = useSelector(selectIsStreaming);
   const rawToolName = typeof toolUse.metadata?.toolName === 'string' ? toolUse.metadata.toolName : 'Tool';
   const toolName = getToolDisplayName(rawToolName);
+  const isReadOnly = toolUse.metadata?.readOnly === true;
   const toolInput = toolUse.metadata?.toolInput;
   const isCronTool = isCronToolName(rawToolName);
   const isTodoWriteTool = isTodoWriteToolName(rawToolName);
@@ -378,6 +379,11 @@ const ToolCallGroup: React.FC<{
           <span className={`text-xs text-foreground/90 flex-shrink-0 ${!toolResult && isSessionStreaming ? 'shimmer-text' : ''}`}>
             {toolName}
           </span>
+          {isReadOnly && (
+            <span className="rounded bg-black/[0.04] px-1.5 py-0.5 text-[10px] text-muted dark:bg-white/[0.06]">
+              {i18nService.t('coworkToolReadOnly')}
+            </span>
+          )}
           {rowSummary && (
             <span className="min-w-0 truncate text-xs text-secondary">
               {rowSummary}
@@ -432,6 +438,11 @@ const ToolCallGroup: React.FC<{
             <span className={`text-sm font-medium text-secondary ${!toolResult && isSessionStreaming ? 'shimmer-text' : ''}`}>
               {toolName}
             </span>
+            {isReadOnly && (
+              <span className="rounded bg-black/[0.04] px-1.5 py-0.5 text-[10px] text-muted dark:bg-white/[0.06]">
+                {i18nService.t('coworkToolReadOnly')}
+              </span>
+            )}
             {toolInputSummary && (
               <code className="text-code text-muted font-mono truncate max-w-full">
                 {toolInputSummary}

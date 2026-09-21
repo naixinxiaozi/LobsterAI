@@ -519,6 +519,8 @@ export interface CoworkSession {
   id: string;
   title: string;
   claudeSessionId: string | null;
+  projectId: string | null;
+  codexThreadId: string | null;
   scheduledTaskId: string | null;
   status: CoworkSessionStatus;
   pinned: boolean;
@@ -561,6 +563,8 @@ export interface UpsertSubagentChildSessionOptions {
 export interface CoworkSessionSummary {
   id: string;
   title: string;
+  projectId: string | null;
+  codexThreadId: string | null;
   scheduledTaskId: string | null;
   status: CoworkSessionStatus;
   pinned: boolean;
@@ -761,6 +765,8 @@ interface CoworkUserMemoryRow {
 interface CoworkSessionSummaryRow {
   id: string;
   title: string;
+  project_id: string | null;
+  codex_thread_id: string | null;
   scheduled_task_id: string | null;
   status: string;
   pinned: number | null;
@@ -783,6 +789,7 @@ interface CoworkSessionSearchOptions {
 }
 
 export interface CreateCoworkSessionOptions {
+  projectId?: string | null;
   scheduledTaskId?: string | null;
   thinkingLevel?: ModelThinkingLevel | '';
 }
@@ -890,7 +897,8 @@ export class CoworkStore {
         ) AS im_platform`
       : 'NULL AS im_platform';
 
-    return `${sessionAlias}.id, ${sessionAlias}.title, ${sessionAlias}.scheduled_task_id,
+    return `${sessionAlias}.id, ${sessionAlias}.title, ${sessionAlias}.project_id,
+      ${sessionAlias}.codex_thread_id, ${sessionAlias}.scheduled_task_id,
       ${sessionAlias}.status, ${sessionAlias}.pinned, ${sessionAlias}.pin_order,
       ${sessionAlias}.agent_id, ${imPlatformColumn},
       ${sessionAlias}.parent_session_id, ${sessionAlias}.forked_at, ${sessionAlias}.fork_mode,
@@ -923,6 +931,8 @@ export class CoworkStore {
     return {
       id: row.id,
       title: row.title,
+      projectId: row.project_id ?? null,
+      codexThreadId: row.codex_thread_id ?? null,
       scheduledTaskId: row.scheduled_task_id?.trim() || null,
       status: row.status as CoworkSessionStatus,
       pinned: Boolean(row.pinned),
@@ -962,6 +972,7 @@ export class CoworkStore {
   ): CoworkSession {
     const id = uuidv4();
     const now = Date.now();
+    const projectId = options.projectId?.trim() || null;
     const scheduledTaskId = options.scheduledTaskId?.trim() || null;
     const thinkingLevel = options.thinkingLevel ?? '';
 
@@ -969,13 +980,14 @@ export class CoworkStore {
       this.db
         .prepare(
           `
-        INSERT INTO cowork_sessions (id, title, claude_session_id, scheduled_task_id, status, cwd, system_prompt, model_override, thinking_level, execution_mode, active_skill_ids, agent_id, pinned, created_at, updated_at)
-        VALUES (?, ?, NULL, ?, 'idle', ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+        INSERT INTO cowork_sessions (id, title, claude_session_id, project_id, codex_thread_id, scheduled_task_id, status, cwd, system_prompt, model_override, thinking_level, execution_mode, active_skill_ids, agent_id, pinned, created_at, updated_at)
+        VALUES (?, ?, NULL, ?, NULL, ?, 'idle', ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
       `,
         )
         .run(
           id,
           title,
+          projectId,
           scheduledTaskId,
           cwd,
           systemPrompt,
@@ -993,6 +1005,8 @@ export class CoworkStore {
       id,
       title,
       claudeSessionId: null,
+      projectId,
+      codexThreadId: null,
       scheduledTaskId,
       status: 'idle',
       pinned: false,
@@ -1024,6 +1038,8 @@ export class CoworkStore {
       id: string;
       title: string;
       claude_session_id: string | null;
+      project_id: string | null;
+      codex_thread_id: string | null;
       scheduled_task_id: string | null;
       status: string;
       pinned?: number | null;
@@ -1042,7 +1058,7 @@ export class CoworkStore {
 
     const row = this.getOne<SessionRow>(
       `
-      SELECT id, title, claude_session_id, scheduled_task_id, status, pinned, pin_order, cwd, system_prompt, model_override, thinking_level, execution_mode, active_skill_ids, agent_id, goal_json, created_at, updated_at
+      SELECT id, title, claude_session_id, project_id, codex_thread_id, scheduled_task_id, status, pinned, pin_order, cwd, system_prompt, model_override, thinking_level, execution_mode, active_skill_ids, agent_id, goal_json, created_at, updated_at
       FROM cowork_sessions
       WHERE id = ?
     `,
@@ -1072,6 +1088,8 @@ export class CoworkStore {
       id: row.id,
       title: row.title,
       claudeSessionId: row.claude_session_id,
+      projectId: row.project_id ?? null,
+      codexThreadId: row.codex_thread_id ?? null,
       scheduledTaskId: row.scheduled_task_id?.trim() || null,
       status: row.status as CoworkSessionStatus,
       pinned: Boolean(row.pinned),
@@ -1484,7 +1502,7 @@ export class CoworkStore {
     updates: Partial<
       Pick<
         CoworkSession,
-        'title' | 'claudeSessionId' | 'status' | 'cwd' | 'systemPrompt' | 'modelOverride' | 'thinkingLevel' | 'executionMode' | 'goal'
+        'title' | 'claudeSessionId' | 'projectId' | 'codexThreadId' | 'status' | 'cwd' | 'systemPrompt' | 'modelOverride' | 'thinkingLevel' | 'executionMode' | 'goal'
       >
     >,
     options: { touchUpdatedAt?: boolean } = {},
@@ -1515,6 +1533,14 @@ export class CoworkStore {
     if (updates.claudeSessionId !== undefined) {
       setClauses.push('claude_session_id = ?');
       values.push(updates.claudeSessionId);
+    }
+    if (updates.projectId !== undefined) {
+      setClauses.push('project_id = ?');
+      values.push(updates.projectId);
+    }
+    if (updates.codexThreadId !== undefined) {
+      setClauses.push('codex_thread_id = ?');
+      values.push(updates.codexThreadId);
     }
     if (updates.status !== undefined) {
       setClauses.push('status = ?');

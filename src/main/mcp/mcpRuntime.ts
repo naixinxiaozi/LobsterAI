@@ -35,6 +35,7 @@ export interface McpRuntimeDeps {
     restartGatewayIfRunning?: boolean;
     expectedImpact?: OpenClawConfigImpact;
   }) => Promise<{ success: boolean; changed: boolean }>;
+  reloadCodexMcpServers?: (servers: ResolvedMcpServer[]) => Promise<void>;
   /** Fired when an AskUserQuestion request is surfaced to the renderer. */
   onAskUserRequested?: (sessionId: string, request: { requestId: string; toolName: string }) => void;
   /** Fired when a pending AskUserQuestion request is dismissed upstream. */
@@ -121,6 +122,7 @@ export class McpRuntime {
 
   async refreshResolvedServersCache(): Promise<ResolvedMcpServer[]> {
     this.resolvedServersCache = await this.getResolvedServers();
+    await this.deps.reloadCodexMcpServers?.(this.resolvedServersCache);
     return this.resolvedServersCache;
   }
 

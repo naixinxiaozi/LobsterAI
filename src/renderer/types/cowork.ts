@@ -150,6 +150,8 @@ export interface CoworkSession {
   id: string;
   title: string;
   claudeSessionId: string | null;
+  projectId?: string | null;
+  codexThreadId?: string | null;
   scheduledTaskId: string | null;
   status: CoworkSessionStatus;
   pinned: boolean;
@@ -328,6 +330,8 @@ export interface CoworkPermissionResponse {
 export interface CoworkSessionSummary {
   id: string;
   title: string;
+  projectId?: string | null;
+  codexThreadId?: string | null;
   scheduledTaskId: string | null;
   status: CoworkSessionStatus;
   pinned: boolean;
@@ -377,6 +381,7 @@ export interface SubagentSessionSummary {
 // Start session options
 export interface CoworkStartOptions {
   prompt: string;
+  projectId?: string | null;
   cwd?: string;
   systemPrompt?: string;
   title?: string;

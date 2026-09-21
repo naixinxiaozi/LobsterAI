@@ -134,6 +134,10 @@ const CoworkView: React.FC<CoworkViewProps> = ({
   const promptInputRef = useRef<CoworkPromptInputRef>(null);
 
   const currentSession = useSelector(selectCurrentSession);
+  const selectedProjectId = useSelector((state: RootState) => state.project.selectedProjectId);
+  const selectedProject = useSelector((state: RootState) =>
+    state.project.projects.find(project => project.id === state.project.selectedProjectId),
+  );
   const isHomeView = !currentSession;
   const sessionNavigationTargetId = useSelector(selectSessionNavigationTargetId);
   const isStreaming = useSelector(selectIsStreaming);
@@ -170,7 +174,10 @@ const CoworkView: React.FC<CoworkViewProps> = ({
   const agents = useSelector((state: RootState) => state.agent.agents);
   const currentAgent = agents.find((agent) => agent.id === currentAgentId);
   const shouldPresentConversation = Boolean(currentSession || sessionNavigationTargetId);
-  const currentAgentWorkingDirectory = currentAgent?.workingDirectory?.trim() || config.workingDirectory || '';
+  const currentAgentWorkingDirectory = selectedProject?.rootPath
+    ?? currentAgent?.workingDirectory?.trim()
+    ?? config.workingDirectory
+    ?? '';
   const currentAgentSelectedModel = useAgentSelectedModel(currentAgentId, currentAgent?.model ?? '');
   const currentAgentSelectedModelRef = currentAgentSelectedModel
     ? toOpenClawModelRef(currentAgentSelectedModel)
@@ -414,6 +421,8 @@ const CoworkView: React.FC<CoworkViewProps> = ({
         id: tempSessionId,
         title: fallbackTitle,
         claudeSessionId: null,
+        projectId: selectedProjectId,
+        codexThreadId: null,
         scheduledTaskId: null,
         status: 'running',
         pinned: false,
@@ -487,6 +496,7 @@ const CoworkView: React.FC<CoworkViewProps> = ({
       );
       const { session: startedSession, error: startError } = await coworkService.startSession({
         prompt,
+        projectId: selectedProjectId,
         title: fallbackTitle,
         cwd: currentAgentWorkingDirectory || undefined,
         systemPrompt: combinedSystemPrompt,

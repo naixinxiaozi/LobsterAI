@@ -68,7 +68,22 @@ type StreamedMessageState = {
 type CodexToolDescriptor = {
   name: string;
   input: Record<string, unknown>;
+  readOnly?: boolean;
 };
+
+export interface CodexTurnContextInput {
+  project?: { id: string; name: string; rootPath: string } | null;
+  memory: string;
+  skillPaths: string[];
+}
+
+export const buildCodexTurnContext = (input: CodexTurnContextInput): string => [
+  input.project
+    ? `Project: ${input.project.name}\nProject root: ${input.project.rootPath}`
+    : '',
+  input.memory.trim() ? `Project memory:\n${input.memory.trim()}` : '',
+  ...input.skillPaths.map(skillPath => `Skill file: ${skillPath}`),
+].filter(Boolean).join('\n\n');
 
 const asRecord = (value: unknown): Record<string, unknown> => (
   value && typeof value === 'object' ? value as Record<string, unknown> : {}
@@ -119,7 +134,7 @@ const getToolDescriptor = (item: Record<string, unknown>): CodexToolDescriptor |
     };
   }
   if (type === CodexItemType.WebSearch) {
-    return { name: 'WebSearch', input: { ...item } };
+    return { name: 'WebSearch', input: { ...item }, readOnly: true };
   }
   if (type === CodexItemType.ImageView) {
     return { name: 'ViewImage', input: { path: asString(item.path) } };
@@ -191,7 +206,6 @@ export class CodexRuntimeAdapter extends EventEmitter implements CoworkRuntime {
   constructor(private readonly options: {
     client: CodexClient;
     store: CodexMessageStore;
-    getSkillInstructions?: () => string | null;
     getPersistedThreadId?: (sessionId: string) => string | null;
     saveThreadId?: (sessionId: string, threadId: string) => void;
   }) {
@@ -290,7 +304,6 @@ export class CodexRuntimeAdapter extends EventEmitter implements CoworkRuntime {
     const result = await this.options.client.request<ThreadStartResult>('thread/start', {
       ...(options.workspaceRoot ? { cwd: options.workspaceRoot } : {}),
       approvalPolicy: options.autoApprove ? 'never' : 'on-request',
-      ...(this.options.getSkillInstructions?.() ? { developerInstructions: this.options.getSkillInstructions?.() } : {}),
     });
     const threadId = result.thread?.id;
     if (!threadId) throw new Error('Codex app-server did not return a thread id');
@@ -303,10 +316,20 @@ export class CodexRuntimeAdapter extends EventEmitter implements CoworkRuntime {
   }
 
   private async startTurn(sessionId: string, threadId: string, prompt: string, options: CoworkStartOptions | CoworkContinueOptions): Promise<void> {
+    const turnContext = 'projectMemory' in options || 'skillPaths' in options
+      ? buildCodexTurnContext({
+        project: options.project,
+        memory: options.projectMemory ?? '',
+        skillPaths: options.skillPaths ?? [],
+      })
+      : '';
+    const systemPrompt = [options.systemPrompt?.trim(), turnContext]
+      .filter(Boolean)
+      .join('\n\n');
     await this.options.client.request('turn/start', {
       threadId,
       input: [{ type: 'text', text: prompt }],
-      ...(options.systemPrompt ? { systemPrompt: options.systemPrompt } : {}),
+      ...(systemPrompt ? { systemPrompt } : {}),
     });
   }
 
@@ -567,6 +590,7 @@ export class CodexRuntimeAdapter extends EventEmitter implements CoworkRuntime {
         toolName: descriptor.name,
         toolInput: descriptor.input,
         toolUseId: itemId,
+        ...(descriptor.readOnly ? { readOnly: true } : {}),
       },
     });
     this.toolUseMessageByItem.set(key, message.id);

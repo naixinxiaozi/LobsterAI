@@ -17,6 +17,10 @@ import {
   openSqliteDatabaseWithRecovery,
   SqliteBackupManager,
 } from './libs/sqliteBackup/sqliteBackupManager';
+import {
+  initializeProjectSchema,
+  migrateLegacyWorkspaceData,
+} from './projects/projectStore';
 
 type ChangePayload<T = unknown> = {
   key: string;
@@ -85,6 +89,10 @@ export class SqliteStore {
 
     const store = new SqliteStore(db, dbPath);
     store.initializeTables(basePath);
+    const migratedLegacyWorkspace = await migrateLegacyWorkspaceData(db, {
+      backupPath: path.join(basePath, 'backups', 'migrations', 'before-codex-v1.sqlite'),
+    });
+    store.didRunMigration ||= migratedLegacyWorkspace;
     return store;
   }
 
@@ -124,6 +132,9 @@ export class SqliteStore {
         updated_at INTEGER NOT NULL
       );
     `);
+    if (initializeProjectSchema(this.db)) {
+      this.didRunMigration = true;
+    }
 
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS cowork_messages (

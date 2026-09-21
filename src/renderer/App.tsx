@@ -42,7 +42,6 @@ import NewUserOnboardingOverlay, {
   NewUserOnboardingStep,
   type NewUserOnboardingStep as NewUserOnboardingStepType,
 } from './components/NewUserOnboardingOverlay';
-import { ScheduledTasksView } from './components/scheduledTasks';
 import Settings, { type SettingsOpenOptions } from './components/Settings';
 import Sidebar from './components/Sidebar';
 import { SkillsAndConnectorsView, SkillsConnectorsSection } from './components/skillsAndConnectors';
@@ -79,7 +78,6 @@ import {
 } from './services/latestAsyncRequest';
 import { LogReporterAction, reportYdAnalyzer } from './services/logReporter';
 import { getOnboardingErrorCode, reportOnboardingAction } from './services/onboardingAnalytics';
-import { scheduledTaskService } from './services/scheduledTask';
 import { isTextEditingSafeShortcut, matchesShortcut } from './services/shortcuts';
 import { themeService } from './services/theme';
 import { applyTypographyPreferences } from './services/typography';
@@ -101,6 +99,7 @@ import {
 } from './store/slices/coworkSlice';
 import { setActiveKitIds } from './store/slices/kitSlice';
 import { setAvailableModels, setDefaultSelectedModel } from './store/slices/modelSlice';
+import { selectProject } from './store/slices/projectSlice';
 import { clearSelection } from './store/slices/quickActionSlice';
 import { setActiveSkillIds } from './store/slices/skillSlice';
 import { CoworkCollaborationMode, type CoworkPermissionResult } from './types/cowork';
@@ -220,7 +219,7 @@ const logAppUpdateRendererLifecycle = (
 const App: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [settingsOptions, setSettingsOptions] = useState<SettingsOpenOptions & { requestId: number }>({ requestId: 0 });
-  const [mainView, setMainView] = useState<'cowork' | 'skills' | 'scheduledTasks' | 'kits' | 'mcp' | 'library'>('cowork');
+  const [mainView, setMainView] = useState<'cowork' | 'skills' | 'kits' | 'mcp' | 'library'>('cowork');
   const [libraryNavigationRequest, setLibraryNavigationRequest] = useState<{
     source: LibrarySourceFilter;
     requestId: number;
@@ -607,9 +606,6 @@ const App: React.FC = () => {
         configReady ? 'shell ready' : 'shell ready (degraded: default config)',
       );
 
-      void waitWithTimeout(scheduledTaskService.init(), 5000, 'scheduledTaskService.init').catch((error) => {
-        console.error('[App] initializeApp: scheduledTaskService.init failed:', error);
-      });
 
       if (!configReady) {
         // Schedule only after the startup pass releases its in-flight guard;
@@ -755,10 +751,6 @@ const App: React.FC = () => {
 
   const handleShowCowork = useCallback(() => {
     setMainView('cowork');
-  }, []);
-
-  const handleShowScheduledTasks = useCallback(() => {
-    setMainView('scheduledTasks');
   }, []);
 
   const handleShowMcp = useCallback(() => {
@@ -907,10 +899,11 @@ const App: React.FC = () => {
     ));
   }, [isSidebarCollapsed, mainView]);
 
-  const handleNewChat = useCallback(() => {
+  const handleNewChat = useCallback((projectId: string | null = null) => {
     // Only clear when already on home (no session) — preserve __home__ draft when returning from a session
     const shouldClearInput = mainView === 'cowork' && !currentSessionId;
     coworkService.clearSession({ restoreAgentSkills: true });
+    dispatch(selectProject(projectId));
     dispatch(clearSelection());
     dispatch(setDraftCollaborationMode({
       draftKey: '__home__',
@@ -1712,12 +1705,6 @@ const App: React.FC = () => {
         return;
       }
 
-      if (matchesAction(ShortcutAction.OpenScheduledTasks)) {
-        event.preventDefault();
-        handleShowScheduledTasks();
-        return;
-      }
-
       if (matchesAction(ShortcutAction.OpenKits)) {
         event.preventDefault();
         handleShowKits();
@@ -1744,7 +1731,6 @@ const App: React.FC = () => {
     handleShowCowork,
     handleShowKits,
     handleShowMcp,
-    handleShowScheduledTasks,
     handleShowSettings,
     handleShowSkills,
     handleToggleSidebar,
@@ -2112,7 +2098,6 @@ const App: React.FC = () => {
           activeView={mainView}
           onShowSkills={handleShowSkills}
           onShowCowork={handleShowCowork}
-          onShowScheduledTasks={handleShowScheduledTasks}
           onShowKits={handleShowKits}
           onShowLibrary={handleShowLibrary}
           onNewChat={handleNewChat}
@@ -2149,13 +2134,6 @@ const App: React.FC = () => {
                 onUseSkill={handleSkillUse}
                 updateBadge={collapsedHeaderUpdateBadge}
                 skillsReadOnly={enterpriseConfig?.ui?.skills === 'readonly'}
-              />
-            ) : mainView === 'scheduledTasks' ? (
-              <ScheduledTasksView
-                isSidebarCollapsed={isSidebarCollapsed}
-                onToggleSidebar={handleToggleSidebar}
-                onNewChat={handleNewChat}
-                updateBadge={collapsedHeaderUpdateBadge}
               />
             ) : mainView === 'kits' ? (
               <KitsView

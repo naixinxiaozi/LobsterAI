@@ -1699,6 +1699,25 @@ export class SkillManager {
     return skills;
   }
 
+  getEnabledCodexSkillPaths(skillIds: readonly string[]): string[] {
+    if (skillIds.length === 0) return [];
+    const requestedIds = new Set(skillIds);
+    const allowedRoots = this.getSkillRoots().map(root => path.resolve(root));
+    return this.listSkills()
+      .filter(skill => requestedIds.has(skill.id) && skill.enabled)
+      .map(skill => {
+        const resolved = fs.realpathSync.native(skill.skillPath);
+        const isAllowed = allowedRoots.some(root => {
+          const relative = path.relative(root, resolved);
+          return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+        });
+        if (!isAllowed || path.basename(resolved).toLowerCase() !== 'skill.md') {
+          throw new Error(`Skill path is outside the managed skill roots: ${skill.id}`);
+        }
+        return resolved;
+      });
+  }
+
   buildAutoRoutingPrompt(): string | null {
     const skills = this.listSkills();
     const enabled = skills.filter(s => s.enabled && s.prompt);

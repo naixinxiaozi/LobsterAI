@@ -7,6 +7,7 @@ import { agentService } from '../services/agent';
 import { coworkService } from '../services/cowork';
 import { i18nService } from '../services/i18n';
 import { LogReporterAction, reportYdAnalyzer } from '../services/logReporter';
+import { projectService } from '../services/projects';
 import { RootState } from '../store';
 import {
   selectCoworkSessions,
@@ -17,9 +18,7 @@ import { getAgentDisplayNameById } from '../utils/agentDisplay';
 import {
   type AgentSidebarBatchItem,
   AgentSidebarBatchItemKind,
-  createSessionBatchKey,
 } from './agentSidebar/batchSelection';
-import MyAgentSidebarTree from './agentSidebar/MyAgentSidebarTree';
 import SidebarTaskFilterButton, { SIDEBAR_TASK_FILTER_ENABLED } from './agentSidebar/SidebarTaskFilterButton';
 import SidebarTaskSearchButton from './agentSidebar/SidebarTaskSearchButton';
 import Modal from './common/Modal';
@@ -31,25 +30,24 @@ import {
 import CoworkSearchModal from './cowork/CoworkSearchModal';
 import Cog6ToothIcon from './icons/Cog6ToothIcon';
 import ComposeIcon from './icons/ComposeIcon';
-import SidebarAutomationIcon from './icons/SidebarAutomationIcon';
 import SidebarKitsIcon from './icons/SidebarKitsIcon';
 import SidebarLibraryIcon from './icons/SidebarLibraryIcon';
 import SidebarToggleIcon from './icons/SidebarToggleIcon';
 import SkillIcon from './icons/SkillIcon';
 import TrashIcon from './icons/TrashIcon';
 import LoginButton from './LoginButton';
+import ProjectConversationSidebar from './projectSidebar/ProjectConversationSidebar';
 import SidebarExperienceSlot from './SidebarExperienceSlot';
 
 interface SidebarProps {
   onShowSettings: () => void;
   onShowLogin?: () => void;
-  activeView: 'cowork' | 'skills' | 'scheduledTasks' | 'kits' | 'mcp' | 'library';
+  activeView: 'cowork' | 'skills' | 'kits' | 'mcp' | 'library';
   onShowSkills: () => void;
   onShowCowork: () => void;
-  onShowScheduledTasks: () => void;
   onShowKits: () => void;
   onShowLibrary: () => void;
-  onNewChat: () => void;
+  onNewChat: (projectId?: string | null) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   isTaskFilterActive: boolean;
@@ -141,7 +139,6 @@ const SidebarPromoStar: React.FC<{ className?: string; idPrefix: string }> = ({
   </svg>
 );
 
-const normalizeAgentId = (agentId?: string | null) => agentId?.trim() || AgentId.Main;
 const SidebarNewFeatureBadge = {
   KitsDismissedVersionKey: 'sidebar.kitsNewFeatureBadge.dismissedVersion',
   // Bump this value in a release when the kits entry should show the badge again.
@@ -243,7 +240,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   activeView,
   onShowSkills,
   onShowCowork,
-  onShowScheduledTasks,
   onShowKits,
   onShowLibrary,
   onNewChat,
@@ -252,7 +248,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   isTaskFilterActive,
   hasUnreadCompletedTasks,
   onToggleTaskFilter,
-  onTaskFilterSummaryChange,
   onWidthChange,
   updateNotice,
   hideAdBanner,
@@ -270,7 +265,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [batchAgentId, setBatchAgentId] = useState<string | null>(null);
   const [batchSelectableItems, setBatchSelectableItems] = useState<AgentSidebarBatchItem[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
-  const [deletedSessionIds, setDeletedSessionIds] = useState<string[]>([]);
+  const [, setDeletedSessionIds] = useState<string[]>([]);
   const [showBatchDeleteConfirm, setShowBatchDeleteConfirm] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
@@ -427,6 +422,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleSelectSession = async (session: CoworkSessionSummary) => {
     const agentId = session.agentId?.trim() || AgentId.Main;
     try {
+      projectService.selectProject(session.projectId ?? null);
       if (agentId !== currentAgentId) {
         agentService.switchAgent(agentId, { targetSessionId: session.id });
         await coworkService.loadSessions(agentId);
@@ -437,18 +433,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       coworkService.finishSessionNavigation(session.id);
     }
   };
-
-  const handleEnterBatchMode = useCallback((sessionId: string, agentId: string) => {
-    reportSidebarAction('batch_mode_enter', {
-      source: 'home_agent_sidebar',
-      agentType: normalizeAgentId(agentId) === AgentId.Main ? 'main' : 'custom',
-      selectedCount: 1,
-    });
-    setIsBatchMode(true);
-    setBatchAgentId(agentId);
-    setBatchSelectableItems([]);
-    setSelectedKeys(new Set([createSessionBatchKey(sessionId)]));
-  }, []);
 
   const handleExitBatchMode = useCallback(() => {
     reportSidebarAction('batch_mode_exit', {
@@ -462,16 +446,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     setSelectedKeys(new Set());
     setShowBatchDeleteConfirm(false);
   }, [batchAgentId, getBatchSelectionSummary]);
-
-  const handleBatchSelectableItemsChange = useCallback((items: AgentSidebarBatchItem[]) => {
-    setBatchSelectableItems(items);
-    setSelectedKeys((previous) => {
-      if (!batchAgentId || items.length === 0) return previous;
-      const itemKeySet = new Set(items.map((item) => item.key));
-      const next = new Set(Array.from(previous).filter((key) => itemKeySet.has(key)));
-      return next.size === previous.size ? previous : next;
-    });
-  }, [batchAgentId]);
 
   const updateAgentScrollEdges = useCallback((element: HTMLDivElement | null) => {
     if (!element) {
@@ -498,27 +472,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleAgentScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
     updateAgentScrollEdges(event.currentTarget);
   }, [updateAgentScrollEdges]);
-
-  const handleToggleSelection = useCallback((selectionKey: string, agentId: string) => {
-    if (batchAgentId && normalizeAgentId(agentId) !== batchAgentId) return;
-    setSelectedKeys(prev => {
-      const next = new Set(prev);
-      const targetSelected = !next.has(selectionKey);
-      if (next.has(selectionKey)) {
-        next.delete(selectionKey);
-      } else {
-        next.add(selectionKey);
-      }
-      reportSidebarAction('batch_item_toggle', {
-        source: 'home_agent_sidebar',
-        agentType: normalizeAgentId(agentId) === AgentId.Main ? 'main' : 'custom',
-        selectedCount: next.size,
-        selectableCount: batchSelectableItems.length,
-        targetSelected,
-      });
-      return next;
-    });
-  }, [batchAgentId, batchSelectableItems.length]);
 
   const handleSelectAll = useCallback(() => {
     if (batchSelectableItems.length === 0) return;
@@ -748,19 +701,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             type="button"
             onClick={() => {
-              reportSidebarAction('open_scheduled_tasks', { activeView, isCollapsed });
-              setIsSearchOpen(false);
-              onShowScheduledTasks();
-            }}
-            className={activeView === 'scheduledTasks' ? activeSidebarNavItemClassName : sidebarNavItemClassName}
-            aria-current={activeView === 'scheduledTasks' ? 'page' : undefined}
-          >
-            <SidebarAutomationIcon className="h-4 w-4 shrink-0" />
-            {i18nService.t('scheduledTasks')}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
               reportSidebarAction('open_kits', { activeView, isCollapsed });
               setIsSearchOpen(false);
               dismissKitsNewBadge();
@@ -813,33 +753,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           }`}
           onScroll={handleAgentScroll}
         >
-          <MyAgentSidebarTree
-            isBatchMode={isBatchMode}
-            batchAgentId={batchAgentId}
-            deletedSessionIds={deletedSessionIds}
-            selectedKeys={selectedKeys}
-            isTaskFilterActive={isTaskFilterActive}
-            onShowCowork={onShowCowork}
-            onTaskFilterSummaryChange={onTaskFilterSummaryChange}
-            onTaskSelected={(params) => {
-              console.debug('[Sidebar] reporting agent sidebar task selection analytics');
-              void reportYdAnalyzer({
-                action: LogReporterAction.SidebarAction,
-                source: 'home_agent_sidebar',
-                actionType: 'select_task',
-                activeView,
-                ...params,
-              });
-            }}
-            onSidebarAction={(actionType, params) => {
-              reportSidebarAction(actionType, {
-                source: 'home_agent_sidebar',
-                ...params,
-              });
-            }}
-            onToggleSelection={handleToggleSelection}
-            onEnterBatchMode={handleEnterBatchMode}
-            onBatchSelectableItemsChange={handleBatchSelectableItemsChange}
+          <ProjectConversationSidebar
+            sessions={sessions}
+            currentSessionId={currentSessionId}
+            onSelectSession={handleSelectSession}
+            onNewConversation={projectId => onNewChat(projectId)}
           />
         </div>
         {!isBatchMode && (
