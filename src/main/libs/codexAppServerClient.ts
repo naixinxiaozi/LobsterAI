@@ -19,8 +19,19 @@ interface PendingRequest {
 
 export interface CodexAppServerClientEvents {
   close: [];
+  protocolError: [Error];
   notification: [{ method: string; params?: unknown }];
   serverRequest: [{ id: CodexRpcId; method: string; params?: unknown }];
+}
+
+export interface CodexInitializeParams {
+  clientInfo: {
+    name: string;
+    version: string;
+  };
+  capabilities: {
+    experimentalApi?: boolean;
+  };
 }
 
 export class CodexAppServerClient extends EventEmitter {
@@ -51,6 +62,11 @@ export class CodexAppServerClient extends EventEmitter {
     });
     this.write({ id, method, ...(params === undefined ? {} : { params }) });
     return promise;
+  }
+
+  async initialize(params: CodexInitializeParams): Promise<void> {
+    await this.request('initialize', params);
+    this.notify('initialized');
   }
 
   notify(method: string, params?: unknown): void {
@@ -106,7 +122,12 @@ export class CodexAppServerClient extends EventEmitter {
       const line = this.buffer.slice(0, newlineIndex).trim();
       this.buffer = this.buffer.slice(newlineIndex + 1);
       if (line) {
-        this.handleMessage(JSON.parse(line) as CodexRpcMessage);
+        try {
+          this.handleMessage(JSON.parse(line) as CodexRpcMessage);
+        } catch {
+          this.handleProtocolError(new Error('Invalid Codex app-server JSONL'));
+          return;
+        }
       }
       newlineIndex = this.buffer.indexOf('\n');
     }
@@ -134,16 +155,22 @@ export class CodexAppServerClient extends EventEmitter {
     }
   }
 
-  private handleClose(): void {
+  private handleClose(error = new Error('Codex app-server transport closed')): void {
     if (this.closed) {
       return;
     }
     this.closed = true;
-    const error = new Error('Codex app-server transport closed');
     for (const request of this.pending.values()) {
       request.reject(error);
     }
     this.pending.clear();
     this.emit('close');
+  }
+
+  private handleProtocolError(error: Error): void {
+    if (this.closed) return;
+    this.emit('protocolError', error);
+    this.handleClose(error);
+    this.transport.close();
   }
 }

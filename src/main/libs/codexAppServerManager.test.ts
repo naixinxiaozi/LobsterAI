@@ -9,7 +9,7 @@ import { describe, expect, test } from 'vitest';
 import { CodexAppServerManager } from './codexAppServerManager';
 
 describe('CodexAppServerManager', () => {
-  test('starts codex app-server with an isolated CODEX_HOME and DeepSeek key env', async () => {
+  test('starts codex app-server with an isolated CODEX_HOME and no provider credential env', async () => {
     const codexHome = await fs.mkdtemp(path.join(os.tmpdir(), 'lobster-codex-'));
     const child = new EventEmitter() as EventEmitter & { stdin: null; stdout: null; stderr: null; kill: () => void };
     child.stdin = new PassThrough();
@@ -19,7 +19,6 @@ describe('CodexAppServerManager', () => {
     let spawnArgs: { command: string; args: string[]; env: NodeJS.ProcessEnv; shell?: boolean } | undefined;
     const manager = new CodexAppServerManager({
       codexHome,
-      apiKey: 'secret-key',
       spawn: (command, args, options) => {
         spawnArgs = { command, args, env: options.env ?? {}, shell: options.shell };
         return child;
@@ -32,37 +31,34 @@ describe('CodexAppServerManager', () => {
       args: ['app-server', '--stdio'],
       env: {
         CODEX_HOME: codexHome,
-        LOBSTERAI_DEEPSEEK_API_KEY: 'secret-key',
       },
       shell: true,
     });
+    expect(spawnArgs?.env?.LOBSTERAI_DEEPSEEK_API_KEY).toBeUndefined();
+    expect(spawnArgs?.env?.Engine_AUTH_API_KEY).toBeUndefined();
     manager.stop();
     await fs.rm(codexHome, { recursive: true, force: true });
   });
 
-  test('uses Engine_AUTH_API_KEY from the configured dotenv file', async () => {
+  test('starts synchronously without projecting a LobsterAI model credential', async () => {
     const codexHome = await fs.mkdtemp(path.join(os.tmpdir(), 'lobster-codex-'));
-    const envFilePath = path.join(codexHome, '.env');
-    await fs.writeFile(envFilePath, 'Engine_AUTH_API_KEY="dotenv-key"\n', 'utf8');
     const child = new EventEmitter() as EventEmitter & { stdin: PassThrough; stdout: PassThrough; stderr: null; kill: () => void };
     child.stdin = new PassThrough();
     child.stdout = new PassThrough();
     child.stderr = null;
     child.kill = () => undefined;
-    let apiKey = '';
+    let environment: NodeJS.ProcessEnv | undefined;
     const manager = new CodexAppServerManager({
       codexHome,
-      apiKey: 'fallback-key',
-      envFilePath,
       spawn: (_command, _args, options) => {
-        apiKey = options.env?.LOBSTERAI_DEEPSEEK_API_KEY ?? '';
+        environment = options.env;
         return child;
       },
     });
 
-    await manager.start();
-
-    expect(apiKey).toBe('dotenv-key');
+    expect(manager.startSync()).toBeDefined();
+    expect(environment).toMatchObject({ CODEX_HOME: codexHome });
+    expect(environment?.LOBSTERAI_DEEPSEEK_API_KEY).toBeUndefined();
     manager.stop();
     await fs.rm(codexHome, { recursive: true, force: true });
   });

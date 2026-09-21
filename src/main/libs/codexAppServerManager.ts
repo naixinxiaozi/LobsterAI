@@ -4,11 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { CodexAppServerClient, type CodexTransport } from './codexAppServerClient';
-import {
-  buildCodexHomeConfig,
-  CODEX_DEEPSEEK_API_KEY_ENV,
-  readDotEnvValue,
-} from './codexAppServerConfig';
+import { buildCodexHomeConfig } from './codexAppServerConfig';
 import { renderCodexMcpServers } from './codexNativeConfig';
 import type { ResolvedMcpServer } from './openclawConfigSync';
 
@@ -26,9 +22,6 @@ type SpawnFn = (
 
 export interface CodexAppServerManagerOptions {
   codexHome: string;
-  apiKey: string;
-  envFilePath?: string;
-  model?: string;
   command?: string;
   spawn?: SpawnFn;
   environment?: NodeJS.ProcessEnv;
@@ -48,16 +41,14 @@ export class CodexAppServerManager {
     await fs.mkdir(this.options.codexHome, { recursive: true });
     await fs.writeFile(
       path.join(this.options.codexHome, 'config.toml'),
-      buildCodexHomeConfig({ model: this.options.model }),
+      buildCodexHomeConfig(),
       'utf8',
     );
 
     const spawnProcess = this.options.spawn ?? spawn;
-    const apiKey = this.resolveApiKey();
     const environment = {
       ...(this.options.environment ?? process.env),
       CODEX_HOME: this.options.codexHome,
-      [CODEX_DEEPSEEK_API_KEY_ENV]: apiKey,
     };
     const child = spawnProcess(this.options.command ?? (process.platform === 'win32' ? 'codex.cmd' : 'codex'), ['app-server', '--stdio'], {
       env: environment,
@@ -88,7 +79,7 @@ export class CodexAppServerManager {
     fsSync.mkdirSync(this.options.codexHome, { recursive: true });
     fsSync.writeFileSync(
       path.join(this.options.codexHome, 'config.toml'),
-      buildCodexHomeConfig({ model: this.options.model }),
+      buildCodexHomeConfig(),
       'utf8',
     );
     const spawnProcess = this.options.spawn ?? spawn;
@@ -96,7 +87,6 @@ export class CodexAppServerManager {
       env: {
         ...(this.options.environment ?? process.env),
         CODEX_HOME: this.options.codexHome,
-        [CODEX_DEEPSEEK_API_KEY_ENV]: this.resolveApiKey(),
       },
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: process.platform === 'win32',
@@ -136,15 +126,4 @@ export class CodexAppServerManager {
     await this.client?.request('config/mcpServer/reload', {});
   }
 
-  private resolveApiKey(): string {
-    const fromProcess = this.options.environment?.Engine_AUTH_API_KEY ?? process.env.Engine_AUTH_API_KEY;
-    if (fromProcess?.trim()) return fromProcess.trim();
-    if (!this.options.envFilePath) return this.options.apiKey.trim();
-    try {
-      const contents = fsSync.readFileSync(this.options.envFilePath, 'utf8');
-      return readDotEnvValue(contents, 'Engine_AUTH_API_KEY')?.trim() || this.options.apiKey.trim();
-    } catch {
-      return this.options.apiKey.trim();
-    }
-  }
 }

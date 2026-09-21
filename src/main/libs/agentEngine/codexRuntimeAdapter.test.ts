@@ -473,4 +473,22 @@ describe('CodexRuntimeAdapter', () => {
 
     expect(completes).not.toHaveBeenCalled();
   });
+
+  test('resolves a pending permission before reporting a disconnected Codex session', async () => {
+    const { adapter, client } = await startAdapter();
+    const resolved = vi.fn();
+    const errors = vi.fn();
+    adapter.on('permissionResolved', resolved);
+    adapter.on('error', errors);
+
+    client.emit('serverRequest', {
+      id: 9,
+      method: 'item/commandExecution/requestApproval',
+      params: { threadId: 'thread-1', itemId: 'command-1' },
+    });
+    client.emit('close');
+
+    expect(resolved).toHaveBeenCalledWith('session-1', 'codex:9');
+    expect(errors).toHaveBeenCalledWith('session-1', 'Codex app-server disconnected');
+  });
 });

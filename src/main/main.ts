@@ -2615,12 +2615,8 @@ const resolveCoworkAgentEngine = (): CoworkAgentEngine => {
 
 const getCodexAppServerManager = (): CodexAppServerManager => {
   if (!codexAppServerManager) {
-    const configured = resolveCurrentApiConfig().config;
     codexAppServerManager = new CodexAppServerManager({
       codexHome: getCodexHomeDir(),
-      apiKey: process.env.LOBSTERAI_DEEPSEEK_API_KEY?.trim() || configured?.apiKey?.trim() || '',
-      envFilePath: path.join(app.getAppPath(), '.env'),
-      model: configured?.model || undefined,
     });
   }
   return codexAppServerManager;
@@ -3993,8 +3989,6 @@ const getCoworkEngineRouter = () => {
       });
     }
     coworkEngineRouter = new CoworkEngineRouter({
-      getCurrentEngine: resolveCoworkAgentEngine,
-      openclawRuntime: openClawRuntimeAdapter,
       codexRuntime: codexRuntimeAdapter,
     });
   }

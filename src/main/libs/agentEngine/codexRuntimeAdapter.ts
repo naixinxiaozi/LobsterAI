@@ -671,6 +671,11 @@ export class CodexRuntimeAdapter extends EventEmitter implements CoworkRuntime {
   }
 
   private handleClientClose(): void {
+    for (const [requestId, sessionId] of this.sessionByPermissionId.entries()) {
+      this.emit('permissionResolved', sessionId, requestId);
+    }
+    this.requestByPermissionId.clear();
+    this.sessionByPermissionId.clear();
     for (const sessionId of this.activeSessions) {
       this.finalizeOpenMessages(sessionId);
       this.emit('error', sessionId, 'Codex app-server disconnected');

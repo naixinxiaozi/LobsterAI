@@ -79,4 +79,30 @@ describe('CodexAppServerClient', () => {
 
     await expect(pending).rejects.toThrow('Codex app-server transport closed');
   });
+
+  test('rejects pending requests with a protocol error when output contains malformed JSONL', async () => {
+    const { transport, output } = createTransport();
+    const client = new CodexAppServerClient(transport);
+    const pending = client.request('thread/start', {});
+
+    output.write('{not-json}\n');
+
+    await expect(pending).rejects.toThrow('Invalid Codex app-server JSONL');
+  });
+
+  test('sends initialized only after initialize succeeds', async () => {
+    const { transport, output, sent } = createTransport();
+    const client = new CodexAppServerClient(transport);
+
+    const initialized = client.initialize({
+      clientInfo: { name: 'lobsterai', version: 'test' },
+      capabilities: { experimentalApi: true },
+    });
+    const [initializeRequest] = sent() as Array<{ id: number }>;
+    output.write(`{"id":${initializeRequest.id},"result":{}}\n`);
+
+    await initialized;
+
+    expect(sent()).toContainEqual({ method: 'initialized' });
+  });
 });
